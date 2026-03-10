@@ -1,2 +1,2 @@
 # publicsecrets
-frauenbasierte webseite des public secrets ensembles
+fragenbasierte webseite des public secrets ensembles
