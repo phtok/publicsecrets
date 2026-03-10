@@ -1,0 +1,227 @@
+[
+  {
+    "id": "q-001",
+    "text": "Wer möchte sprechen?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "createdAt": "2026-03-01T10:00:00Z"
+  },
+  {
+    "id": "q-002",
+    "text": "Was haben wir miteinander zu tun?",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "createdAt": "2026-03-01T10:05:00Z"
+  },
+  {
+    "id": "q-003",
+    "text": "Wann sind Zeichen und Siegel angemessen?",
+    "authors": [
+      "Lisa van Holsteijn"
+    ],
+    "createdAt": "2026-03-01T10:10:00Z"
+  },
+  {
+    "id": "q-004",
+    "text": "Was soll ich bis Juli mitnehmen und geben?",
+    "authors": [
+      "Florian Mende"
+    ],
+    "createdAt": "2026-03-01T10:15:00Z"
+  },
+  {
+    "id": "q-0fe1797c-e892-46a1-99bf-60cc9dd6b28b",
+    "text": "Was siehst Du, wenn Du einen Mensch siehst?",
+    "authors": [
+      "Philipp Tok",
+      "Bodo von Plato"
+    ],
+    "createdAt": "2026-03-01T23:59:30.108Z"
+  },
+  {
+    "id": "q-f932c831-7d1f-46d4-8cf2-6792f8adfa6b",
+    "text": "Was könnte von Musik ausgehen, wenn es nicht rein “künstlerisch” ist?",
+    "authors": [
+      "Anna Sophie Brüning"
+    ],
+    "createdAt": "2026-02-25T10:00:00.000Z"
+  },
+  {
+    "id": "q-7d3c656c-334a-4dc2-9874-cf3b4b977ed7",
+    "text": "Wie geht Liebe? Und wie geht sie weg?",
+    "authors": [
+      "Andreas Bertram"
+    ],
+    "createdAt": "2026-02-25T10:01:00.000Z"
+  },
+  {
+    "id": "q-73ed507d-8184-4387-b112-f90eb3060aa2",
+    "text": "Wann ist die Möglichkeit wahrer als die Wirklichkeit?",
+    "authors": [
+      "Andreas Bertram"
+    ],
+    "createdAt": "2026-02-25T10:02:00.000Z"
+  },
+  {
+    "id": "q-7bcc99c5-b8b6-4c09-9bb7-95285986bf0e",
+    "text": "Was ist sicher?",
+    "authors": [
+      "Selma Bausinger"
+    ],
+    "createdAt": "2026-02-25T10:03:00.000Z"
+  },
+  {
+    "id": "q-84249ce9-9b9f-4f3b-b568-d0517f1bbb9f",
+    "text": "In welchem Erlebnis ist dir deine Wirbelsäule bewusst geworden?",
+    "authors": [
+      "Sibylle Wissmeyer"
+    ],
+    "createdAt": "2026-02-25T10:04:00.000Z"
+  },
+  {
+    "id": "q-3c2e97c8-98a8-43ee-934a-a5be87e83a9f",
+    "text": "Was macht das Leben lebenswert, wenn ich Fähigkeiten verliere?",
+    "authors": [
+      "Elke Schmitter"
+    ],
+    "createdAt": "2026-02-25T10:05:00.000Z"
+  },
+  {
+    "id": "q-86870450-10eb-4f86-bf59-764967b58b96",
+    "text": "Was ist segnen?",
+    "authors": [
+      "Gilda Bartel"
+    ],
+    "createdAt": "2026-02-25T10:06:00.000Z"
+  },
+  {
+    "id": "q-6c1f8ad3-4759-44b9-9eb1-0fad9235ef8f",
+    "text": "Wie wird Zähes flüssig?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "createdAt": "2026-02-25T10:07:00.000Z"
+  },
+  {
+    "id": "q-11494dc2-a882-4d01-b828-a65dd958b91e",
+    "text": "Was / Wer gibt dir Kraft?",
+    "authors": [
+      "Anke Steinmetz"
+    ],
+    "createdAt": "2026-02-25T10:08:00.000Z"
+  },
+  {
+    "id": "q-6b98ce9d-c17e-440c-8f78-513a973e9f3f",
+    "text": "Wie geht aktive Neutralität?",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "createdAt": "2026-02-25T10:09:00.000Z"
+  },
+  {
+    "id": "q-fe26fe97-7ccc-4f92-8f2b-6ad9142f3604",
+    "text": "Worauf freust du dich schon lange?",
+    "authors": [
+      "Juliane von Crailsheim"
+    ],
+    "createdAt": "2026-02-25T10:10:00.000Z"
+  },
+  {
+    "id": "q-ba00f827-0d06-4d66-b0e3-98efd74b64e0",
+    "text": "Worauf bereitest du dich vor?",
+    "authors": [
+      "Juliane von Crailsheim"
+    ],
+    "createdAt": "2026-02-25T10:11:00.000Z"
+  },
+  {
+    "id": "q-4774190f-fb3d-4fd8-a657-478fe7592bbf",
+    "text": "Was meinst du, wenn du von öffentlichen Geheimnissen sprichst?",
+    "authors": [
+      "Maike Meyer-Oldenburg"
+    ],
+    "createdAt": "2026-02-25T10:12:00.000Z"
+  },
+  {
+    "id": "q-4f1c30ee-6d0a-4641-9787-25b55b2c6aa1",
+    "text": "How to make the secrets productive?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "createdAt": "2026-02-18T10:00:00.000Z"
+  },
+  {
+    "id": "q-17d553f9-3b91-4eae-acd0-f2df0a9c2bdc",
+    "text": "Entspricht Dir dein Sprechen und wie sprichst du?",
+    "authors": [
+      "Juliane von Crailsheim"
+    ],
+    "createdAt": "2026-02-18T10:01:00.000Z"
+  },
+  {
+    "id": "q-8f84bd56-7432-4727-ac46-ed4295cfebbb",
+    "text": "Warum gibt es Krieg?",
+    "authors": [
+      "Bodo von Plato"
+    ],
+    "createdAt": "2026-02-18T10:02:00.000Z"
+  },
+  {
+    "id": "q-5ab3840e-f3ad-4425-b3f6-0bf7a6d20e83",
+    "text": "Wo wurzelt die Unfähigkeit sich etwas vorzustellen?",
+    "authors": [
+      "Elke Schmitter"
+    ],
+    "createdAt": "2026-02-18T10:03:00.000Z"
+  },
+  {
+    "id": "q-f3e6fb46-50d0-496a-b1de-034641e63e0e",
+    "text": "Wo bin ich eigentlich nachts, wenn ich schlafe?",
+    "authors": [
+      "Elke Schmitter"
+    ],
+    "createdAt": "2026-02-18T10:04:00.000Z"
+  },
+  {
+    "id": "q-dac94035-0fc0-4bbd-bcf0-eae47fa48dd9",
+    "text": "Wo liegt das Problem, wenn die Lösung in der Mitte liegt?",
+    "authors": [
+      "Andreas Laudert"
+    ],
+    "createdAt": "2026-02-18T10:05:00.000Z"
+  },
+  {
+    "id": "q-ae209cfd-16b4-4b81-88d3-20eeade7a7fc",
+    "text": "Sind ‹Frau-Sein› und ‹Mann-Sein› noch zukunftsfähige Zuschreibungen?",
+    "authors": [
+      "Andreas Laudert"
+    ],
+    "createdAt": "2026-02-18T10:06:00.000Z"
+  },
+  {
+    "id": "q-045759be-2ed1-402f-b3e9-828ce5e6dd32",
+    "text": "Der eigene Körper als terra incognita – wie können wir ihn wahrnehmen?",
+    "authors": [
+      "Anna Sophie Brüning"
+    ],
+    "createdAt": "2026-02-18T10:07:00.000Z"
+  },
+  {
+    "id": "q-b845bdcd-5ba8-4e86-92d9-93221a16c3ab",
+    "text": "Was tust du, wenn du fühlst?",
+    "authors": [
+      "Anke Steinmetz"
+    ],
+    "createdAt": "2026-02-18T10:08:00.000Z"
+  },
+  {
+    "id": "q-c9b23bb8-92eb-4e83-b227-b5484c91c745",
+    "text": "Wo beginnt deine Wortlosigkeit und wie gehst du mit ihr um?",
+    "authors": [
+      "Maike Meyer-Oldenburg"
+    ],
+    "createdAt": "2026-02-18T10:09:00.000Z"
+  }
+]

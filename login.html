@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - public secrets ensemble</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="backend-page">
+    <header class="topbar">
+      <button class="brand-link" type="button" onclick="window.location.href='/index.html'">public secrets ensemble</button>
+    </header>
+    <main class="admin-main">
+      <section class="card">
+        <h2>Login</h2>
+        <div class="form-grid">
+          <p class="muted">Mit Link aus E-Mail einloggen</p>
+          <label for="emailForLink">E-Mail</label>
+          <input id="emailForLink" type="email" autocomplete="email" placeholder="name@example.com" />
+          <button id="requestBtn" class="secondary" type="button">Link senden</button>
+          <p class="muted">Mit Passwort einloggen</p>
+          <label for="identity">E-Mail oder Benutzername</label>
+          <input id="identity" type="text" autocomplete="username" placeholder="name@example.com" />
+          <label for="password">Passwort</label>
+          <input id="password" type="password" autocomplete="current-password" placeholder="Passwort" />
+        </div>
+        <div class="actions">
+          <button id="loginBtn" class="primary" type="button">Einloggen</button>
+        </div>
+        <p id="loginMsg" class="muted"></p>
+      </section>
+    </main>
+    <script src="login.js?v=20260307c"></script>
+      <script src="/theme-toggle.js"></script>
+  </body>
+</html>

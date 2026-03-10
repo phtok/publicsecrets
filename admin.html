@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Public Secrets Admin</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="admin-page">
+    <header class="topbar">
+      <h1>Public Secrets - Redaktion</h1>
+      <div class="actions">
+        <a href="/member-area.html" class="secondary-link">Mitgliedsansicht</a>
+        <a href="/index.html" class="secondary-link">Zur Webseite</a>
+        <button id="logoutBtn" class="secondary hidden" type="button">Logout</button>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <section id="loginSection" class="card">
+        <h2>Login</h2>
+        <div class="form-grid two-col">
+          <div>
+            <label for="username">Benutzername</label>
+            <input id="username" type="text" />
+          </div>
+          <div>
+            <label for="password">Passwort</label>
+            <input id="password" type="password" />
+          </div>
+        </div>
+        <div class="actions">
+          <button id="loginBtn" class="primary" type="button">Einloggen</button>
+        </div>
+        <p class="muted">Standard (MVP): philipp@saetzerei.com / public-secrets-123</p>
+      </section>
+
+      <section id="adminSection" class="hidden admin-grid">
+        <details class="card admin-panel admin-stats" open>
+          <summary><span>Überblick</span></summary>
+          <div class="admin-panel-body">
+            <div class="stats-grid">
+              <div class="stat-box"><span class="stat-value" id="qCount">0</span><span class="muted">Fragen</span></div>
+              <div class="stat-box"><span class="stat-value" id="eCount">0</span><span class="muted">Veranstaltungen</span></div>
+              <div class="stat-box"><span class="stat-value" id="iCount">0</span><span class="muted">Initiativen</span></div>
+              <div class="stat-box"><span class="stat-value" id="pCount">0</span><span class="muted">Mitglieder</span></div>
+              <div class="stat-box"><span class="stat-value" id="cCount">0</span><span class="muted">Kommentare</span></div>
+            </div>
+          </div>
+        </details>
+
+        <details class="card admin-panel">
+          <summary><span>Fragen</span></summary>
+          <div class="admin-panel-body">
+            <div class="form-grid">
+              <input id="qId" type="hidden" />
+              <label for="qText">Frage</label>
+              <textarea id="qText" rows="3" placeholder="Fragetext"></textarea>
+              <label for="qDate">Datum</label>
+              <input id="qDate" type="date" />
+              <label for="qLocation">Ort</label>
+              <input id="qLocation" type="text" placeholder="Ort (optional)" />
+              <label for="qAuthors">Autoren (Komma getrennt)</label>
+              <input id="qAuthors" type="text" placeholder="Anna, Milan" />
+            </div>
+            <div class="actions">
+              <button id="saveQuestionBtn" class="primary" type="button">Frage speichern</button>
+              <button id="resetQuestionBtn" class="secondary" type="button">Zurücksetzen</button>
+            </div>
+            <div id="questionList" class="list admin-list"></div>
+          </div>
+        </details>
+
+        <details class="card admin-panel">
+          <summary><span>Veranstaltungen</span></summary>
+          <div class="admin-panel-body">
+            <div class="form-grid two-col">
+              <input id="eId" type="hidden" />
+              <div>
+                <label for="eTitle">Titel</label>
+                <input id="eTitle" type="text" placeholder="Titel" />
+              </div>
+              <div>
+                <label for="eDate">Datum</label>
+                <input id="eDate" type="date" />
+              </div>
+              <div>
+                <label for="eLocation">Ort</label>
+                <input id="eLocation" type="text" placeholder="Ort" />
+              </div>
+              <div>
+                <label for="eHosts">Hosts (Komma getrennt)</label>
+                <input id="eHosts" type="text" placeholder="Daniel Häni, Philipp Tok" />
+              </div>
+              <div class="full">
+                <label for="eDescription">Beschreibung</label>
+                <textarea id="eDescription" rows="3" placeholder="Beschreibung"></textarea>
+              </div>
+              <div>
+                <label for="eSourceUrl">Quelle (optional)</label>
+                <input id="eSourceUrl" type="url" placeholder="https://..." />
+              </div>
+              <div class="checkbox-inline admin-checkbox">
+                <input id="eArchived" type="checkbox" />
+                <label for="eArchived">Archiviert</label>
+              </div>
+            </div>
+            <div class="actions">
+              <button id="saveEventBtn" class="primary" type="button">Termin speichern</button>
+              <button id="resetEventBtn" class="secondary" type="button">Zurücksetzen</button>
+            </div>
+            <div id="eventList" class="list admin-list"></div>
+          </div>
+        </details>
+
+        <details class="card admin-panel">
+          <summary><span>Initiativen</span></summary>
+          <div class="admin-panel-body">
+            <div class="form-grid two-col">
+              <input id="iId" type="hidden" />
+              <div>
+                <label for="iTitle">Titel</label>
+                <input id="iTitle" type="text" placeholder="Titel" />
+              </div>
+              <div>
+                <label for="iStatus">Status</label>
+                <input id="iStatus" type="text" placeholder="aktiv / pausiert" />
+              </div>
+              <div class="full">
+                <label for="iDescription">Beschreibung</label>
+                <textarea id="iDescription" rows="3" placeholder="Beschreibung"></textarea>
+              </div>
+              <div>
+                <label for="iHosts">Hosts (Komma getrennt)</label>
+                <input id="iHosts" type="text" placeholder="Maike Meyer-Oldenburg" />
+              </div>
+              <div>
+                <label for="iSourceUrl">Quelle (optional)</label>
+                <input id="iSourceUrl" type="url" placeholder="https://..." />
+              </div>
+            </div>
+            <div class="actions">
+              <button id="saveInitiativeBtn" class="primary" type="button">Initiative speichern</button>
+              <button id="resetInitiativeBtn" class="secondary" type="button">Zurücksetzen</button>
+            </div>
+            <div id="initiativeList" class="list admin-list"></div>
+          </div>
+        </details>
+
+        <details class="card admin-panel">
+          <summary><span>Mitglieder</span></summary>
+          <div class="admin-panel-body">
+            <div class="form-grid two-col">
+              <input id="pId" type="hidden" />
+              <div>
+                <label for="pName">Name</label>
+                <input id="pName" type="text" placeholder="Vorname Nachname" />
+              </div>
+              <div>
+                <label for="pSlug">Slug</label>
+                <input id="pSlug" type="text" placeholder="vorname-nachname" />
+              </div>
+              <div class="full">
+                <label for="pEmail">Login-E-Mail</label>
+                <input id="pEmail" type="email" placeholder="name@example.com" />
+              </div>
+              <div class="full">
+                <label for="pRole">Rolle</label>
+                <input id="pRole" type="text" placeholder="Rolle/Funktion" />
+              </div>
+              <div class="full">
+                <label for="pPortraitUrl">Portrait-URL</label>
+                <input id="pPortraitUrl" type="text" placeholder="/assets/portraits/name.jpg" />
+              </div>
+              <div class="full upload-row">
+                <input id="pPortraitFile" type="file" accept="image/*" />
+                <button id="uploadPersonPortraitBtn" class="secondary" type="button">Bild hochladen</button>
+                <span id="personPortraitUploadStatus" class="muted upload-status"></span>
+              </div>
+              <div>
+                <label for="pPortraitFocusX">Bild-Ausschnitt horizontal</label>
+                <input id="pPortraitFocusX" type="range" min="0" max="100" value="50" />
+              </div>
+              <div>
+                <label for="pPortraitFocusY">Bild-Ausschnitt vertikal</label>
+                <input id="pPortraitFocusY" type="range" min="0" max="100" value="50" />
+              </div>
+              <div class="full">
+                <label for="pPassword">Passwort (optional neu setzen)</label>
+                <input id="pPassword" type="password" autocomplete="new-password" />
+              </div>
+              <div class="full">
+                <label for="pLinks">Links (eine URL pro Zeile)</label>
+                <textarea id="pLinks" rows="3" placeholder="https://..."></textarea>
+              </div>
+              <div class="full">
+                <label for="pBio">Vita</label>
+                <textarea id="pBio" rows="5" placeholder="Längere Vita"></textarea>
+              </div>
+            </div>
+            <div class="actions">
+              <button id="savePersonBtn" class="primary" type="button">Mitglied speichern</button>
+              <button id="resetPersonBtn" class="secondary" type="button">Zurücksetzen</button>
+            </div>
+            <div id="personList" class="list admin-list"></div>
+          </div>
+        </details>
+
+        <details class="card admin-panel">
+          <summary><span>Kommentare</span></summary>
+          <div class="admin-panel-body">
+            <div id="commentList" class="list admin-list"></div>
+          </div>
+        </details>
+
+        <details class="card admin-panel">
+          <summary><span>Login-Fallback</span></summary>
+          <div class="admin-panel-body">
+            <div class="actions">
+              <button id="refreshOutboxBtn" class="secondary" type="button">Aktualisieren</button>
+            </div>
+            <div id="loginOutboxList" class="list admin-list"></div>
+          </div>
+        </details>
+      </section>
+    </main>
+
+    <script src="admin.js?v=20260307c"></script>
+      <script src="/theme-toggle.js"></script>
+  </body>
+</html>

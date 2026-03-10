@@ -1,0 +1,32 @@
+[
+  {
+    "id": "cm-abfeaa95-da44-4bfc-be27-c5967030fff1",
+    "questionId": "q-c9b23bb8-92eb-4e83-b227-b5484c91c745",
+    "browserId": "a3602a6d-97d9-4010-abcf-c0c984c1f6e7",
+    "rating": 1,
+    "name": "",
+    "comment": "",
+    "updatedAt": "2026-03-02T10:17:04.978Z",
+    "replies": []
+  },
+  {
+    "id": "cm-6ef2d1a3-f431-4c98-90d8-0475ec81e7db",
+    "questionId": "q-001",
+    "browserId": "a3602a6d-97d9-4010-abcf-c0c984c1f6e7",
+    "rating": 0,
+    "name": "",
+    "comment": "",
+    "updatedAt": "2026-03-02T10:17:18.005Z",
+    "replies": []
+  },
+  {
+    "id": "cm-333b68c0-dc3e-4bff-940e-2f5c7d7dea55",
+    "questionId": "q-004",
+    "browserId": "a3602a6d-97d9-4010-abcf-c0c984c1f6e7",
+    "rating": 1,
+    "name": "",
+    "comment": "",
+    "updatedAt": "2026-03-03T22:27:05.916Z",
+    "replies": []
+  }
+]

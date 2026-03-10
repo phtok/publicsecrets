@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>public secrets ensemble</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body class="site-questions">
+    <header id="mainHeader" class="topbar topbar-main hidden">
+      <button id="headerBrandBtn" class="brand-link header-brand hidden" type="button" data-view="question">public secrets ensemble</button>
+      <button id="menuToggleBtn" class="menu-toggle" type="button" data-action="toggle-menu" aria-label="Menü öffnen" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="mainMenuPanel" class="top-menu-panel hidden" aria-label="Hauptnavigation">
+        <button class="menu-close" type="button" data-action="toggle-menu" aria-label="Menü schließen">×</button>
+        <button class="brand-link menu-title" type="button" data-view="people">public secrets ensemble</button>
+        <button class="top-nav-link" type="button" data-view="people">Menschen</button>
+        <button class="top-nav-link" type="button" data-view="questions">Fragen</button>
+        <button class="top-nav-link" type="button" data-view="initiatives">Initiativen</button>
+        <button class="top-nav-link" type="button" data-view="calendar">Momente</button>
+        <a class="top-nav-link menu-login" href="/login.html">Login</a>
+      </nav>
+      <nav id="headerInlineNav" class="top-nav header-inline-nav hidden" aria-label="Hauptnavigation">
+        <button class="top-nav-link" type="button" data-view="people">Menschen</button>
+        <span class="dot">·</span>
+        <button class="top-nav-link" type="button" data-view="questions">Fragen</button>
+        <span class="dot">·</span>
+        <button class="top-nav-link" type="button" data-view="initiatives">Initiativen</button>
+        <span class="dot">·</span>
+        <button class="top-nav-link" type="button" data-view="calendar">Momente</button>
+      </nav>
+    </header>
+
+    <main id="app" class="main-stage"></main>
+
+    <footer id="siteFooter" class="site-footer hidden">
+      <a href="/login.html">Login</a>
+    </footer>
+
+    <script src="app.js?v=20260307c"></script>
+      <script src="/theme-toggle.js"></script>
+  </body>
+</html>

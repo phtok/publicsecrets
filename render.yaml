@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: public-secrets
+    env: docker
+    plan: free
+    autoDeploy: true
+    healthCheckPath: /
+    envVars:
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 10000
+      - key: PUBLIC_SECRETE_DATA_DIR
+        sync: false
+      - key: PUBLIC_SECRETE_EDITORS
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: PUBLIC_SECRETE_FROM_EMAIL
+        sync: false
+    disk:
+      name: public-secrets-data
+      mountPath: /app/data
+      sizeGB: 1

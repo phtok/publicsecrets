@@ -1,0 +1,2 @@
+#!/bin/sh
+exec /tmp/node-v24.13.1-darwin-arm64/bin/node "$@"
