@@ -35,6 +35,10 @@
           <div class="full muted" id="portraitFocusPreview">Ausrichtung: 50% · 50%</div>
           <label for="profilePassword">Neues Passwort (optional)</label>
           <input id="profilePassword" type="password" autocomplete="new-password" />
+          <div class="checkbox-inline admin-checkbox full">
+            <input id="profileArchived" type="checkbox" />
+            <label for="profileArchived">Profil archivieren</label>
+          </div>
           <div class="full upload-row">
             <input id="portraitFile" type="file" accept="image/*" />
             <button id="uploadPortraitBtn" class="secondary" type="button">Bild hochladen</button>
@@ -60,6 +64,10 @@
           <input id="qDate" type="date" />
           <label for="qLocation">Ort</label>
           <input id="qLocation" type="text" />
+          <div class="checkbox-inline admin-checkbox full">
+            <input id="qArchived" type="checkbox" />
+            <label for="qArchived">Archiviert</label>
+          </div>
         </div>
         <div class="actions">
           <button id="saveQuestionBtn" class="primary" type="button">Frage speichern</button>
@@ -78,6 +86,10 @@
           <input id="iStatus" type="text" value="aktiv" />
           <label for="iDescription">Beschreibung</label>
           <textarea id="iDescription" rows="3"></textarea>
+          <div class="checkbox-inline admin-checkbox full">
+            <input id="iArchived" type="checkbox" />
+            <label for="iArchived">Archiviert</label>
+          </div>
           <label for="iImageUrl">Bild-Pfad</label>
           <input id="iImageUrl" type="text" placeholder="/uploads/initiative/..." />
           <div class="full upload-row">

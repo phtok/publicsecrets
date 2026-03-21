@@ -45,6 +45,7 @@
               <div class="stat-box"><span class="stat-value" id="iCount">0</span><span class="muted">Initiativen</span></div>
               <div class="stat-box"><span class="stat-value" id="pCount">0</span><span class="muted">Mitglieder</span></div>
               <div class="stat-box"><span class="stat-value" id="cCount">0</span><span class="muted">Kommentare</span></div>
+              <div class="stat-box"><span class="stat-value" id="dCount">0</span><span class="muted">Gelöscht</span></div>
             </div>
           </div>
         </details>
@@ -60,6 +61,10 @@
               <input id="qDate" type="date" />
               <label for="qLocation">Ort</label>
               <input id="qLocation" type="text" placeholder="Ort (optional)" />
+              <div class="checkbox-inline admin-checkbox">
+                <input id="qArchived" type="checkbox" />
+                <label for="qArchived">Archiviert</label>
+              </div>
               <label for="qAuthors">Autoren (Komma getrennt)</label>
               <input id="qAuthors" type="text" placeholder="Anna, Milan" />
             </div>
@@ -126,6 +131,10 @@
                 <label for="iStatus">Status</label>
                 <input id="iStatus" type="text" placeholder="aktiv / pausiert" />
               </div>
+              <div class="checkbox-inline admin-checkbox">
+                <input id="iArchived" type="checkbox" />
+                <label for="iArchived">Archiviert</label>
+              </div>
               <div class="full">
                 <label for="iDescription">Beschreibung</label>
                 <textarea id="iDescription" rows="3" placeholder="Beschreibung"></textarea>
@@ -168,6 +177,10 @@
                 <label for="pRole">Rolle</label>
                 <input id="pRole" type="text" placeholder="Rolle/Funktion" />
               </div>
+              <div class="checkbox-inline admin-checkbox full">
+                <input id="pArchived" type="checkbox" />
+                <label for="pArchived">Archiviert</label>
+              </div>
               <div class="full">
                 <label for="pPortraitUrl">Portrait-URL</label>
                 <input id="pPortraitUrl" type="text" placeholder="/assets/portraits/name.jpg" />
@@ -209,6 +222,11 @@
         <details class="card admin-panel">
           <summary><span>Kommentare</span></summary>
           <div class="admin-panel-body">
+            <div class="checkbox-inline admin-checkbox">
+              <input id="publicCommentingEnabled" type="checkbox" />
+              <label for="publicCommentingEnabled">Kommentare und Antworten für Nichtmitglieder geöffnet</label>
+            </div>
+            <p class="muted">Wenn deaktiviert, können nur eingeloggte Mitglieder und die Redaktion noch antworten.</p>
             <div id="commentList" class="list admin-list"></div>
           </div>
         </details>
@@ -220,6 +238,13 @@
               <button id="refreshOutboxBtn" class="secondary" type="button">Aktualisieren</button>
             </div>
             <div id="loginOutboxList" class="list admin-list"></div>
+          </div>
+        </details>
+
+        <details class="card admin-panel">
+          <summary><span>Papierkorb</span></summary>
+          <div class="admin-panel-body">
+            <div id="deletedItemList" class="list admin-list"></div>
           </div>
         </details>
       </section>

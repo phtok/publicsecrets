@@ -17,7 +17,11 @@ const PEOPLE_FILE = path.join(DATA_DIR, "people.json");
 const COMMENTS_FILE = path.join(DATA_DIR, "comments.json");
 const TOKENS_FILE = path.join(DATA_DIR, "member_login_tokens.json");
 const OUTBOX_FILE = path.join(DATA_DIR, "member_login_outbox.json");
-const SESSION_TTL_MS = 1000 * 60 * 60 * 12;
+const SITE_SETTINGS_FILE = path.join(DATA_DIR, "site_settings.json");
+const DELETED_ITEMS_FILE = path.join(DATA_DIR, "deleted_items.json");
+const SESSIONS_FILE = path.join(DATA_DIR, "sessions.json");
+const EDITOR_SESSION_TTL_MS = 1000 * 60 * 60 * 12;
+const MEMBER_SESSION_TTL_MS = 1000 * 60 * 60 * 24 * 400;
 const MEMBER_TOKEN_TTL_MS = 1000 * 60 * 15;
 const COOKIE_NAME = "ps_session";
 const LOGIN_IDENTITY_ALIASES = loadLoginIdentityAliases();
@@ -48,8 +52,11 @@ start().catch((error) => {
 async function start() {
   console.log(`Using data directory: ${DATA_DIR}`);
   await ensureDataFiles();
+  loadPersistedSessions();
   await migratePeopleData();
+  await migrateArchivedContent();
   await ensureInitialMemberPasswords();
+  cleanupExpiredSessions();
 
   const server = http.createServer(async (req, res) => {
     try {
@@ -96,7 +103,10 @@ async function handleApi(req, res, pathname, url) {
 
   if (req.method === "POST" && pathname === "/api/auth/logout") {
     const sid = getSessionId(req);
-    if (sid) sessions.delete(sid);
+    if (sid) {
+      sessions.delete(sid);
+      persistSessions();
+    }
     clearSessionCookie(res);
     return sendJson(res, 200, { ok: true });
   }
@@ -221,7 +231,10 @@ async function handleApi(req, res, pathname, url) {
 
   if (req.method === "POST" && pathname === "/api/member/auth/logout") {
     const sid = getSessionId(req);
-    if (sid) sessions.delete(sid);
+    if (sid) {
+      sessions.delete(sid);
+      persistSessions();
+    }
     clearSessionCookie(res);
     return sendJson(res, 200, { ok: true });
   }
@@ -266,26 +279,69 @@ async function handleApi(req, res, pathname, url) {
   }
 
   if (req.method === "GET" && pathname === "/api/questions") {
-    const questions = await readData(QUESTIONS_FILE);
+    let questions = (await readData(QUESTIONS_FILE)).map(normalizeQuestionRow);
+    questions = filterArchivedRows(questions, url, req, res);
+    if (!questions) return;
     return sendJson(res, 200, questions);
   }
 
   if (req.method === "GET" && pathname === "/api/people") {
-    const people = await readData(PEOPLE_FILE);
+    let people = (await readData(PEOPLE_FILE)).map(normalizePersonRow);
+    people = filterArchivedRows(people, url, req, res);
+    if (!people) return;
     return sendJson(res, 200, people.map(sanitizePersonForClient));
   }
 
   if (req.method === "GET" && pathname === "/api/events") {
-    let events = await readData(EVENTS_FILE);
-    const archived = url.searchParams.get("archived");
-    if (archived === "true") events = events.filter((e) => Boolean(e.archived));
-    if (archived === "false") events = events.filter((e) => !e.archived);
+    let events = (await readData(EVENTS_FILE)).map(normalizeEventRow);
+    events = filterArchivedRows(events, url, req, res);
+    if (!events) return;
     return sendJson(res, 200, events);
   }
 
   if (req.method === "GET" && pathname === "/api/initiatives") {
-    const initiatives = await readData(INITIATIVES_FILE);
+    let initiatives = (await readData(INITIATIVES_FILE)).map(normalizeInitiativeRow);
+    initiatives = filterArchivedRows(initiatives, url, req, res);
+    if (!initiatives) return;
     return sendJson(res, 200, initiatives);
+  }
+
+  if (req.method === "GET" && pathname === "/api/site-settings") {
+    const settings = normalizeSiteSettings(await readData(SITE_SETTINGS_FILE));
+    return sendJson(res, 200, settings);
+  }
+
+  if (req.method === "GET" && pathname === "/api/deleted-items") {
+    const session = requireEditorSession(req, res);
+    if (!session) return;
+    const rows = (await readData(DELETED_ITEMS_FILE))
+      .map(normalizeDeletedItemRow)
+      .sort((a, b) => Date.parse(String(b.deletedAt || "")) - Date.parse(String(a.deletedAt || "")))
+      .map(sanitizeDeletedItemForClient);
+    return sendJson(res, 200, rows);
+  }
+
+  if (req.method === "PUT" && /^\/api\/deleted-items\/[^/]+\/restore$/.test(pathname)) {
+    const session = requireEditorSession(req, res);
+    if (!session) return;
+    const match = pathname.match(/^\/api\/deleted-items\/([^/]+)\/restore$/);
+    const deletedId = decodeURIComponent(match ? match[1] : "");
+    if (!deletedId) return sendJson(res, 400, { error: "deletedItemId fehlt" });
+
+    const deletedItems = (await readData(DELETED_ITEMS_FILE)).map(normalizeDeletedItemRow);
+    const idx = deletedItems.findIndex((row) => String(row.id || "") === deletedId);
+    if (idx < 0) return sendJson(res, 404, { error: "Papierkorb-Eintrag nicht gefunden" });
+    if (deletedItems[idx].restoredAt) return sendJson(res, 409, { error: "Eintrag wurde bereits wiederhergestellt" });
+
+    const restored = await restoreDeletedItem(deletedItems[idx]);
+    deletedItems[idx] = normalizeDeletedItemRow({
+      ...deletedItems[idx],
+      restoredAt: new Date().toISOString(),
+      restoredBy: buildActorPayloadFromSession(session),
+      restoredEntityId: String(restored.restoredEntityId || deletedItems[idx].entityId || "")
+    });
+    await writeData(DELETED_ITEMS_FILE, deletedItems);
+    return sendJson(res, 200, sanitizeDeletedItemForClient(deletedItems[idx]));
   }
 
   if (req.method === "GET" && pathname === "/api/comments") {
@@ -318,6 +374,10 @@ async function handleApi(req, res, pathname, url) {
 
   if (req.method === "POST" && pathname === "/api/comments") {
     const body = await readJsonBody(req);
+    const canComment = await requirePublicCommentPermission(req, res, {
+      commentText: String(body.comment || "")
+    });
+    if (!canComment) return;
     const questionId = String(body.questionId || "").trim();
     const browserId = String(body.browserId || "").trim();
     if (!questionId) return sendJson(res, 400, { error: "questionId fehlt" });
@@ -352,6 +412,10 @@ async function handleApi(req, res, pathname, url) {
 
   if (req.method === "POST" && /^\/api\/comments\/[^/]+\/replies$/.test(pathname)) {
     const body = await readJsonBody(req);
+    const canComment = await requirePublicCommentPermission(req, res, {
+      commentText: String(body.text || "")
+    });
+    if (!canComment) return;
     const match = pathname.match(/^\/api\/comments\/([^/]+)\/replies$/);
     const commentId = decodeURIComponent(match ? match[1] : "");
     if (!commentId) return sendJson(res, 400, { error: "commentId fehlt" });
@@ -400,7 +464,7 @@ async function handleApi(req, res, pathname, url) {
       ...current,
       name: body.name === undefined ? current.name : String(body.name || "").trim(),
       comment: body.comment === undefined ? current.comment : String(body.comment || "").trim(),
-      rating: body.rating === undefined ? current.rating : (Number(body.rating) > 0 ? 1 : 0),
+      rating: body.rating === undefined ? current.rating : normalizeRating(body.rating),
       visible: body.visible === undefined ? current.visible : Boolean(body.visible),
       updatedAt: new Date().toISOString(),
       replies: current.replies || []
@@ -417,8 +481,16 @@ async function handleApi(req, res, pathname, url) {
     const commentId = decodeURIComponent(match ? match[1] : "");
     if (!commentId) return sendJson(res, 400, { error: "commentId fehlt" });
     const comments = await readData(COMMENTS_FILE);
+    const row = comments.find((entry) => String(entry.id || "") === commentId);
+    if (!row) return sendJson(res, 404, { error: "Kommentar nicht gefunden" });
     const next = comments.filter((row) => String(row.id || "") !== commentId);
-    if (next.length === comments.length) return sendJson(res, 404, { error: "Kommentar nicht gefunden" });
+    await appendDeletedItem({
+      entityType: "comment",
+      entityId: commentId,
+      actor: buildActorPayloadFromSession(session),
+      snapshot: normalizeCommentRow(row),
+      label: summarizeDeletedEntity("comment", row)
+    });
     await writeData(COMMENTS_FILE, next);
     return sendJson(res, 200, { ok: true });
   }
@@ -469,8 +541,20 @@ async function handleApi(req, res, pathname, url) {
     if (idx < 0) return sendJson(res, 404, { error: "Kommentar nicht gefunden" });
     const current = normalizeCommentRow(comments[idx]);
     const replies = Array.isArray(current.replies) ? current.replies.slice() : [];
+    const reply = replies.find((entry) => String(entry.id || "") === replyId);
+    if (!reply) return sendJson(res, 404, { error: "Antwort nicht gefunden" });
     const nextReplies = replies.filter((reply) => String(reply.id || "") !== replyId);
-    if (nextReplies.length === replies.length) return sendJson(res, 404, { error: "Antwort nicht gefunden" });
+    await appendDeletedItem({
+      entityType: "reply",
+      entityId: replyId,
+      actor: buildActorPayloadFromSession(session),
+      snapshot: {
+        ...normalizeReplyRow(reply),
+        questionId: String(current.questionId || ""),
+        commentId
+      },
+      label: summarizeDeletedEntity("reply", reply)
+    });
     const updated = normalizeCommentRow({
       ...current,
       replies: nextReplies,
@@ -497,16 +581,17 @@ async function handleApi(req, res, pathname, url) {
     const people = await readData(PEOPLE_FILE);
     const idx = people.findIndex((p) => String(p.slug || "") === String(memberContext.memberSlug || ""));
     if (idx < 0) return sendJson(res, 404, { error: "Mitglied nicht gefunden" });
-    const current = people[idx];
-    people[idx] = {
+    const current = normalizePersonRow(people[idx]);
+    people[idx] = normalizePersonRow({
       ...current,
       role: body.role === undefined ? current.role || "" : String(body.role).trim(),
       bio: body.bio === undefined ? current.bio || "" : String(body.bio).trim(),
       portraitUrl: body.portraitUrl === undefined ? current.portraitUrl || "" : String(body.portraitUrl).trim(),
       links: body.links === undefined ? normalizeLinks(current.links || []) : normalizeLinks(body.links),
       portraitFocusX: body.portraitFocusX === undefined ? normalizePortraitFocus(current.portraitFocusX) : normalizePortraitFocus(body.portraitFocusX),
-      portraitFocusY: body.portraitFocusY === undefined ? normalizePortraitFocus(current.portraitFocusY) : normalizePortraitFocus(body.portraitFocusY)
-    };
+      portraitFocusY: body.portraitFocusY === undefined ? normalizePortraitFocus(current.portraitFocusY) : normalizePortraitFocus(body.portraitFocusY),
+      archived: body.archived === undefined ? current.archived : normalizeArchived(body.archived)
+    });
     if (body.password !== undefined && String(body.password || "").trim()) {
       people[idx].passwordHash = createPasswordHash(String(body.password || ""));
       people[idx].mustChangePassword = false;
@@ -517,6 +602,7 @@ async function handleApi(req, res, pathname, url) {
         if (activeSession && activeSession.role === "member" && String(activeSession.memberSlug || "") === String(memberContext.memberSlug || "")) {
           activeSession.mustChangePassword = false;
           sessions.set(sid, activeSession);
+          persistSessions();
         }
       }
     }
@@ -527,7 +613,7 @@ async function handleApi(req, res, pathname, url) {
   if (req.method === "GET" && pathname === "/api/member/questions") {
     const memberContext = await requireMemberContext(req, res, { url });
     if (!memberContext) return;
-    const questions = await readData(QUESTIONS_FILE);
+    const questions = (await readData(QUESTIONS_FILE)).map(normalizeQuestionRow);
     const own = questions.filter((q) => includesMember(q.authors, memberContext.memberName));
     return sendJson(res, 200, own);
   }
@@ -542,13 +628,14 @@ async function handleApi(req, res, pathname, url) {
       text: String(body.text || "").trim(),
       authors,
       createdAt: normalizeCreatedAt(body.createdAt),
-      location: String(body.location || "").trim()
+      location: String(body.location || "").trim(),
+      archived: normalizeArchived(body.archived)
     };
     if (!newItem.text) return sendJson(res, 400, { error: "Fragetext fehlt" });
     const questions = await readData(QUESTIONS_FILE);
-    questions.push(newItem);
+    questions.push(normalizeQuestionRow(newItem));
     await writeData(QUESTIONS_FILE, questions);
-    return sendJson(res, 201, newItem);
+    return sendJson(res, 201, normalizeQuestionRow(newItem));
   }
 
   if (pathname.startsWith("/api/member/questions/") && req.method === "PUT") {
@@ -556,7 +643,7 @@ async function handleApi(req, res, pathname, url) {
     const body = await readJsonBody(req);
     const memberContext = await requireMemberContext(req, res, { url, body });
     if (!memberContext) return;
-    const questions = await readData(QUESTIONS_FILE);
+    const questions = (await readData(QUESTIONS_FILE)).map(normalizeQuestionRow);
     const idx = questions.findIndex((q) => q.id === id);
     if (idx < 0) return sendJson(res, 404, { error: "Frage nicht gefunden" });
     if (!includesMember(questions[idx].authors, memberContext.memberName)) return sendJson(res, 403, { error: "Kein Zugriff" });
@@ -569,12 +656,13 @@ async function handleApi(req, res, pathname, url) {
       text: body.text === undefined ? questions[idx].text : String(body.text).trim(),
       authors,
       createdAt: body.createdAt === undefined ? questions[idx].createdAt : normalizeCreatedAt(body.createdAt, questions[idx].createdAt),
-      location: body.location === undefined ? questions[idx].location || "" : String(body.location).trim()
+      location: body.location === undefined ? questions[idx].location || "" : String(body.location).trim(),
+      archived: body.archived === undefined ? questions[idx].archived : normalizeArchived(body.archived)
     };
     if (!updated.text) return sendJson(res, 400, { error: "Fragetext fehlt" });
-    questions[idx] = updated;
+    questions[idx] = normalizeQuestionRow(updated);
     await writeData(QUESTIONS_FILE, questions);
-    return sendJson(res, 200, updated);
+    return sendJson(res, 200, questions[idx]);
   }
 
   if (pathname.startsWith("/api/member/questions/") && req.method === "DELETE") {
@@ -586,6 +674,13 @@ async function handleApi(req, res, pathname, url) {
     if (!row) return sendJson(res, 404, { error: "Frage nicht gefunden" });
     if (!includesMember(row.authors, memberContext.memberName)) return sendJson(res, 403, { error: "Kein Zugriff" });
     const next = questions.filter((q) => q.id !== id);
+    await appendDeletedItem({
+      entityType: "question",
+      entityId: id,
+      actor: buildActorPayloadFromMemberContext(memberContext),
+      snapshot: normalizeQuestionRow(row),
+      label: summarizeDeletedEntity("question", row)
+    });
     await writeData(QUESTIONS_FILE, next);
     return sendJson(res, 200, { ok: true });
   }
@@ -593,7 +688,7 @@ async function handleApi(req, res, pathname, url) {
   if (req.method === "GET" && pathname === "/api/member/events") {
     const memberContext = await requireMemberContext(req, res, { url });
     if (!memberContext) return;
-    const events = await readData(EVENTS_FILE);
+    const events = (await readData(EVENTS_FILE)).map(normalizeEventRow);
     const own = events.filter((e) => includesMember(e.hosts, memberContext.memberName));
     return sendJson(res, 200, own);
   }
@@ -616,9 +711,9 @@ async function handleApi(req, res, pathname, url) {
     };
     if (!newItem.title || !newItem.date) return sendJson(res, 400, { error: "Titel und Datum sind Pflicht" });
     const events = await readData(EVENTS_FILE);
-    events.push(newItem);
+    events.push(normalizeEventRow(newItem));
     await writeData(EVENTS_FILE, events);
-    return sendJson(res, 201, newItem);
+    return sendJson(res, 201, normalizeEventRow(newItem));
   }
 
   if (pathname.startsWith("/api/member/events/") && req.method === "PUT") {
@@ -626,7 +721,7 @@ async function handleApi(req, res, pathname, url) {
     const body = await readJsonBody(req);
     const memberContext = await requireMemberContext(req, res, { url, body });
     if (!memberContext) return;
-    const events = await readData(EVENTS_FILE);
+    const events = (await readData(EVENTS_FILE)).map(normalizeEventRow);
     const idx = events.findIndex((e) => e.id === id);
     if (idx < 0) return sendJson(res, 404, { error: "Termin nicht gefunden" });
     if (!includesMember(events[idx].hosts, memberContext.memberName)) return sendJson(res, 403, { error: "Kein Zugriff" });
@@ -646,9 +741,9 @@ async function handleApi(req, res, pathname, url) {
       imageUrl: body.imageUrl === undefined ? events[idx].imageUrl || "" : String(body.imageUrl).trim()
     };
     if (!updated.title || !updated.date) return sendJson(res, 400, { error: "Titel und Datum sind Pflicht" });
-    events[idx] = updated;
+    events[idx] = normalizeEventRow(updated);
     await writeData(EVENTS_FILE, events);
-    return sendJson(res, 200, updated);
+    return sendJson(res, 200, events[idx]);
   }
 
   if (pathname.startsWith("/api/member/events/") && req.method === "DELETE") {
@@ -660,6 +755,13 @@ async function handleApi(req, res, pathname, url) {
     if (!row) return sendJson(res, 404, { error: "Termin nicht gefunden" });
     if (!includesMember(row.hosts, memberContext.memberName)) return sendJson(res, 403, { error: "Kein Zugriff" });
     const next = events.filter((e) => e.id !== id);
+    await appendDeletedItem({
+      entityType: "event",
+      entityId: id,
+      actor: buildActorPayloadFromMemberContext(memberContext),
+      snapshot: normalizeEventRow(row),
+      label: summarizeDeletedEntity("event", row)
+    });
     await writeData(EVENTS_FILE, next);
     return sendJson(res, 200, { ok: true });
   }
@@ -667,7 +769,7 @@ async function handleApi(req, res, pathname, url) {
   if (req.method === "GET" && pathname === "/api/member/initiatives") {
     const memberContext = await requireMemberContext(req, res, { url });
     if (!memberContext) return;
-    const initiatives = await readData(INITIATIVES_FILE);
+    const initiatives = (await readData(INITIATIVES_FILE)).map(normalizeInitiativeRow);
     const own = initiatives.filter((i) => includesMember(i.hosts, memberContext.memberName));
     return sendJson(res, 200, own);
   }
@@ -682,15 +784,16 @@ async function handleApi(req, res, pathname, url) {
       title: String(body.title || "").trim(),
       description: String(body.description || "").trim(),
       status: String(body.status || "aktiv").trim(),
+      archived: normalizeArchived(body.archived),
       hosts,
       sourceUrl: String(body.sourceUrl || "").trim(),
       imageUrl: String(body.imageUrl || "").trim()
     };
     if (!newItem.title) return sendJson(res, 400, { error: "Titel ist Pflicht" });
     const initiatives = await readData(INITIATIVES_FILE);
-    initiatives.push(newItem);
+    initiatives.push(normalizeInitiativeRow(newItem));
     await writeData(INITIATIVES_FILE, initiatives);
-    return sendJson(res, 201, newItem);
+    return sendJson(res, 201, normalizeInitiativeRow(newItem));
   }
 
   if (pathname.startsWith("/api/member/initiatives/") && req.method === "PUT") {
@@ -698,7 +801,7 @@ async function handleApi(req, res, pathname, url) {
     const body = await readJsonBody(req);
     const memberContext = await requireMemberContext(req, res, { url, body });
     if (!memberContext) return;
-    const initiatives = await readData(INITIATIVES_FILE);
+    const initiatives = (await readData(INITIATIVES_FILE)).map(normalizeInitiativeRow);
     const idx = initiatives.findIndex((i) => i.id === id);
     if (idx < 0) return sendJson(res, 404, { error: "Initiative nicht gefunden" });
     if (!includesMember(initiatives[idx].hosts, memberContext.memberName)) return sendJson(res, 403, { error: "Kein Zugriff" });
@@ -711,14 +814,15 @@ async function handleApi(req, res, pathname, url) {
       title: body.title === undefined ? initiatives[idx].title : String(body.title).trim(),
       description: body.description === undefined ? initiatives[idx].description : String(body.description).trim(),
       status: body.status === undefined ? initiatives[idx].status : String(body.status).trim(),
+      archived: body.archived === undefined ? initiatives[idx].archived : normalizeArchived(body.archived),
       hosts,
       sourceUrl: body.sourceUrl === undefined ? initiatives[idx].sourceUrl || "" : String(body.sourceUrl).trim(),
       imageUrl: body.imageUrl === undefined ? initiatives[idx].imageUrl || "" : String(body.imageUrl).trim()
     };
     if (!updated.title) return sendJson(res, 400, { error: "Titel ist Pflicht" });
-    initiatives[idx] = updated;
+    initiatives[idx] = normalizeInitiativeRow(updated);
     await writeData(INITIATIVES_FILE, initiatives);
-    return sendJson(res, 200, updated);
+    return sendJson(res, 200, initiatives[idx]);
   }
 
   if (pathname.startsWith("/api/member/initiatives/") && req.method === "DELETE") {
@@ -730,6 +834,13 @@ async function handleApi(req, res, pathname, url) {
     if (!row) return sendJson(res, 404, { error: "Initiative nicht gefunden" });
     if (!includesMember(row.hosts, memberContext.memberName)) return sendJson(res, 403, { error: "Kein Zugriff" });
     const next = initiatives.filter((i) => i.id !== id);
+    await appendDeletedItem({
+      entityType: "initiative",
+      entityId: id,
+      actor: buildActorPayloadFromMemberContext(memberContext),
+      snapshot: normalizeInitiativeRow(row),
+      label: summarizeDeletedEntity("initiative", row)
+    });
     await writeData(INITIATIVES_FILE, next);
     return sendJson(res, 200, { ok: true });
   }
@@ -743,15 +854,16 @@ async function handleApi(req, res, pathname, url) {
       text: String(body.text || "").trim(),
       authors: normalizeAuthors(body.authors),
       createdAt: normalizeCreatedAt(body.createdAt),
-      location: String(body.location || "").trim()
+      location: String(body.location || "").trim(),
+      archived: normalizeArchived(body.archived)
     };
     if (!newItem.text) return sendJson(res, 400, { error: "Fragetext fehlt" });
     if (newItem.authors.length === 0) newItem.authors = ["Anonym"];
 
     const questions = await readData(QUESTIONS_FILE);
-    questions.push(newItem);
+    questions.push(normalizeQuestionRow(newItem));
     await writeData(QUESTIONS_FILE, questions);
-    return sendJson(res, 201, newItem);
+    return sendJson(res, 201, normalizeQuestionRow(newItem));
   }
 
   if (pathname === "/api/people" && req.method === "POST") {
@@ -780,7 +892,8 @@ async function handleApi(req, res, pathname, url) {
       portraitUrl,
       portraitFocusX: normalizePortraitFocus(body.portraitFocusX),
       portraitFocusY: normalizePortraitFocus(body.portraitFocusY),
-      links
+      links,
+      archived: normalizeArchived(body.archived)
     };
     const newAliases = normalizeLoginEmails(body.loginEmails).filter((entry) => entry !== normalizeEmailAddress(newItem.email));
     if (newAliases.length) newItem.loginEmails = newAliases;
@@ -793,9 +906,9 @@ async function handleApi(req, res, pathname, url) {
       newItem.mustChangePassword = true;
       newItem.initialPasswordSeeded = new Date().toISOString();
     }
-    people.push(newItem);
+    people.push(normalizePersonRow(newItem));
     await writeData(PEOPLE_FILE, people);
-    return sendJson(res, 201, sanitizePersonForClient(newItem));
+    return sendJson(res, 201, sanitizePersonForClient(normalizePersonRow(newItem)));
   }
 
   if (pathname.startsWith("/api/questions/") && req.method === "PUT") {
@@ -803,7 +916,7 @@ async function handleApi(req, res, pathname, url) {
     if (!session) return;
     const id = pathname.split("/").pop();
     const body = await readJsonBody(req);
-    const questions = await readData(QUESTIONS_FILE);
+    const questions = (await readData(QUESTIONS_FILE)).map(normalizeQuestionRow);
     const idx = questions.findIndex((q) => q.id === id);
     if (idx < 0) return sendJson(res, 404, { error: "Frage nicht gefunden" });
 
@@ -812,14 +925,15 @@ async function handleApi(req, res, pathname, url) {
       text: String(body.text ?? questions[idx].text).trim(),
       authors: body.authors === undefined ? questions[idx].authors : normalizeAuthors(body.authors),
       createdAt: body.createdAt === undefined ? questions[idx].createdAt : normalizeCreatedAt(body.createdAt, questions[idx].createdAt),
-      location: body.location === undefined ? questions[idx].location || "" : String(body.location).trim()
+      location: body.location === undefined ? questions[idx].location || "" : String(body.location).trim(),
+      archived: body.archived === undefined ? questions[idx].archived : normalizeArchived(body.archived)
     };
     if (!updated.text) return sendJson(res, 400, { error: "Fragetext fehlt" });
     if (!updated.authors.length) updated.authors = ["Anonym"];
 
-    questions[idx] = updated;
+    questions[idx] = normalizeQuestionRow(updated);
     await writeData(QUESTIONS_FILE, questions);
-    return sendJson(res, 200, updated);
+    return sendJson(res, 200, questions[idx]);
   }
 
   if (pathname.startsWith("/api/people/") && req.method === "PUT") {
@@ -827,7 +941,7 @@ async function handleApi(req, res, pathname, url) {
     if (!session) return;
     const id = pathname.split("/").pop();
     const body = await readJsonBody(req);
-    const people = await readData(PEOPLE_FILE);
+    const people = (await readData(PEOPLE_FILE)).map(normalizePersonRow);
     const idx = people.findIndex((p) => String(p.slug || "") === id);
     if (idx < 0) return sendJson(res, 404, { error: "Mitglied nicht gefunden" });
 
@@ -840,7 +954,8 @@ async function handleApi(req, res, pathname, url) {
       portraitUrl: body.portraitUrl === undefined ? people[idx].portraitUrl || "" : String(body.portraitUrl).trim(),
       portraitFocusX: body.portraitFocusX === undefined ? normalizePortraitFocus(people[idx].portraitFocusX) : normalizePortraitFocus(body.portraitFocusX),
       portraitFocusY: body.portraitFocusY === undefined ? normalizePortraitFocus(people[idx].portraitFocusY) : normalizePortraitFocus(body.portraitFocusY),
-      links: body.links === undefined ? normalizeLinks(people[idx].links || []) : normalizeLinks(body.links)
+      links: body.links === undefined ? normalizeLinks(people[idx].links || []) : normalizeLinks(body.links),
+      archived: body.archived === undefined ? people[idx].archived : normalizeArchived(body.archived)
     };
     const nextAliases = normalizeLoginEmails(
       body.loginEmails === undefined ? updated.loginEmails : body.loginEmails
@@ -860,9 +975,9 @@ async function handleApi(req, res, pathname, url) {
       updated.initialPasswordSeeded = updated.initialPasswordSeeded || new Date().toISOString();
     }
 
-    people[idx] = updated;
+    people[idx] = normalizePersonRow(updated);
     await writeData(PEOPLE_FILE, people);
-    return sendJson(res, 200, sanitizePersonForClient(updated));
+    return sendJson(res, 200, sanitizePersonForClient(people[idx]));
   }
 
   if (pathname.startsWith("/api/questions/") && req.method === "DELETE") {
@@ -870,8 +985,16 @@ async function handleApi(req, res, pathname, url) {
     if (!session) return;
     const id = pathname.split("/").pop();
     const questions = await readData(QUESTIONS_FILE);
+    const row = questions.find((q) => q.id === id);
+    if (!row) return sendJson(res, 404, { error: "Frage nicht gefunden" });
     const next = questions.filter((q) => q.id !== id);
-    if (next.length === questions.length) return sendJson(res, 404, { error: "Frage nicht gefunden" });
+    await appendDeletedItem({
+      entityType: "question",
+      entityId: id,
+      actor: buildActorPayloadFromSession(session),
+      snapshot: normalizeQuestionRow(row),
+      label: summarizeDeletedEntity("question", row)
+    });
     await writeData(QUESTIONS_FILE, next);
     return sendJson(res, 200, { ok: true });
   }
@@ -888,12 +1011,27 @@ async function handleApi(req, res, pathname, url) {
       text,
       authors: author ? [author] : ["Anonym"],
       createdAt,
-      location
+      location,
+      archived: false
     };
     const questions = await readData(QUESTIONS_FILE);
-    questions.push(newItem);
+    questions.push(normalizeQuestionRow(newItem));
     await writeData(QUESTIONS_FILE, questions);
-    return sendJson(res, 201, newItem);
+    return sendJson(res, 201, normalizeQuestionRow(newItem));
+  }
+
+  if (req.method === "PUT" && pathname === "/api/site-settings") {
+    const session = requireEditorSession(req, res);
+    if (!session) return;
+    const body = await readJsonBody(req);
+    const current = normalizeSiteSettings(await readData(SITE_SETTINGS_FILE));
+    const next = normalizeSiteSettings({
+      ...current,
+      publicCommentingEnabled:
+        body.publicCommentingEnabled === undefined ? current.publicCommentingEnabled : body.publicCommentingEnabled
+    });
+    await writeData(SITE_SETTINGS_FILE, next);
+    return sendJson(res, 200, next);
   }
 
   if (pathname.startsWith("/api/people/") && req.method === "DELETE") {
@@ -901,8 +1039,16 @@ async function handleApi(req, res, pathname, url) {
     if (!session) return;
     const id = pathname.split("/").pop();
     const people = await readData(PEOPLE_FILE);
+    const row = people.find((p) => String(p.slug || "") === id);
+    if (!row) return sendJson(res, 404, { error: "Mitglied nicht gefunden" });
     const next = people.filter((p) => String(p.slug || "") !== id);
-    if (next.length === people.length) return sendJson(res, 404, { error: "Mitglied nicht gefunden" });
+    await appendDeletedItem({
+      entityType: "person",
+      entityId: id,
+      actor: buildActorPayloadFromSession(session),
+      snapshot: normalizePersonRow(row),
+      label: summarizeDeletedEntity("person", row)
+    });
     await writeData(PEOPLE_FILE, next);
     return sendJson(res, 200, { ok: true });
   }
@@ -925,9 +1071,9 @@ async function handleApi(req, res, pathname, url) {
     if (!newItem.title || !newItem.date) return sendJson(res, 400, { error: "Titel und Datum sind Pflicht" });
 
     const events = await readData(EVENTS_FILE);
-    events.push(newItem);
+    events.push(normalizeEventRow(newItem));
     await writeData(EVENTS_FILE, events);
-    return sendJson(res, 201, newItem);
+    return sendJson(res, 201, normalizeEventRow(newItem));
   }
 
   if (pathname.startsWith("/api/events/") && req.method === "PUT") {
@@ -935,7 +1081,7 @@ async function handleApi(req, res, pathname, url) {
     if (!session) return;
     const id = pathname.split("/").pop();
     const body = await readJsonBody(req);
-    const events = await readData(EVENTS_FILE);
+    const events = (await readData(EVENTS_FILE)).map(normalizeEventRow);
     const idx = events.findIndex((e) => e.id === id);
     if (idx < 0) return sendJson(res, 404, { error: "Termin nicht gefunden" });
 
@@ -952,9 +1098,9 @@ async function handleApi(req, res, pathname, url) {
     };
     if (!updated.title || !updated.date) return sendJson(res, 400, { error: "Titel und Datum sind Pflicht" });
 
-    events[idx] = updated;
+    events[idx] = normalizeEventRow(updated);
     await writeData(EVENTS_FILE, events);
-    return sendJson(res, 200, updated);
+    return sendJson(res, 200, events[idx]);
   }
 
   if (pathname.startsWith("/api/events/") && req.method === "DELETE") {
@@ -962,8 +1108,16 @@ async function handleApi(req, res, pathname, url) {
     if (!session) return;
     const id = pathname.split("/").pop();
     const events = await readData(EVENTS_FILE);
+    const row = events.find((e) => e.id === id);
+    if (!row) return sendJson(res, 404, { error: "Termin nicht gefunden" });
     const next = events.filter((e) => e.id !== id);
-    if (next.length === events.length) return sendJson(res, 404, { error: "Termin nicht gefunden" });
+    await appendDeletedItem({
+      entityType: "event",
+      entityId: id,
+      actor: buildActorPayloadFromSession(session),
+      snapshot: normalizeEventRow(row),
+      label: summarizeDeletedEntity("event", row)
+    });
     await writeData(EVENTS_FILE, next);
     return sendJson(res, 200, { ok: true });
   }
@@ -977,6 +1131,7 @@ async function handleApi(req, res, pathname, url) {
       title: String(body.title || "").trim(),
       description: String(body.description || "").trim(),
       status: String(body.status || "aktiv").trim(),
+      archived: normalizeArchived(body.archived),
       hosts: normalizeHosts(body.hosts),
       sourceUrl: String(body.sourceUrl || "").trim(),
       imageUrl: String(body.imageUrl || "").trim()
@@ -984,9 +1139,9 @@ async function handleApi(req, res, pathname, url) {
     if (!newItem.title) return sendJson(res, 400, { error: "Titel ist Pflicht" });
 
     const initiatives = await readData(INITIATIVES_FILE);
-    initiatives.push(newItem);
+    initiatives.push(normalizeInitiativeRow(newItem));
     await writeData(INITIATIVES_FILE, initiatives);
-    return sendJson(res, 201, newItem);
+    return sendJson(res, 201, normalizeInitiativeRow(newItem));
   }
 
   if (pathname.startsWith("/api/initiatives/") && req.method === "PUT") {
@@ -994,7 +1149,7 @@ async function handleApi(req, res, pathname, url) {
     if (!session) return;
     const id = pathname.split("/").pop();
     const body = await readJsonBody(req);
-    const initiatives = await readData(INITIATIVES_FILE);
+    const initiatives = (await readData(INITIATIVES_FILE)).map(normalizeInitiativeRow);
     const idx = initiatives.findIndex((i) => i.id === id);
     if (idx < 0) return sendJson(res, 404, { error: "Initiative nicht gefunden" });
 
@@ -1003,15 +1158,16 @@ async function handleApi(req, res, pathname, url) {
       title: body.title === undefined ? initiatives[idx].title : String(body.title).trim(),
       description: body.description === undefined ? initiatives[idx].description : String(body.description).trim(),
       status: body.status === undefined ? initiatives[idx].status : String(body.status).trim(),
+      archived: body.archived === undefined ? initiatives[idx].archived : normalizeArchived(body.archived),
       hosts: body.hosts === undefined ? initiatives[idx].hosts || [] : normalizeHosts(body.hosts),
       sourceUrl: body.sourceUrl === undefined ? initiatives[idx].sourceUrl || "" : String(body.sourceUrl).trim(),
       imageUrl: body.imageUrl === undefined ? initiatives[idx].imageUrl || "" : String(body.imageUrl).trim()
     };
     if (!updated.title) return sendJson(res, 400, { error: "Titel ist Pflicht" });
 
-    initiatives[idx] = updated;
+    initiatives[idx] = normalizeInitiativeRow(updated);
     await writeData(INITIATIVES_FILE, initiatives);
-    return sendJson(res, 200, updated);
+    return sendJson(res, 200, initiatives[idx]);
   }
 
   if (pathname.startsWith("/api/initiatives/") && req.method === "DELETE") {
@@ -1019,8 +1175,16 @@ async function handleApi(req, res, pathname, url) {
     if (!session) return;
     const id = pathname.split("/").pop();
     const initiatives = await readData(INITIATIVES_FILE);
+    const row = initiatives.find((i) => i.id === id);
+    if (!row) return sendJson(res, 404, { error: "Initiative nicht gefunden" });
     const next = initiatives.filter((i) => i.id !== id);
-    if (next.length === initiatives.length) return sendJson(res, 404, { error: "Initiative nicht gefunden" });
+    await appendDeletedItem({
+      entityType: "initiative",
+      entityId: id,
+      actor: buildActorPayloadFromSession(session),
+      snapshot: normalizeInitiativeRow(row),
+      label: summarizeDeletedEntity("initiative", row)
+    });
     await writeData(INITIATIVES_FILE, next);
     return sendJson(res, 200, { ok: true });
   }
@@ -1029,14 +1193,28 @@ async function handleApi(req, res, pathname, url) {
 }
 
 function requireSession(req, res) {
-  cleanupExpiredSessions();
-  const sid = getSessionId(req);
-  const session = sid ? sessions.get(sid) : null;
+  const session = getCurrentSession(req);
   if (!session) {
     sendJson(res, 401, { error: "Nicht eingeloggt" });
     return null;
   }
+  const sid = getSessionId(req);
+  if (session.role === "member") {
+    const ttlMs = Number(session.ttlMs) || MEMBER_SESSION_TTL_MS;
+    session.ttlMs = ttlMs;
+    session.expiresAt = Date.now() + ttlMs;
+    sessions.set(sid, session);
+    persistSessions();
+    setSessionCookie(res, sid);
+  }
   return session;
+}
+
+function getCurrentSession(req) {
+  cleanupExpiredSessions();
+  const sid = getSessionId(req);
+  if (!sid) return null;
+  return sessions.get(sid) || null;
 }
 
 function requireEditorSession(req, res) {
@@ -1055,8 +1233,9 @@ async function requireMemberContext(req, res, options = {}) {
   if (!session) return null;
 
   if (session.role === "member") {
-    return {
-      actorRole: "member",
+  return {
+    actorRole: "member",
+    actorIdentity: String(session.memberName || ""),
       memberSlug: String(session.memberSlug || ""),
       memberName: String(session.memberName || ""),
       mustChangePassword: Boolean(session.mustChangePassword)
@@ -1085,6 +1264,7 @@ async function requireMemberContext(req, res, options = {}) {
 
   return {
     actorRole: "editor",
+    actorIdentity: String(session.username || ""),
     memberSlug: String(member.slug || ""),
     memberName: String(member.name || ""),
     mustChangePassword: Boolean(member.mustChangePassword)
@@ -1093,22 +1273,32 @@ async function requireMemberContext(req, res, options = {}) {
 
 function createSession(payload) {
   const id = crypto.randomBytes(24).toString("hex");
+  const ttlMs = getSessionTtlMs(payload && payload.role);
   sessions.set(id, {
     ...payload,
-    expiresAt: Date.now() + SESSION_TTL_MS
+    ttlMs,
+    expiresAt: Date.now() + ttlMs
   });
+  persistSessions();
   return id;
 }
 
 function cleanupExpiredSessions() {
   const now = Date.now();
+  let changed = false;
   for (const [id, session] of sessions.entries()) {
-    if (session.expiresAt <= now) sessions.delete(id);
+    if (session.expiresAt <= now) {
+      sessions.delete(id);
+      changed = true;
+    }
   }
+  if (changed) persistSessions();
 }
 
 function setSessionCookie(res, sid) {
-  res.setHeader("Set-Cookie", `${COOKIE_NAME}=${sid}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${Math.floor(SESSION_TTL_MS / 1000)}`);
+  const session = sid ? sessions.get(sid) : null;
+  const ttlMs = session ? Number(session.ttlMs) || getSessionTtlMs(session.role) : EDITOR_SESSION_TTL_MS;
+  res.setHeader("Set-Cookie", `${COOKIE_NAME}=${sid}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${Math.floor(ttlMs / 1000)}`);
 }
 
 function clearSessionCookie(res) {
@@ -1238,6 +1428,9 @@ async function ensureDataFiles() {
   await ensureJsonFile(COMMENTS_FILE, []);
   await ensureJsonFile(TOKENS_FILE, []);
   await ensureJsonFile(OUTBOX_FILE, []);
+  await ensureJsonFile(SITE_SETTINGS_FILE, normalizeSiteSettings({}));
+  await ensureJsonFile(DELETED_ITEMS_FILE, []);
+  await ensureJsonFile(SESSIONS_FILE, []);
 }
 
 async function ensureJsonFile(filePath, fallback) {
@@ -1287,6 +1480,40 @@ async function migratePeopleData() {
     return item;
   });
   if (changed) await writeData(PEOPLE_FILE, next);
+}
+
+async function migrateArchivedContent() {
+  let changedQuestions = false;
+  const questions = (await readData(QUESTIONS_FILE)).map((row) => {
+    const next = normalizeQuestionRow(row);
+    if (row && row.archived !== next.archived) changedQuestions = true;
+    return next;
+  });
+  if (changedQuestions) await writeData(QUESTIONS_FILE, questions);
+
+  let changedEvents = false;
+  const events = (await readData(EVENTS_FILE)).map((row) => {
+    const next = normalizeEventRow(row);
+    if (row && row.archived !== next.archived) changedEvents = true;
+    return next;
+  });
+  if (changedEvents) await writeData(EVENTS_FILE, events);
+
+  let changedInitiatives = false;
+  const initiatives = (await readData(INITIATIVES_FILE)).map((row) => {
+    const next = normalizeInitiativeRow(row);
+    if (row && row.archived !== next.archived) changedInitiatives = true;
+    return next;
+  });
+  if (changedInitiatives) await writeData(INITIATIVES_FILE, initiatives);
+
+  let changedPeople = false;
+  const people = (await readData(PEOPLE_FILE)).map((row) => {
+    const next = normalizePersonRow(row);
+    if (row && row.archived !== next.archived) changedPeople = true;
+    return next;
+  });
+  if (changedPeople) await writeData(PEOPLE_FILE, people);
 }
 
 async function ensureInitialMemberPasswords() {
@@ -1342,8 +1569,7 @@ async function buildLocalPortraitMap() {
 
 async function readData(filePath) {
   const raw = await fs.readFile(filePath, "utf-8");
-  const parsed = JSON.parse(raw);
-  return Array.isArray(parsed) ? parsed : [];
+  return JSON.parse(raw);
 }
 
 async function writeData(filePath, value) {
@@ -1396,6 +1622,68 @@ function normalizeHosts(input) {
   return normalizeAuthors(input);
 }
 
+function normalizeArchived(value) {
+  return value === true;
+}
+
+function normalizeQuestionRow(input) {
+  return {
+    ...(input || {}),
+    id: String((input && input.id) || makeId("q")),
+    text: String((input && input.text) || "").trim(),
+    authors: normalizeAuthors(input && input.authors),
+    createdAt: normalizeCreatedAt(input && input.createdAt),
+    location: String((input && input.location) || "").trim(),
+    archived: normalizeArchived(input && input.archived)
+  };
+}
+
+function normalizeEventRow(input) {
+  return {
+    ...(input || {}),
+    id: String((input && input.id) || makeId("ev")),
+    title: String((input && input.title) || "").trim(),
+    description: String((input && input.description) || "").trim(),
+    location: String((input && input.location) || "").trim(),
+    date: String((input && input.date) || "").trim(),
+    archived: normalizeArchived(input && input.archived),
+    hosts: normalizeHosts(input && input.hosts),
+    sourceUrl: String((input && input.sourceUrl) || "").trim(),
+    imageUrl: String((input && input.imageUrl) || "").trim()
+  };
+}
+
+function normalizeInitiativeRow(input) {
+  return {
+    ...(input || {}),
+    id: String((input && input.id) || makeId("in")),
+    title: String((input && input.title) || "").trim(),
+    description: String((input && input.description) || "").trim(),
+    status: String((input && input.status) || "aktiv").trim(),
+    archived: normalizeArchived(input && input.archived),
+    hosts: normalizeHosts(input && input.hosts),
+    sourceUrl: String((input && input.sourceUrl) || "").trim(),
+    imageUrl: String((input && input.imageUrl) || "").trim(),
+    category: String((input && input.category) || "").trim()
+  };
+}
+
+function normalizePersonRow(input) {
+  return {
+    ...(input || {}),
+    name: String((input && input.name) || "").trim(),
+    slug: String((input && input.slug) || "").trim(),
+    email: normalizeEmailAddress(input && input.email),
+    role: String((input && input.role) || "").trim(),
+    bio: String((input && input.bio) || "").trim(),
+    portraitUrl: String((input && input.portraitUrl) || "").trim(),
+    portraitFocusX: normalizePortraitFocus(input && input.portraitFocusX),
+    portraitFocusY: normalizePortraitFocus(input && input.portraitFocusY),
+    links: normalizeLinks(input && input.links),
+    archived: normalizeArchived(input && input.archived)
+  };
+}
+
 function normalizeLinks(input) {
   if (Array.isArray(input)) {
     return input.map((v) => String(v).trim()).filter(Boolean);
@@ -1416,7 +1704,7 @@ function normalizePortraitFocus(value) {
 }
 
 function sanitizePersonForClient(person) {
-  const row = { ...(person || {}) };
+  const row = normalizePersonRow(person);
   delete row.passwordHash;
   delete row.loginEmails;
   delete row.mustChangePassword;
@@ -1445,12 +1733,24 @@ function normalizeCommentRow(input) {
     id: String(input.id || makeId("cm")),
     questionId: String(input.questionId || "").trim(),
     browserId: String(input.browserId || "").trim(),
-    rating: Number(input.rating) > 0 ? 1 : 0,
+    rating: normalizeRating(input.rating),
     name: String(input.name || "").trim(),
     comment: String(input.comment || "").trim(),
     updatedAt: normalizeCreatedAt(input.updatedAt),
     visible: input.visible === false ? false : true,
     replies
+  };
+}
+
+function normalizeRating(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return 0;
+  return Math.max(1, Math.min(5, Math.round(num)));
+}
+
+function normalizeSiteSettings(input) {
+  return {
+    publicCommentingEnabled: input && input.publicCommentingEnabled === false ? false : true
   };
 }
 
@@ -1463,6 +1763,48 @@ function normalizeReplyRow(input) {
     createdAt: normalizeCreatedAt(input.createdAt),
     visible: input.visible === false ? false : true
   };
+}
+
+function normalizeDeletedItemRow(input) {
+  return {
+    id: String((input && input.id) || makeId("del")),
+    entityType: String((input && input.entityType) || "").trim(),
+    entityId: String((input && input.entityId) || "").trim(),
+    label: String((input && input.label) || "").trim(),
+    deletedAt: normalizeCreatedAt(input && input.deletedAt),
+    actor: normalizeDeletedActor(input && input.actor),
+    snapshot: input && input.snapshot ? input.snapshot : null,
+    restoredAt: input && input.restoredAt ? normalizeCreatedAt(input.restoredAt) : "",
+    restoredBy: normalizeDeletedActor(input && input.restoredBy),
+    restoredEntityId: String((input && input.restoredEntityId) || "").trim()
+  };
+}
+
+function normalizeDeletedActor(input) {
+  return {
+    role: String((input && input.role) || "").trim(),
+    identity: String((input && input.identity) || "").trim(),
+    memberSlug: String((input && input.memberSlug) || "").trim(),
+    memberName: String((input && input.memberName) || "").trim()
+  };
+}
+
+function sanitizeDeletedItemForClient(row) {
+  const item = normalizeDeletedItemRow(row);
+  if (item.entityType === "person" && item.snapshot) {
+    item.snapshot = sanitizePersonForClient(item.snapshot);
+  }
+  return item;
+}
+
+async function requirePublicCommentPermission(req, res, options = {}) {
+  const settings = normalizeSiteSettings(await readData(SITE_SETTINGS_FILE));
+  if (settings.publicCommentingEnabled) return true;
+  const session = getCurrentSession(req);
+  if (session && (session.role === "member" || session.role === "editor")) return true;
+  if (!String(options.commentText || "").trim()) return true;
+  sendJson(res, 403, { error: "Kommentieren ist derzeit nur fuer Mitglieder freigeschaltet" });
+  return false;
 }
 
 function normalizeName(value) {
@@ -1486,6 +1828,124 @@ function normalizeLoginEmails(input) {
     if (!unique.includes(email)) unique.push(email);
   }
   return unique;
+}
+
+function filterArchivedRows(rows, url, req, res) {
+  const mode = String((url && url.searchParams.get("archived")) || "").trim().toLowerCase();
+  const includeArchived = String((url && url.searchParams.get("includeArchived")) || "").trim().toLowerCase() === "true";
+  const wantsAdminArchiveView = includeArchived || mode === "true" || mode === "all";
+  if (wantsAdminArchiveView) {
+    const session = requireEditorSession(req, res);
+    if (!session) return null;
+  }
+  if (includeArchived || mode === "all") return rows;
+  if (mode === "true") return rows.filter((row) => normalizeArchived(row && row.archived));
+  return rows.filter((row) => !normalizeArchived(row && row.archived));
+}
+
+async function appendDeletedItem({ entityType, entityId, actor, snapshot, label }) {
+  const rows = await readData(DELETED_ITEMS_FILE);
+  rows.push(
+    normalizeDeletedItemRow({
+      id: makeId("del"),
+      entityType,
+      entityId,
+      label,
+      deletedAt: new Date().toISOString(),
+      actor,
+      snapshot
+    })
+  );
+  await writeData(DELETED_ITEMS_FILE, rows.slice(-1000));
+}
+
+function buildActorPayloadFromSession(session) {
+  return normalizeDeletedActor({
+    role: String((session && session.role) || "").trim(),
+    identity: String((session && (session.username || session.memberName)) || "").trim(),
+    memberSlug: String((session && session.memberSlug) || "").trim(),
+    memberName: String((session && session.memberName) || "").trim()
+  });
+}
+
+function buildActorPayloadFromMemberContext(memberContext) {
+  return normalizeDeletedActor({
+    role: String((memberContext && memberContext.actorRole) || "").trim(),
+    identity: String((memberContext && memberContext.actorIdentity) || "").trim(),
+    memberSlug: String((memberContext && memberContext.memberSlug) || "").trim(),
+    memberName: String((memberContext && memberContext.memberName) || "").trim()
+  });
+}
+
+function summarizeDeletedEntity(type, row) {
+  if (!row || typeof row !== "object") return String(type || "").trim();
+  if (type === "question") return String(row.text || "").trim().slice(0, 160);
+  if (type === "event") return String(row.title || "").trim().slice(0, 160);
+  if (type === "initiative") return String(row.title || "").trim().slice(0, 160);
+  if (type === "person") return String(row.name || "").trim().slice(0, 160);
+  if (type === "comment") return String(row.comment || row.name || "Kommentar").trim().slice(0, 160);
+  if (type === "reply") return String(row.text || row.name || "Antwort").trim().slice(0, 160);
+  return String(row.title || row.name || row.text || row.id || type || "").trim().slice(0, 160);
+}
+
+async function restoreDeletedItem(item) {
+  const type = String(item.entityType || "").trim();
+  if (type === "question") return restoreQuestionSnapshot(item);
+  if (type === "event") return restoreEventSnapshot(item);
+  if (type === "initiative") return restoreInitiativeSnapshot(item);
+  if (type === "person") return restorePersonSnapshot(item);
+  throw createHttpError(400, "Dieser Eintragstyp kann noch nicht wiederhergestellt werden");
+}
+
+async function restoreQuestionSnapshot(item) {
+  const snapshot = normalizeQuestionRow(item.snapshot || {});
+  if (!snapshot.id) throw createHttpError(400, "Frage-Snapshot ist ungueltig");
+  const questions = (await readData(QUESTIONS_FILE)).map(normalizeQuestionRow);
+  if (questions.some((row) => String(row.id || "") === String(snapshot.id || ""))) {
+    throw createHttpError(409, "Frage-ID existiert bereits");
+  }
+  questions.push(snapshot);
+  await writeData(QUESTIONS_FILE, questions);
+  return { restoredEntityId: snapshot.id };
+}
+
+async function restoreEventSnapshot(item) {
+  const snapshot = normalizeEventRow(item.snapshot || {});
+  if (!snapshot.id) throw createHttpError(400, "Termin-Snapshot ist ungueltig");
+  const events = (await readData(EVENTS_FILE)).map(normalizeEventRow);
+  if (events.some((row) => String(row.id || "") === String(snapshot.id || ""))) {
+    throw createHttpError(409, "Termin-ID existiert bereits");
+  }
+  events.push(snapshot);
+  await writeData(EVENTS_FILE, events);
+  return { restoredEntityId: snapshot.id };
+}
+
+async function restoreInitiativeSnapshot(item) {
+  const snapshot = normalizeInitiativeRow(item.snapshot || {});
+  if (!snapshot.id) throw createHttpError(400, "Initiativen-Snapshot ist ungueltig");
+  const initiatives = (await readData(INITIATIVES_FILE)).map(normalizeInitiativeRow);
+  if (initiatives.some((row) => String(row.id || "") === String(snapshot.id || ""))) {
+    throw createHttpError(409, "Initiativen-ID existiert bereits");
+  }
+  initiatives.push(snapshot);
+  await writeData(INITIATIVES_FILE, initiatives);
+  return { restoredEntityId: snapshot.id };
+}
+
+async function restorePersonSnapshot(item) {
+  const snapshot = normalizePersonRow(item.snapshot || {});
+  if (!snapshot.name) throw createHttpError(400, "Mitglieds-Snapshot ist ungueltig");
+  const people = (await readData(PEOPLE_FILE)).map(normalizePersonRow);
+  if (snapshot.slug && people.some((row) => String(row.slug || "") === String(snapshot.slug || ""))) {
+    throw createHttpError(409, "Mitglieds-Slug existiert bereits");
+  }
+  if (snapshot.email && people.some((row) => normalizeEmailAddress(row.email) === normalizeEmailAddress(snapshot.email))) {
+    throw createHttpError(409, "Mitglieds-E-Mail existiert bereits");
+  }
+  people.push(snapshot);
+  await writeData(PEOPLE_FILE, people);
+  return { restoredEntityId: snapshot.slug || snapshot.email || snapshot.name };
 }
 
 function collectLoginEmails(person) {
@@ -1519,6 +1979,61 @@ function isPhilippMember(person) {
   const slug = String((person && person.slug) || "").trim().toLowerCase();
   const name = normalizeName((person && person.name) || "");
   return email === "philipp@saetzerei.com" || slug === "philipp-tok" || name === "philipp tok";
+}
+
+function getSessionTtlMs(role) {
+  return role === "member" ? MEMBER_SESSION_TTL_MS : EDITOR_SESSION_TTL_MS;
+}
+
+function loadPersistedSessions() {
+  let rows = [];
+  try {
+    const raw = fsSync.readFileSync(SESSIONS_FILE, "utf-8");
+    const parsed = JSON.parse(raw);
+    rows = Array.isArray(parsed) ? parsed : [];
+  } catch {
+    rows = [];
+  }
+  sessions.clear();
+  const now = Date.now();
+  for (const row of rows) {
+    const id = String((row && row.id) || "").trim();
+    if (!id) continue;
+    const role = String((row && row.role) || "").trim();
+    const ttlMs = Number((row && row.ttlMs) || getSessionTtlMs(role));
+    const expiresAt = Number((row && row.expiresAt) || 0);
+    if (!Number.isFinite(expiresAt) || expiresAt <= now) continue;
+    sessions.set(id, {
+      role,
+      username: String((row && row.username) || "").trim(),
+      memberSlug: String((row && row.memberSlug) || "").trim(),
+      memberName: String((row && row.memberName) || "").trim(),
+      mustChangePassword: Boolean(row && row.mustChangePassword),
+      ttlMs,
+      expiresAt
+    });
+  }
+}
+
+function persistSessions() {
+  const rows = [];
+  for (const [id, session] of sessions.entries()) {
+    rows.push({
+      id,
+      role: String(session.role || "").trim(),
+      username: String(session.username || "").trim(),
+      memberSlug: String(session.memberSlug || "").trim(),
+      memberName: String(session.memberName || "").trim(),
+      mustChangePassword: Boolean(session.mustChangePassword),
+      ttlMs: Number(session.ttlMs) || getSessionTtlMs(session.role),
+      expiresAt: Number(session.expiresAt) || 0
+    });
+  }
+  try {
+    fsSync.writeFileSync(SESSIONS_FILE, JSON.stringify(rows, null, 2) + "\n", "utf-8");
+  } catch (error) {
+    console.warn("Could not persist sessions:", error && error.message ? error.message : error);
+  }
 }
 
 function includesMember(hosts, memberName) {

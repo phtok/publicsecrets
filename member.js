@@ -13,6 +13,7 @@ let state = {
   initiatives: [],
   comments: [],
   sessionName: "",
+  siteSettings: { publicCommentingEnabled: true },
   interactions: loadInteractionState(),
   openQuestionDetails: {},
   openQuestionAnswers: {},
@@ -25,13 +26,14 @@ let state = {
 init();
 
 async function init() {
-  const [people, questions, events, initiatives, comments, sessionName] = await Promise.all([
+  const [people, questions, events, initiatives, comments, sessionName, siteSettings] = await Promise.all([
     fetchPeople(),
     fetchQuestions(),
     fetchEvents(),
     fetchInitiatives(),
     fetchComments(),
-    fetchSessionName()
+    fetchSessionName(),
+    fetchSiteSettings()
   ]);
 
   state.people = people;
@@ -40,6 +42,7 @@ async function init() {
   state.initiatives = initiatives;
   state.comments = comments;
   state.sessionName = sessionName;
+  state.siteSettings = siteSettings;
 
   if (!people.length) {
     app.innerHTML = `<section class="card"><h2>Keine Mitgliedsdaten</h2></section>`;
@@ -74,6 +77,10 @@ app.addEventListener("click", (event) => {
   }
 
   if (action === "toggle-compose" && qid) {
+    if (!canCurrentViewerComment()) {
+      alert("Antworten sind derzeit nur für eingeloggte Mitglieder freigeschaltet.");
+      return;
+    }
     state.openQuestionCompose[qid] = !state.openQuestionCompose[qid];
     render();
     return;
@@ -204,12 +211,15 @@ function renderQuestionCard(question, inMemberPage) {
   const answerCount = countCommentEntries(rows);
   const where = String(question.location || "").trim() || "Ohne Ort";
   const when = formatShortDate(question.createdAt) || "Ohne Datum";
-  const authors = (question.authors || []).join(", ") || "Anonym";
+  const authors = renderAuthorLinks(question.authors || []);
   const draft = getInteraction(qid);
   const draftName = String(draft.name || state.sessionName || "");
+  const composeControl = canCurrentViewerComment()
+    ? `<button class="author-link" type="button" data-action="toggle-compose" data-id="${escapeHtml(qid)}">Beantworten</button>`
+    : `<span class="muted">Antworten pausiert</span>`;
 
   const details = open
-    ? `<div class="question-detail-line"><span>${escapeHtml(where)}</span><span class="question-meta-sep">·</span><span>${escapeHtml(when)}</span><span class="question-meta-sep">·</span><span>${escapeHtml(authors)}</span><span class="question-meta-sep">·</span><button class="author-link" type="button" data-action="toggle-answers" data-id="${escapeHtml(qid)}">${answerCount} Antworten</button><span class="question-meta-sep">·</span><button class="author-link" type="button" data-action="toggle-compose" data-id="${escapeHtml(qid)}">Beantworten</button></div>`
+    ? `<div class="question-detail-line"><span>${escapeHtml(where)}</span><span class="question-meta-sep">·</span><span>${escapeHtml(when)}</span><span class="question-meta-sep">·</span><span>${authors}</span><span class="question-meta-sep">·</span><button class="author-link" type="button" data-action="toggle-answers" data-id="${escapeHtml(qid)}">${answerCount} Antworten</button><span class="question-meta-sep">·</span>${composeControl}</div>`
     : "";
 
   const answers = open && openAnswers
@@ -220,6 +230,7 @@ function renderQuestionCard(question, inMemberPage) {
 
   const compose = open && openCompose
     ? `<div class="list-comment-form answer-compose">
+         ${canCurrentViewerComment() ? "" : `<p class="muted">Antworten sind derzeit nur für eingeloggte Mitglieder geöffnet.</p>`}
          <textarea class="answer-input" rows="3" data-answer-text="${escapeHtml(qid)}" placeholder="Deine Antwort">${escapeHtml(draft.comment || "")}</textarea>
          <input class="answer-name-input" type="text" data-answer-name="${escapeHtml(qid)}" placeholder="Dein Name" value="${escapeHtml(draftName)}" />
          <div class="actions quiet-actions">
@@ -241,7 +252,7 @@ function renderCommentThread(entry) {
   const by = entry.name ? entry.name : "Anonym";
   const when = entry.updatedAt ? new Date(entry.updatedAt).toLocaleDateString("de-DE") : "";
   const main = String(entry.comment || "").trim()
-    ? `<p class="answer-text">${escapeHtml(entry.comment || "")}</p><p class="muted answer-by">${escapeHtml(by)}${when ? ` · ${escapeHtml(when)}` : ""}</p>`
+    ? `<p class="answer-text">${escapeHtml(entry.comment || "")}</p><p class="muted answer-by">${renderAuthorReference(by)}${when ? ` · ${escapeHtml(when)}` : ""}</p>`
     : "";
   const replies = Array.isArray(entry.replies) ? entry.replies : [];
   const replyBlock = replies.length
@@ -249,7 +260,7 @@ function renderCommentThread(entry) {
         .map((reply) => {
           const rb = reply.name ? reply.name : "Anonym";
           const rw = reply.createdAt ? new Date(reply.createdAt).toLocaleDateString("de-DE") : "";
-          return `<article class="card"><p class="answer-text">${escapeHtml(reply.text || "")}</p><p class="muted answer-by">${escapeHtml(rb)}${rw ? ` · ${escapeHtml(rw)}` : ""}</p></article>`;
+          return `<article class="card"><p class="answer-text">${escapeHtml(reply.text || "")}</p><p class="muted answer-by">${renderAuthorReference(rb)}${rw ? ` · ${escapeHtml(rw)}` : ""}</p></article>`;
         })
         .join("")}</div>`
     : "";
@@ -286,6 +297,10 @@ function renderEvent(event) {
 }
 
 async function saveAnswer(questionId) {
+  if (!canCurrentViewerComment()) {
+    alert("Antworten sind derzeit nur für eingeloggte Mitglieder freigeschaltet.");
+    return;
+  }
   const textInput = app.querySelector(`textarea[data-answer-text="${escapeAttr(questionId)}"]`);
   const nameInput = app.querySelector(`input[data-answer-name="${escapeAttr(questionId)}"]`);
   const text = textInput ? textInput.value.trim() : "";
@@ -339,6 +354,34 @@ function collectMemberAnswers(memberName, comments, questions) {
     }
   }
   return out.sort((a, b) => Number(b.ts || 0) - Number(a.ts || 0));
+}
+
+function findPersonByAuthor(authorName) {
+  const target = normalize(authorName);
+  if (!target) return null;
+  for (let i = 0; i < state.people.length; i += 1) {
+    const person = state.people[i];
+    if (normalize(person.name || "") === target) return person;
+  }
+  return null;
+}
+
+function authorHref(authorName) {
+  const text = String(authorName || "").trim();
+  if (!text) return "/index.html?view=questions";
+  const person = findPersonByAuthor(text);
+  if (person && person.slug) return `/members/${encodeURIComponent(person.slug)}.html`;
+  return `/index.html?view=questions&author=${encodeURIComponent(text)}`;
+}
+
+function renderAuthorReference(authorName) {
+  const text = String(authorName || "").trim() || "Anonym";
+  return `<a class="author-link" href="${escapeHtml(authorHref(text))}">${escapeHtml(text)}</a>`;
+}
+
+function renderAuthorLinks(authors) {
+  const list = Array.isArray(authors) ? authors : [];
+  return list.map((author) => renderAuthorReference(author)).join(", ");
 }
 
 function getCommentsByQuestionMap(comments) {
@@ -425,9 +468,23 @@ async function persistComment(entry) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-    if (!res.ok) return;
+    if (!res.ok) {
+      if (res.status === 403) alert("Antworten sind derzeit nur für eingeloggte Mitglieder freigeschaltet.");
+      return;
+    }
     state.comments = await fetchComments();
   } catch {}
+}
+
+async function fetchSiteSettings() {
+  try {
+    const res = await fetch("/api/site-settings");
+    if (!res.ok) throw new Error("site settings api");
+    const row = await res.json();
+    return normalizeSiteSettings(row);
+  } catch {
+    return { publicCommentingEnabled: true };
+  }
 }
 
 async function fetchSessionName() {
@@ -537,6 +594,16 @@ function normalize(value) {
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
     .trim();
+}
+
+function normalizeSiteSettings(input) {
+  return {
+    publicCommentingEnabled: input && input.publicCommentingEnabled === false ? false : true
+  };
+}
+
+function canCurrentViewerComment() {
+  return Boolean(state.siteSettings.publicCommentingEnabled) || Boolean(String(state.sessionName || "").trim());
 }
 
 function normalizeLinks(input) {

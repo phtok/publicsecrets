@@ -17,6 +17,14 @@ REQUIRED_FILES=(
   "people.json"
 )
 
+OPTIONAL_FILES=(
+  "member_login_tokens.json"
+  "member_login_outbox.json"
+  "site_settings.json"
+  "deleted_items.json"
+  "sessions.json"
+)
+
 for file in "${REQUIRED_FILES[@]}"; do
   if [ ! -f "${BACKUP_DIR}/${file}" ]; then
     echo "Fehlt im Backup: ${BACKUP_DIR}/${file}"
@@ -28,12 +36,21 @@ mkdir -p "${TARGET_DATA_DIR}"
 
 # JSON-Validierung vor dem Ueberschreiben
 for file in "${REQUIRED_FILES[@]}"; do
-  node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'));" "${BACKUP_DIR}/${file}"
+  ./bin/node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'));" "${BACKUP_DIR}/${file}"
 done
 
 for file in "${REQUIRED_FILES[@]}"; do
   cp "${BACKUP_DIR}/${file}" "${TARGET_DATA_DIR}/${file}"
   echo "Restored: ${TARGET_DATA_DIR}/${file}"
+done
+
+for file in "${OPTIONAL_FILES[@]}"; do
+  if [ ! -f "${BACKUP_DIR}/${file}" ]; then
+    continue
+  fi
+  ./bin/node -e "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8'));" "${BACKUP_DIR}/${file}"
+  cp "${BACKUP_DIR}/${file}" "${TARGET_DATA_DIR}/${file}"
+  echo "Restored optional: ${TARGET_DATA_DIR}/${file}"
 done
 
 echo "Restore fertig."

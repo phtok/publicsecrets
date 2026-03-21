@@ -4,3 +4,5 @@ node_modules/
 tmp/
 coverage/
 backups/
+.tools/
+data/sessions.json

@@ -8,7 +8,8 @@
     "sourceUrl": "https://public-secrets.org/seite-1",
     "category": "Initiativen",
     "content": "Gespräche, Forschung und Praxis zu Geburt, Sterben und Tod als Beziehungsgeschehen mit spiritueller Dimension.",
-    "imageUrl": ""
+    "imageUrl": "",
+    "archived": false
   },
   {
     "id": "in-karmische-anschauung-und-uebung",
@@ -23,7 +24,8 @@
     "sourceUrl": "https://public-secrets.org/seite-1",
     "category": "Initiativen",
     "content": "Methodische Praxis zur Anschauung des geistig-seelischen Wesenskerns und zur alltagsnahen Entwicklung von Übungen.",
-    "imageUrl": ""
+    "imageUrl": "",
+    "archived": false
   },
   {
     "id": "in-sozial-aesthetische-dimension",
@@ -36,7 +38,8 @@
     "sourceUrl": "https://public-secrets.org/seite-1",
     "category": "Initiativen",
     "content": "Forschung, Reflexion und Veranstaltungen zum Zwischenmenschlichen und zur Gestaltung sozialer Beziehungen als ästhetische Praxis.",
-    "imageUrl": ""
+    "imageUrl": "",
+    "archived": false
   },
   {
     "id": "in-spirituelle-praxis-und-oeffentlichkeit",
@@ -49,7 +52,8 @@
     "sourceUrl": "https://public-secrets.org/seite-1",
     "category": "Initiativen",
     "content": "Arbeit an Wegen, intellektuelle Reflexion und spirituelle Erfahrung in gesellschaftlich wirksamer Form zu verbinden.",
-    "imageUrl": ""
+    "imageUrl": "",
+    "archived": false
   },
   {
     "id": "in-studie-wiedergeburt-und-verantwortung",
@@ -64,7 +68,8 @@
     "sourceUrl": "https://public-secrets.org/seite-1",
     "category": "Initiativen",
     "content": "Forschungsreihe zur Frage, wie die Perspektive Wiedergeburt Verantwortungsfähigkeit beeinflusst; mit öffentlichen Formaten unter dem Titel 'Karma für Alle?'.",
-    "imageUrl": ""
+    "imageUrl": "",
+    "archived": false
   },
   {
     "id": "in-transhumanismus-trifft-wiedergeburt",
@@ -78,7 +83,8 @@
     "sourceUrl": "https://public-secrets.org/seite-1",
     "category": "Initiativen",
     "content": "Ein zeitgenössischer Dialog zwischen Transhumanismus und Wiedergeburtsperspektive für Fernsehen, Radio und Theater.",
-    "imageUrl": ""
+    "imageUrl": "",
+    "archived": false
   },
   {
     "id": "ort-berlin-amor-fati",
@@ -91,7 +97,8 @@
     ],
     "status": "aktiv",
     "sourceUrl": "https://public-secrets.org",
-    "imageUrl": ""
+    "imageUrl": "",
+    "archived": false
   },
   {
     "id": "ort-hamburg-birrenkovenhaus",
@@ -104,7 +111,8 @@
     ],
     "status": "aktiv",
     "sourceUrl": "https://public-secrets.org",
-    "imageUrl": ""
+    "imageUrl": "",
+    "archived": false
   },
   {
     "id": "ort-st-martin-loidholdhof",
@@ -118,7 +126,8 @@
     ],
     "status": "aktiv",
     "sourceUrl": "https://www.loidholdhof.at",
-    "imageUrl": ""
+    "imageUrl": "",
+    "archived": false
   },
   {
     "id": "ort-basel-unternehmen-mitte",
@@ -132,7 +141,8 @@
     ],
     "status": "aktiv",
     "sourceUrl": "https://www.mitte.ch",
-    "imageUrl": ""
+    "imageUrl": "",
+    "archived": false
   },
   {
     "id": "ort-witten-cafe-leye",
@@ -146,6 +156,7 @@
     ],
     "status": "aktiv",
     "sourceUrl": "https://www.cafeleye.de",
-    "imageUrl": ""
+    "imageUrl": "",
+    "archived": false
   }
 ]

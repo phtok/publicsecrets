@@ -7,7 +7,12 @@
     "portraitUrl": "/assets/portraits/andrea-pfaehler.webp",
     "email": "kontakt@andreapfaehler.ch",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$dd20fecc3afc7dff8299621be79f5e8b$2ba99ad101fbaa413c9cfd99efc87f9849434e14620bfab80167bb832381dc301cd39c3e0b9c27718bd6763c7d507c896127b502cd9f7d0b58a43e086e877bec",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Andreas Bertram",
@@ -17,7 +22,12 @@
     "portraitUrl": "/assets/portraits/andreas-bertram.jpg",
     "email": "bertram.a23@gmail.com",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$f148698e2e51aead5a3a748d81fe8a22$b3cf0b8af0c3e3375a3fc94ab8ffecb25dcab42b9e7170198c19ed0bc54ec22e2217cdb461150395ed65e176e49d970f2e58420b135f07f87da38ecfa8db715d",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Andreas Laudert",
@@ -27,7 +37,12 @@
     "portraitUrl": "/assets/portraits/andreas-laudert.jpg",
     "email": "andreas.laudert@web.de",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$ea0da047bbbd0ef8f6aff6fb54ecdf1c$415af4d9aa7eedb8077405628f4187e6f51c4a10e53a4fc4e6815dbf9f1d55a7976e132c3cfacb7673faa148bc0c9ba662bcfd4a569b1f3d4310bad89ad35d27",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Anke Steinmetz",
@@ -37,7 +52,12 @@
     "portraitUrl": "/assets/portraits/anke-steinmetz.jpg",
     "email": "anke_steinmetz@freenet.de",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$e553b93595c0738324267efb0d2377d5$022e03bcc3df9318c913264c4a5219052dac53060b56a589679efed5fd509ec332f59d7aadab5d34e688a545fd992514159bd3353bafd872594b71710ddae137",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Anna Sophie Brüning",
@@ -47,7 +67,12 @@
     "portraitUrl": "/assets/portraits/anna-sophie-bruening.jpg",
     "email": "asb@posteo.de",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$96d2c4a5d536cc8b1fa807d9ac5ba451$abb0551ea5f288724a92901b6f89b0751fb243df31254793a3481bea5f606d737ff7d81ab8fd1d15aef659a97a26f832f82826df6b560abb028c154f4e6a635b",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Barbara Schiller",
@@ -57,7 +82,12 @@
     "portraitUrl": "/assets/portraits/barbara-schiller.jpg",
     "email": "b.schiller@start-international.org",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$cb61b42db30aaf67c2cf0435c5eecd20$4741283d00d7f6a85f8a4cc314931153cd81efc1ce0a4e940231bcbacbf53477912f882ac8b36d2d41caa767c21da89fcf66fd733c7e45de9f7f6da1185f20a1",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Bodo von Plato",
@@ -67,7 +97,12 @@
     "portraitUrl": "/assets/portraits/bodo-von-plato.jpg",
     "email": "plato@kulturimpuls.org",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$44bae5f18ef1f3e86a759d50c58b0970$84bedae48e803e180033332f8d20ea56264cc1623f6f2d97fc468a12183bd9ca82d9a4b88bfd496d90021c59a20c48486e12bfc2d3f149784ba6dc5b1920c644",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Christiane Leiste",
@@ -77,7 +112,12 @@
     "portraitUrl": "/assets/portraits/christiane-leiste.jpg",
     "email": "info@christianeleiste.com",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$acd4c54afc97e04d633cdc44cb94b94f$3c093357d1778d836c1c1a20e9874232c45b9b0037441643ebe179457579ef8d68e34c8d6edb8a1c7ec7c7ea04f593ad05b56f1e02fc3ce59e9d2f2b64f071d8",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Daniel Häni",
@@ -87,7 +127,12 @@
     "portraitUrl": "/assets/portraits/daniel-hani.jpg",
     "email": "daniel@mitte.ch",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$33bc835ead8f4aa7c766a89424c3d7f5$3897ea7ca3f429dadb15fe147059bc6cad1b789691ed1902db8731b746922216e9630c7afd8940c3840afa50583955d123d7802f3f00837d55dbcfe84b8be0c1",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Elke Schmitter",
@@ -97,7 +142,12 @@
     "portraitUrl": "/assets/portraits/elke-schmitter.jpg",
     "email": "elke.schmitter@freenet.de",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$d89d119854fd90f0d55275f31f94164e$9c1514c67e3d02f44b028527ada97bd39f23421a3ce9d1ee0c9e860dabd7b5d5313e667ef6982eb23d2fce6c459b15f12d94199c99f73feae8eda6d21b744c69",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Emma Bischoff",
@@ -107,7 +157,12 @@
     "portraitUrl": "/assets/portraits/emma-bischoff.jpg",
     "email": "bischoff.emma@posteo.de",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$033214ef29a728fa7330954e7917de72$c76dc1983e2df47d71911d5a8661f6929b6cc9cc94b6bdb9828f881f5415da6da93454315f84f4bc0bf3e742946864e118c7e0a77c95b268a9982e311a8ed13c",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Enno Schmidt",
@@ -117,7 +172,12 @@
     "portraitUrl": "/assets/portraits/enno-schmidt.jpg",
     "email": "mail@enno-schmidt.de",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$551d549ecf4505d261a22a91504bea19$dcc2942a7a3c1cd9c57cfaaf7f83146b89700fbf78bb372e4b039267c217778ee8005e1e3b5a43d5fdddc5171f7f3ea11a6caccf28187127093b6c8d58b9f2b4",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Florian Mende",
@@ -127,7 +187,12 @@
     "portraitUrl": "/assets/portraits/florian-mende.jpg",
     "email": "flo.mende@gmail.com",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$f198d8e1e2c197fd8f1ee492771b8cdb$d0c001fc9614d1881370a128cf9886fc339656d2e1889a763f30d8c4486a038350a65ca4deee126e6a3ee822141d94071ad1b88a430f45a6167361e03b551813",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Frode Barkved",
@@ -137,7 +202,12 @@
     "portraitUrl": "/assets/portraits/frode-barkved.png",
     "email": "frode.barkved@gmail.com",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$3129664a0a2d8ecbf31fa2dd6fce4a53$8b0685f0662937165cd6389746bca39439e149fc231221602219cb5bc1864d061ac3aad4205e774fa920e335a82441b929e4b46d7dc85c9f378d47d4d11d20fb",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Gilda Bartel",
@@ -147,7 +217,12 @@
     "portraitUrl": "/assets/portraits/gilda-bartel.jpg",
     "email": "gildabartel@gmx.de",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$317f983097dac42f61da9440acaf55c1$77a5c728fce0973a4b05f7cb52c14379a5e22c87a232c41c90cb622110e61f49a6fe58b6aa9c4ba6237254c9e99530dda3aa9e75b5417e442bf446589e0a5aa7",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Hannes Weigert",
@@ -157,7 +232,12 @@
     "portraitUrl": "/assets/portraits/hannes-weigert.jpg",
     "email": "hannesw@online.no",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$7600f0ae7f05cef1f496dc3098e0cb25$388376726c973d139251b43c919aed6dd98dd907da342ee3e3cea5e257b514aa4c33caac3bed297ad981cf3b38ae16d8fddb3e735e99c172fa1ed7eb3b6a8c71",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Janne Bierens",
@@ -167,7 +247,12 @@
     "portraitUrl": "/assets/portraits/janne-bierens.jpg",
     "email": "jbierens@live.nl",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$ccbc8b93b6a8e3822a39c2ac24b3689f$e76158e05234dd7b6a7f54698f45d5c72c0d5f835e5b0f15eadca85eb9dd8dec9c738967811705d2543ca6235cc1ee1cb194b5285718f39b559605d82ff08ff2",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Jasminka Stenz",
@@ -177,7 +262,12 @@
     "portraitUrl": "/assets/portraits/jasminka-stenz.jpg",
     "email": "jasminka.stenz@gmail.com",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$a4fdfaa9609b6bc432d48d839e0cb5f5$f027a2f368d8c2c82422248a0678fd5ba66a3c399b7f1e4084904a29721bb1a38780557a993cefdb328138e2f76166d4d404c4579fa93c28a5aac276d8834c06",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Johanna Voigt",
@@ -187,7 +277,12 @@
     "portraitUrl": "/assets/portraits/johanna-voigt.png",
     "email": "johannavoigt@posteo.de",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$91b6f99c015dcc59e2c6f8033828cd4a$6a064b747df27d6b1e8e665d3ca42f18cfaa29af0a05762159b73c26e0a9687bd7bd6a1bfb2054c8682b223c4200957106e4a1242558d485af3daf1de26ad2bc",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Julia Ebner",
@@ -197,7 +292,12 @@
     "portraitUrl": "/assets/portraits/julia-ebner.jpg",
     "email": "j.ebner@posteo.de",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$4a7fdc016c7bbf3333864305829f4b59$b7b7255a757ff30167a88ec88f476047bc31dc602203759666e704ea9de9f268981cfe0ae4191c73d2bf2a34c2a0da07d2bdaa5816861c61ded3493eb95ee89f",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Juliane von Crailsheim",
@@ -207,7 +307,12 @@
     "portraitUrl": "/assets/portraits/juliane-von-crailsheim.jpg",
     "email": "allday@live.de",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$c3378cb33fc5232184d5385486f8a26f$ea600fbf85ea3f7bd6750f7adb4bd8a58895ef8fceb382b12227648f0687f5d9682bd263e90e894f0acb1fb64322c4416c5c2b0362f9e8b4fa447853168da920",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Katrin Sauerland",
@@ -217,7 +322,12 @@
     "portraitUrl": "/assets/portraits/katrin-sauerland.jpg",
     "email": "katrin@sauerland.li",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$d17d9b21cc1a21e25157f502b019522e$714987f5dc47844b8cf0c7983a60d42c068ff0acf7ec556f7b48eff03307001b1fb6beb3e363fb0f2eebbb0e49a54291bc15b9bd777c1ba5482a0fcc5310acae",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Lisa van Holsteijn",
@@ -227,7 +337,12 @@
     "portraitUrl": "/assets/portraits/lisa-van-holsteijn.jpg",
     "email": "lisavanhol@gmail.com",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$25e67fed3f6c5bef08a469278cdfee6d$7b0434e507fe048eb5b3d4a820faa915eeb946f69e891889823c12495d17337dbda8cf2c130982b264ca8543f329b13d1e881b92cfa342ee74e210beed59af18",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Maike Meyer-Oldenburg",
@@ -237,7 +352,12 @@
     "portraitUrl": "/assets/portraits/maike-meyer-oldenburg.jpg",
     "email": "meyer-oldenburg@sensethink.de",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$17323ba4bb8ec2b2fbeec3bd7b289bfa$2b6e9ced47c0531379e5fb158ae6bd995053fcff510cd1b2be568b8bbcc2678282f8992f1b5b555ddc3ef4b38317cffa9a7b080e4f0c207c16d98792aecb05e2",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Martje Brandsma",
@@ -247,7 +367,12 @@
     "portraitUrl": "/assets/portraits/martje-brandsma.jpg",
     "email": "martjebrandsma@hotmail.com",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$70ad7b0021d4c48f2d982fb91766cfa2$e1f3a931c00385e4cf2961b6719cfbecb5930fb68c42893d5a4e52b2566dbb8ce60a499e38beec9c534d97284e6a6bdda89da2d63fc560a6bc049838492712f1",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Philipp Tok",
@@ -260,7 +385,9 @@
     "portraitFocusY": 50,
     "loginEmails": [
       "philipp@anderzeit.com"
-    ]
+    ],
+    "links": [],
+    "archived": false
   },
   {
     "name": "Roos Naves",
@@ -270,7 +397,12 @@
     "portraitUrl": "/assets/portraits/roos-naves.jpg",
     "email": "roos@iona.nl",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$033905d9446eed0c4bebddb2060b830a$d53f66ade12c8988d5ef735623c1a14df35ee7ab4766e9625159c95f8b15eb3830b3e1b0707187a3624a357e675b5fd47334d0de5b6267e18903fd706cd11871",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Selma Bausinger",
@@ -280,7 +412,12 @@
     "portraitUrl": "/assets/portraits/selma-bausinger.jpg",
     "email": "selma.bausinger@gmail.com",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$d940f5525431249dcd8bcb86304f137b$6cb2d1063e48330c5b352ce9607f496253e7b09f13ae6dd8087a35480f7de1201f1e8f6b7ff0977705ea65731d062beb36a268f69c17d467a168609dca532198",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Sibylle Wissmeyer",
@@ -290,7 +427,12 @@
     "portraitUrl": "/assets/portraits/sibylle-wissmeyer.jpg",
     "email": "sywiss@t-online.de",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$8588e251e52610ba8264378c96fc56aa$f3fee14102793511d090d404d60737b936b2034abfce281923e4e4028aee4c23d64bb97a40091d1b2b55ad75fec95d72bd9416961ab318179013a43e076d1beb",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Sigrid Schenk",
@@ -300,7 +442,12 @@
     "portraitUrl": "/assets/portraits/sigrid-schenk.jpg",
     "email": "sigridgeschenk@posteo.de",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$5522a2663f308e6b1db019980a6bf074$5bd1972b605d02a7cb9b6b01b292e96f0d12332a0c12ba40fefff807cc2136d9af53704e8fcb6ed35b5afa34585976849711d470fc67456208e9d33f3e85f09e",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Stephan Nussbaum",
@@ -310,7 +457,12 @@
     "portraitUrl": "/assets/portraits/stephan-nussbaum.png",
     "email": "stephan@cafeleye.de",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$7bcc79e93ad04d1907c0017db13a2b6e$891a296b9c6f072259f18d386b820c4f4fc10117bf5761fc40f39a7ee7ed1f340773464c1ce5c977dfbb4119f54bd81d625ac0c375102b0dfb3956c49333df63",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   },
   {
     "name": "Ua",
@@ -320,6 +472,11 @@
     "portraitUrl": "/assets/portraits/ua.png",
     "email": "uavonverrucht@gmail.com",
     "portraitFocusX": 50,
-    "portraitFocusY": 50
+    "portraitFocusY": 50,
+    "links": [],
+    "archived": false,
+    "passwordHash": "v1$b72567a1650ba19085fb2e6b5007ef5c$89223ef893d0e8cec91e849532122c1316055959fc7ec749b0f1d279181380eae65a53be4dc188ccf0fdb1a43d449d4f651a51c88deb6fc81db133f2ac62d103",
+    "mustChangePassword": true,
+    "initialPasswordSeeded": "2026-03-20T12:38:53.184Z"
   }
 ]

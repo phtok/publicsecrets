@@ -32,7 +32,8 @@ let state = {
   expandedQuestionDetails: {},
   expandedQuestionComments: {},
   expandedQuestionCompose: {},
-  memberName: ""
+  memberName: "",
+  siteSettings: { publicCommentingEnabled: true }
 };
 
 const app = document.getElementById("app");
@@ -125,6 +126,10 @@ document.addEventListener("click", (event) => {
       return;
     }
     if (actionEl.dataset.action === "toggle-comment-compose" || actionEl.dataset.action === "toggle-answer-compose") {
+      if (!canCurrentViewerComment()) {
+        alert("Antworten sind derzeit nur für eingeloggte Mitglieder freigeschaltet.");
+        return;
+      }
       const id = String(actionEl.dataset.id || "");
       if (!id) return;
       state.expandedQuestionCompose[id] = !state.expandedQuestionCompose[id];
@@ -132,6 +137,10 @@ document.addEventListener("click", (event) => {
       return;
     }
     if (actionEl.dataset.action === "save-list-comment") {
+      if (!canCurrentViewerComment()) {
+        alert("Antworten sind derzeit nur für eingeloggte Mitglieder freigeschaltet.");
+        return;
+      }
       const id = String(actionEl.dataset.id || "");
       if (!id) return;
       const textInput = app.querySelector(`textarea[data-comment-text-for="${escapeHtml(id)}"]`);
@@ -143,6 +152,10 @@ document.addEventListener("click", (event) => {
       return;
     }
     if (actionEl.dataset.action === "submit-reply") {
+      if (!canCurrentViewerComment()) {
+        alert("Antworten sind derzeit nur für eingeloggte Mitglieder freigeschaltet.");
+        return;
+      }
       handleQuestionAction("submit-reply", "", actionEl.dataset.id);
       return;
     }
@@ -165,17 +178,27 @@ async function init() {
   }
 
   try {
-    state.questions = await fetchQuestions();
-    state.events = await fetchEvents();
-    state.initiatives = await fetchInitiatives();
-    state.people = await fetchPeople();
-    state.comments = await fetchComments();
+    const [questions, events, initiatives, people, comments, siteSettings] = await Promise.all([
+      fetchQuestions(),
+      fetchEvents(),
+      fetchInitiatives(),
+      fetchPeople(),
+      fetchComments(),
+      fetchSiteSettings()
+    ]);
+    state.questions = questions;
+    state.events = events;
+    state.initiatives = initiatives;
+    state.people = people;
+    state.comments = comments;
+    state.siteSettings = siteSettings;
   } catch {
     state.questions = DEFAULT_QUESTIONS;
     state.events = [];
     state.initiatives = [];
     state.people = [];
     state.comments = [];
+    state.siteSettings = { publicCommentingEnabled: true };
   }
   state.memberName = await fetchMemberName();
   mergeLocalInteractionsIntoComments();
@@ -273,6 +296,17 @@ async function fetchComments() {
   }
 }
 
+async function fetchSiteSettings() {
+  try {
+    const res = await fetch("/api/site-settings");
+    if (!res.ok) throw new Error("Site settings unavailable");
+    const row = await res.json();
+    return normalizeSiteSettings(row);
+  } catch {
+    return { publicCommentingEnabled: true };
+  }
+}
+
 async function fetchMemberName() {
   try {
     const res = await fetch("/api/member/auth/me");
@@ -305,9 +339,27 @@ function handleQuestionAction(action, ratingRaw, idRaw) {
     if (question) {
       const interaction = getInteraction(question.id);
       setQuestionDraft(question.id, {
+        rating: normalizeRating(interaction.rating),
         comment: String(interaction.comment || ""),
         name: String(interaction.name || state.memberName || "")
       });
+    }
+    state.questionStep = "rating";
+    renderQuestionView();
+    return;
+  }
+
+  if (action === "set-rating") {
+    const question = currentQuestion();
+    if (!question) return;
+    const rating = normalizeRating(ratingRaw);
+    setQuestionDraft(question.id, { rating });
+    if (!canCurrentViewerComment()) {
+      saveInteraction(question.id, rating, "", state.memberName || "");
+      clearQuestionDraft(question.id);
+      state.questionStep = "thanks";
+      renderQuestionView();
+      return;
     }
     state.questionStep = "answer";
     renderQuestionView();
@@ -360,9 +412,10 @@ function handleQuestionAction(action, ratingRaw, idRaw) {
     const nameInput = app.querySelector("#commentNameInput");
     const draft = getQuestionDraft(question.id);
     const existing = getInteraction(question.id);
+    const rating = draft.rating !== undefined ? normalizeRating(draft.rating) : normalizeRating(existing.rating);
     const comment = commentInput ? commentInput.value.trim() : String(draft.comment || "");
     const name = nameInput ? nameInput.value.trim() : String(draft.name || "");
-    saveInteraction(question.id, 0, comment, name);
+    saveInteraction(question.id, rating, comment, name);
     clearQuestionDraft(question.id);
     state.questionStep = "thanks";
     if (typeof window !== "undefined") {
@@ -438,14 +491,21 @@ function renderQuestionView() {
 
   const interaction = getInteraction(question.id);
   const draft = getQuestionDraft(question.id);
+  const effectiveRating = draft.rating !== undefined ? normalizeRating(draft.rating) : normalizeRating(interaction.rating);
   const effectiveName = draft.name !== undefined ? String(draft.name || "") : String(interaction.name || "");
   const effectiveComment = draft.comment !== undefined ? String(draft.comment || "") : String(interaction.comment || "");
+  const commentingClosedHint = !canCurrentViewerComment()
+    ? `<p class="muted">Antworten sind derzeit nur für eingeloggte Mitglieder geöffnet.</p>`
+    : "";
+  const ratingBlock = state.questionStep === "rating"
+    ? `<section class="flow-step answer-step"><p class="flow-label">Bewerte die Frage</p><div class="stars">${renderRatingStars(effectiveRating)}</div>${commentingClosedHint}<div class="actions quiet-actions"><button class="quiet-btn" data-action="next" type="button">Überspringen</button></div></section>`
+    : "";
 
   const responseBlock = state.questionStep === "answer"
-    ? `<section class="flow-step answer-step"><textarea id="commentInput" class="answer-input" rows="4" placeholder="Deine Antwort">${escapeHtml(effectiveComment)}</textarea><button class="flow-arrow" data-action="show-name" type="button" aria-label="Weiter">weiter ›</button></section>`
+    ? `<section class="flow-step answer-step">${commentingClosedHint}<textarea id="commentInput" class="answer-input" rows="4" placeholder="Deine Antwort">${escapeHtml(effectiveComment)}</textarea><button class="flow-arrow" data-action="show-name" type="button" aria-label="Weiter">weiter ›</button></section>`
     : state.questionStep === "name"
-      ? `<section class="flow-step answer-step"><textarea id="commentInput" class="answer-input" rows="4" placeholder="Deine Antwort">${escapeHtml(effectiveComment)}</textarea><input id="commentNameInput" class="answer-name-input" type="text" placeholder="Dein Name" value="${escapeHtml(effectiveName || state.memberName || "")}" /><button class="flow-arrow" data-action="submit" type="button" aria-label="Speichern">speichern ›</button></section>`
-    : "";
+      ? `<section class="flow-step answer-step">${commentingClosedHint}<textarea id="commentInput" class="answer-input" rows="4" placeholder="Deine Antwort">${escapeHtml(effectiveComment)}</textarea><input id="commentNameInput" class="answer-name-input" type="text" placeholder="Dein Name" value="${escapeHtml(effectiveName || state.memberName || "")}" /><button class="flow-arrow" data-action="submit" type="button" aria-label="Speichern">speichern ›</button></section>`
+      : "";
 
   const ownQuestionBlock = state.questionStep === "own-question"
     ? `<section class="flow-step answer-step own-question-block"><textarea id="ownQuestionText" class="answer-input own-question-input" rows="4" placeholder="Eigene Frage formulieren"></textarea><input id="ownQuestionAuthor" class="answer-name-input own-question-meta" type="text" placeholder="Autorin" value="${escapeHtml(state.memberName || "")}" /><input id="ownQuestionDate" class="answer-name-input own-question-meta" type="date" /><input id="ownQuestionLocation" class="answer-name-input own-question-meta" type="text" placeholder="Ort" /><button class="flow-arrow" data-action="submit-own-question" type="button" aria-label="Frage senden">senden ›</button><button class="quiet-btn" data-action="back-to-thanks" type="button">Zurück</button></section>`
@@ -460,6 +520,7 @@ function renderQuestionView() {
           <h1 class="question-title" data-action="reveal-rating" title="Frage öffnen">${escapeHtml(question.text)}</h1>
           <button class="question-edge-nav" type="button" data-action="next" aria-label="Nächste Frage">›</button>
         </div>
+        ${ratingBlock}
         ${responseBlock}
         ${ownQuestionBlock}
       </section>
@@ -528,17 +589,27 @@ function renderAuthorView() {
     renderQuestionsView();
     return;
   }
+  const linkedPerson = findPersonByAuthor(author);
+  if (linkedPerson && linkedPerson.slug) {
+    window.location.replace(`/members/${encodeURIComponent(linkedPerson.slug)}.html`);
+    return;
+  }
   const filtered = state.questions.filter((q) =>
     (q.authors || []).some((a) => normalizeName(a) === normalizeName(author))
   );
+  const answers = collectAuthorAnswers(author);
   const rows = buildSortedQuestionRows(state.questionListSort, filtered);
   app.innerHTML = `
     <section>
       <div class="row-between">
-        <h2>Fragen von ${escapeHtml(author)}</h2>
+        <h2>Beitraege von ${escapeHtml(author)}</h2>
         <button class="sort-btn" type="button" data-action="clear-author-filter">Zur Fragenliste</button>
       </div>
-      ${renderQuestionRows(rows, { showAuthorLinks: false })}
+      ${filtered.length ? `<section><h3>Fragen</h3>${renderQuestionRows(rows, { showAuthorLinks: false })}</section>` : `<p class="muted">Noch keine Fragen.</p>`}
+      <section>
+        <h3>Antworten</h3>
+        ${renderAuthorAnswers(answers)}
+      </section>
     </section>
   `;
 }
@@ -588,15 +659,13 @@ function renderQuestionRows(rows, options = {}) {
       const locationText = String(q.location || "").trim() || "Ohne Ort";
       const authorText = (q.authors || []).join(", ");
       const authorLine = showAuthorLinks
-        ? (q.authors || [])
-            .map(
-              (author) =>
-                `<button class="author-link" type="button" data-action="filter-author" data-author="${escapeHtml(author)}">${escapeHtml(author)}</button>`
-            )
-            .join(", ")
+        ? renderAuthorLinks(q.authors || [])
         : escapeHtml(authorText);
+      const composeControl = canCurrentViewerComment()
+        ? `<button class="author-link question-compose-toggle" type="button" data-action="toggle-answer-compose" data-id="${escapeHtml(qid)}">Beantworten</button>`
+        : `<span class="muted">Antworten pausiert</span>`;
       const details = detailOpen
-        ? `<div class="question-detail-line"><span>${escapeHtml(locationText)}</span><span class="question-meta-sep">·</span><span>${dateText ? escapeHtml(dateText) : "Ohne Datum"}</span><span class="question-meta-sep">·</span><span>${authorLine || "Anonym"}</span><span class="question-meta-sep">·</span><button class="author-link question-compose-toggle" type="button" data-action="toggle-comments" data-id="${escapeHtml(qid)}">${answerCount} Antworten</button><span class="question-meta-sep">·</span><button class="author-link question-compose-toggle" type="button" data-action="toggle-answer-compose" data-id="${escapeHtml(qid)}">Beantworten</button></div>`
+        ? `<div class="question-detail-line"><span>${escapeHtml(locationText)}</span><span class="question-meta-sep">·</span><span>${dateText ? escapeHtml(dateText) : "Ohne Datum"}</span><span class="question-meta-sep">·</span><span>${authorLine || "Anonym"}</span><span class="question-meta-sep">·</span><button class="author-link question-compose-toggle" type="button" data-action="toggle-comments" data-id="${escapeHtml(qid)}">${answerCount} Antworten</button><span class="question-meta-sep">·</span>${composeControl}</div>`
         : "";
       const compose = detailOpen && composeOpen
         ? `<div class="list-comment-form answer-compose"><textarea class="answer-input" rows="3" data-comment-text-for="${escapeHtml(qid)}" placeholder="Deine Antwort">${escapeHtml(commentDraft)}</textarea><input class="answer-name-input" type="text" data-comment-name-for="${escapeHtml(qid)}" placeholder="Dein Name" value="${escapeHtml(nameDraft)}" /><div class="actions quiet-actions"><button class="quiet-btn quiet-btn-primary" type="button" data-action="save-list-comment" data-id="${escapeHtml(qid)}">Speichern</button><button class="quiet-btn" type="button" data-action="toggle-comments" data-id="${escapeHtml(qid)}">${answerCount} Antworten</button></div></div>`
@@ -615,12 +684,12 @@ function renderQuestionRows(rows, options = {}) {
                     .map((reply) => {
                       const rb = reply.name ? reply.name : "Anonym";
                       const rw = reply.createdAt ? new Date(reply.createdAt).toLocaleDateString("de-DE") : "";
-                      return `<article class="card"><p class="answer-text">${escapeHtml(reply.text || "")}</p><p class="muted answer-by">${escapeHtml(rb)}${rw ? ` · ${escapeHtml(rw)}` : ""}</p></article>`;
+                      return `<article class="card"><p class="answer-text">${escapeHtml(reply.text || "")}</p><p class="muted answer-by">${renderAuthorReference(rb)}${rw ? ` · ${escapeHtml(rw)}` : ""}</p></article>`;
                     })
                     .join("")}</div>`
                 : "";
               if (!main && !replyList) return "";
-              return `<article class="card">${main}<p class="muted answer-by">${escapeHtml(by)}${when ? ` · ${escapeHtml(when)}` : ""}</p>${replyList}</article>`;
+              return `<article class="card">${main}<p class="muted answer-by">${renderAuthorReference(by)}${when ? ` · ${escapeHtml(when)}` : ""}</p>${replyList}</article>`;
             })
             .join("")}</div>`
           : `<p class="muted">Noch keine Antworten.</p>`)
@@ -786,7 +855,7 @@ function previousQuestion() {
 }
 
 function saveInteraction(questionId, rating, comment, name) {
-  const safeRating = Number(rating) > 0 ? 1 : 0;
+  const safeRating = normalizeRating(rating);
   const saved = {
     questionId,
     rating: safeRating,
@@ -862,7 +931,7 @@ function migrateLegacyInteractions() {
       if (!qid) continue;
       byQuestion[qid] = {
         questionId: qid,
-        rating: Number(row.rating) > 0 ? 1 : 0,
+        rating: normalizeRating(row.rating),
         name: String(row.name || ""),
         comment: String(row.comment || ""),
         updatedAt: row.createdAt || new Date().toISOString()
@@ -893,7 +962,7 @@ function statsByQuestion() {
     if (!target) continue;
     if (Number(row.rating) > 0) {
       target.votes += 1;
-      target.sum += 1;
+      target.sum += normalizeRating(row.rating);
     }
     if (row.comment) target.comments += 1;
     const replies = Array.isArray(row.replies)
@@ -1009,6 +1078,71 @@ function findPersonByAuthor(authorName) {
   return null;
 }
 
+function authorHref(authorName) {
+  const text = String(authorName || "").trim();
+  if (!text) return "/index.html?view=questions";
+  const person = findPersonByAuthor(text);
+  if (person && person.slug) return `/members/${encodeURIComponent(person.slug)}.html`;
+  return `/index.html?view=questions&author=${encodeURIComponent(text)}`;
+}
+
+function renderAuthorReference(authorName) {
+  const text = String(authorName || "").trim() || "Anonym";
+  return `<a class="author-link" href="${escapeHtml(authorHref(text))}">${escapeHtml(text)}</a>`;
+}
+
+function renderAuthorLinks(authors) {
+  const list = Array.isArray(authors) ? authors : [];
+  return list.map((author) => renderAuthorReference(author)).join(", ");
+}
+
+function collectAuthorAnswers(authorName) {
+  const target = normalizeName(authorName);
+  const byQuestion = new Map((state.questions || []).map((q) => [String(q.id || ""), q]));
+  const out = [];
+  const rows = Array.isArray(state.comments) ? state.comments : [];
+  for (let i = 0; i < rows.length; i += 1) {
+    const row = rows[i];
+    if (!row || row.visible === false) continue;
+    const question = byQuestion.get(String(row.questionId || ""));
+    if (normalizeName(row.name || "") === target && String(row.comment || "").trim()) {
+      out.push({
+        id: String(row.id || ""),
+        text: String(row.comment || ""),
+        date: formatShortDate(row.updatedAt),
+        ts: Date.parse(String(row.updatedAt || "")) || 0,
+        questionText: question ? String(question.text || "") : "Frage"
+      });
+    }
+    const replies = Array.isArray(row.replies) ? row.replies : [];
+    for (let j = 0; j < replies.length; j += 1) {
+      const reply = replies[j];
+      if (!reply || reply.visible === false) continue;
+      if (normalizeName(reply.name || "") !== target) continue;
+      if (!String(reply.text || "").trim()) continue;
+      out.push({
+        id: String(reply.id || ""),
+        text: String(reply.text || ""),
+        date: formatShortDate(reply.createdAt),
+        ts: Date.parse(String(reply.createdAt || "")) || 0,
+        questionText: question ? String(question.text || "") : "Frage"
+      });
+    }
+  }
+  return out.sort((a, b) => Number(b.ts || 0) - Number(a.ts || 0));
+}
+
+function renderAuthorAnswers(rows) {
+  const list = Array.isArray(rows) ? rows : [];
+  if (!list.length) return `<p class="muted">Noch keine Antworten.</p>`;
+  return `<div class="list answers-list">${list
+    .map(
+      (entry) =>
+        `<article class="card"><p class="answer-text">${escapeHtml(entry.text || "")}</p><p class="muted answer-by">${escapeHtml(entry.date || "")}</p><p class="muted">${escapeHtml(entry.questionText || "Frage")}</p></article>`
+    )
+    .join("")}</div>`;
+}
+
 function initiativeHref(initiative) {
   const id = String(initiative && initiative.id ? initiative.id : "").trim();
   if (id) return `/initiatives.html?id=${encodeURIComponent(id)}`;
@@ -1091,7 +1225,7 @@ function upsertCommentInState(entry) {
     id: String(entry.id || ""),
     questionId: String(entry.questionId || "").trim(),
     browserId: String(entry.browserId || state.interactions.browserId || "").trim(),
-    rating: Number(entry.rating) > 0 ? 1 : 0,
+    rating: normalizeRating(entry.rating),
     name: String(entry.name || "").trim(),
     comment: String(entry.comment || "").trim(),
     updatedAt: String(entry.updatedAt || new Date().toISOString()),
@@ -1341,11 +1475,36 @@ function normalizePortraitFocus(value) {
   return Math.max(0, Math.min(100, Math.round(n)));
 }
 
+function normalizeSiteSettings(input) {
+  return {
+    publicCommentingEnabled: input && input.publicCommentingEnabled === false ? false : true
+  };
+}
+
+function normalizeRating(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return 0;
+  return Math.max(1, Math.min(5, Math.round(num)));
+}
+
+function canCurrentViewerComment() {
+  return Boolean(state.siteSettings.publicCommentingEnabled) || Boolean(String(state.memberName || "").trim());
+}
+
+function renderRatingStars(selected) {
+  const safeSelected = normalizeRating(selected);
+  let markup = "";
+  for (let value = 1; value <= 5; value += 1) {
+    markup += `<button class="star ${value <= safeSelected ? "active" : ""}" type="button" data-action="set-rating" data-rating="${value}" aria-label="${value} Sterne">★</button>`;
+  }
+  return markup;
+}
+
 async function persistComment(entry) {
   const payload = {
     questionId: String(entry.questionId || ""),
     browserId: String(entry.browserId || state.interactions.browserId || ""),
-    rating: Number(entry.rating) > 0 ? 1 : 0,
+    rating: normalizeRating(entry.rating),
     name: String(entry.name || ""),
     comment: String(entry.comment || "")
   };
@@ -1355,7 +1514,10 @@ async function persistComment(entry) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-    if (!res.ok) return;
+    if (!res.ok) {
+      if (res.status === 403) alert("Antworten sind derzeit nur für eingeloggte Mitglieder freigeschaltet.");
+      return;
+    }
     const saved = await res.json();
     upsertCommentInState(saved);
     if (state.view === "questions" || state.view === "author") render();
@@ -1375,7 +1537,10 @@ async function submitReply(commentId, text, name) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
     });
-    if (!res.ok) return;
+    if (!res.ok) {
+      if (res.status === 403) alert("Antworten sind derzeit nur für eingeloggte Mitglieder freigeschaltet.");
+      return;
+    }
     const updated = await res.json();
     upsertCommentInState(updated);
     if (state.view === "questions" || state.view === "author") render();

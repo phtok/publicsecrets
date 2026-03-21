@@ -29,6 +29,7 @@ Backups liegen in `backups/live/<timestamp>/` mit:
 - `events.json`
 - `initiatives.json`
 - `people.json`
+- `site_settings.json`
 - `manifest.json`
 - `SHA256SUMS`
 
@@ -48,11 +49,11 @@ Dann Service neu starten/deployen.
 5. Nach Migration erneut Backup erzeugen.
 
 ## Naechste Schritte (Prioritaet)
-1. Staging-Umgebung anlegen (eigene Render-Service-URL).
-2. Export/Import-Endpunkte fuer Admin ergaenzen (ein Klick Backup/Restore).
-3. Datenbank-Migration planen: JSON -> Postgres (stabil fuer 7+ Jahre Wachstum).
-4. Schema versionieren (`schema_version`) und idempotente Migrationsskripte einführen.
-5. Automatisierte Backups einrichten (taeglich) und extern speichern (z. B. GitHub private repo oder S3-kompatibel).
+1. Automatisierte Backups taeglich und extern speichern.
+2. Admin-Export/Import fuer komplettes Backup und kompletten Import ergaenzen.
+3. Staging-Umgebung anlegen (eigene Render-Service-URL).
+4. Datenbank-Migration planen: JSON -> Postgres.
+5. Schema versionieren (`schema_version`) und idempotente Migrationsskripte einfuehren.
 6. Monitoring/Alerting fuer 5xx-Fehler aktivieren.
 
 ## Erinnerung/Arbeitsrhythmus

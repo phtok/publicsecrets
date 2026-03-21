@@ -1,2 +1,30 @@
 #!/bin/sh
-exec /tmp/node-v24.13.1-darwin-arm64/bin/node "$@"
+set -eu
+
+if [ -n "${PUBLIC_SECRETS_NODE_BIN:-}" ] && [ -x "${PUBLIC_SECRETS_NODE_BIN}" ]; then
+  exec "${PUBLIC_SECRETS_NODE_BIN}" "$@"
+fi
+
+SCRIPT_DIR="$(CDPATH= cd -- "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(CDPATH= cd -- "${SCRIPT_DIR}/.." && pwd)"
+
+for candidate in \
+  "${ROOT_DIR}/.tools/node/bin/node" \
+  "${ROOT_DIR}/.node/bin/node" \
+  "/opt/homebrew/bin/node" \
+  "/usr/local/bin/node" \
+  "/opt/local/bin/node" \
+  "/private/tmp/node-v24.13.1-darwin-arm64/bin/node" \
+  "/tmp/node-v24.13.1-darwin-arm64/bin/node"
+do
+  if [ -x "${candidate}" ]; then
+    exec "${candidate}" "$@"
+  fi
+done
+
+if command -v node >/dev/null 2>&1; then
+  exec "$(command -v node)" "$@"
+fi
+
+echo "Kein nutzbares Node-Binary gefunden. Setze PUBLIC_SECRETS_NODE_BIN oder installiere Node lokal." >&2
+exit 127

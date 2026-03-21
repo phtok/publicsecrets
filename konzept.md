@@ -1,5 +1,7 @@
 # Konzept: Public Secrets – Die Frage
 
+Hinweis: Dieses Dokument beschreibt das Ursprungskonzept. Verbindlich fuer den aktuellen Produktstand sind die spaeteren Festlegungen in `docs/decision-log.md`.
+
 ## 1. Zielbild
 Die Website „Public Secrets – Die Frage“ ist ein redaktionell gepflegtes, interaktives Frage-Archiv für das Gesprächsformat **„Wahrnehmungsorgan“** des Public Secrets Ensembles.
 

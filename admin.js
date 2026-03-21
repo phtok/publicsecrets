@@ -10,6 +10,7 @@ const qId = document.getElementById("qId");
 const qText = document.getElementById("qText");
 const qDate = document.getElementById("qDate");
 const qLocation = document.getElementById("qLocation");
+const qArchived = document.getElementById("qArchived");
 const qAuthors = document.getElementById("qAuthors");
 const saveQuestionBtn = document.getElementById("saveQuestionBtn");
 const resetQuestionBtn = document.getElementById("resetQuestionBtn");
@@ -30,6 +31,7 @@ const eventList = document.getElementById("eventList");
 const iId = document.getElementById("iId");
 const iTitle = document.getElementById("iTitle");
 const iStatus = document.getElementById("iStatus");
+const iArchived = document.getElementById("iArchived");
 const iDescription = document.getElementById("iDescription");
 const iHosts = document.getElementById("iHosts");
 const iSourceUrl = document.getElementById("iSourceUrl");
@@ -43,15 +45,19 @@ const eCount = document.getElementById("eCount");
 const iCount = document.getElementById("iCount");
 const pCount = document.getElementById("pCount");
 const cCount = document.getElementById("cCount");
+const dCount = document.getElementById("dCount");
 const commentList = document.getElementById("commentList");
+const publicCommentingEnabled = document.getElementById("publicCommentingEnabled");
 const loginOutboxList = document.getElementById("loginOutboxList");
 const refreshOutboxBtn = document.getElementById("refreshOutboxBtn");
+const deletedItemList = document.getElementById("deletedItemList");
 
 const pId = document.getElementById("pId");
 const pName = document.getElementById("pName");
 const pSlug = document.getElementById("pSlug");
 const pEmail = document.getElementById("pEmail");
 const pRole = document.getElementById("pRole");
+const pArchived = document.getElementById("pArchived");
 const pPortraitUrl = document.getElementById("pPortraitUrl");
 const pPortraitFocusX = document.getElementById("pPortraitFocusX");
 const pPortraitFocusY = document.getElementById("pPortraitFocusY");
@@ -70,7 +76,9 @@ let cache = {
   initiatives: [],
   people: [],
   comments: [],
-  loginOutbox: []
+  loginOutbox: [],
+  deletedItems: [],
+  siteSettings: { publicCommentingEnabled: true }
 };
 
 init();
@@ -111,6 +119,7 @@ saveQuestionBtn.addEventListener("click", async () => {
     text: qText.value.trim(),
     createdAt: qDate.value ? `${qDate.value}T12:00:00.000Z` : "",
     location: qLocation.value.trim(),
+    archived: qArchived.checked,
     authors: parseCsv(qAuthors.value)
   };
   const id = qId.value.trim();
@@ -161,6 +170,7 @@ saveInitiativeBtn.addEventListener("click", async () => {
   const body = {
     title: iTitle.value.trim(),
     status: iStatus.value.trim() || "aktiv",
+    archived: iArchived.checked,
     description: iDescription.value.trim(),
     hosts: parseCsv(iHosts.value),
     sourceUrl: iSourceUrl.value.trim()
@@ -188,6 +198,7 @@ savePersonBtn.addEventListener("click", async () => {
     slug: pSlug.value.trim(),
     email: pEmail.value.trim(),
     role: pRole.value.trim(),
+    archived: pArchived.checked,
     portraitUrl: pPortraitUrl.value.trim(),
     portraitFocusX: normalizeFocus(pPortraitFocusX ? pPortraitFocusX.value : 50),
     portraitFocusY: normalizeFocus(pPortraitFocusY ? pPortraitFocusY.value : 50),
@@ -236,6 +247,7 @@ questionList.addEventListener("click", async (event) => {
     qText.value = row.text || "";
     qDate.value = row.createdAt ? String(row.createdAt).slice(0, 10) : "";
     qLocation.value = row.location || "";
+    qArchived.checked = Boolean(row.archived);
     qAuthors.value = (row.authors || []).join(", ");
     focusWithoutScroll(qText);
     return;
@@ -245,6 +257,19 @@ questionList.addEventListener("click", async (event) => {
     if (!confirm("Frage wirklich löschen?")) return;
     const res = await fetch(`/api/questions/${id}`, { method: "DELETE" });
     if (!res.ok) return alert("Löschen fehlgeschlagen");
+    await refreshQuestions();
+    return;
+  }
+
+  if (action === "toggle-question-archived") {
+    const row = cache.questions.find((q) => q.id === id);
+    if (!row) return;
+    const res = await fetch(`/api/questions/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ archived: !row.archived })
+    });
+    if (!res.ok) return alert("Archivstatus konnte nicht geändert werden");
     await refreshQuestions();
   }
 });
@@ -275,6 +300,19 @@ eventList.addEventListener("click", async (event) => {
     const res = await fetch(`/api/events/${id}`, { method: "DELETE" });
     if (!res.ok) return alert("Löschen fehlgeschlagen");
     await refreshEvents();
+    return;
+  }
+
+  if (action === "toggle-event-archived") {
+    const row = cache.events.find((e) => e.id === id);
+    if (!row) return;
+    const res = await fetch(`/api/events/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ archived: !row.archived })
+    });
+    if (!res.ok) return alert("Archivstatus konnte nicht geändert werden");
+    await refreshEvents();
   }
 });
 
@@ -290,6 +328,7 @@ initiativeList.addEventListener("click", async (event) => {
     iId.value = row.id;
     iTitle.value = row.title || "";
     iStatus.value = row.status || "";
+    iArchived.checked = Boolean(row.archived);
     iDescription.value = row.description || "";
     iHosts.value = (row.hosts || []).join(", ");
     iSourceUrl.value = row.sourceUrl || "";
@@ -301,6 +340,19 @@ initiativeList.addEventListener("click", async (event) => {
     if (!confirm("Initiative wirklich löschen?")) return;
     const res = await fetch(`/api/initiatives/${id}`, { method: "DELETE" });
     if (!res.ok) return alert("Löschen fehlgeschlagen");
+    await refreshInitiatives();
+    return;
+  }
+
+  if (action === "toggle-initiative-archived") {
+    const row = cache.initiatives.find((i) => i.id === id);
+    if (!row) return;
+    const res = await fetch(`/api/initiatives/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ archived: !row.archived })
+    });
+    if (!res.ok) return alert("Archivstatus konnte nicht geändert werden");
     await refreshInitiatives();
   }
 });
@@ -319,6 +371,7 @@ personList.addEventListener("click", async (event) => {
     pSlug.value = row.slug || "";
     pEmail.value = row.email || "";
     pRole.value = row.role || "";
+    pArchived.checked = Boolean(row.archived);
     pPortraitUrl.value = row.portraitUrl || "";
     if (pPortraitFocusX) pPortraitFocusX.value = String(normalizeFocus(row.portraitFocusX));
     if (pPortraitFocusY) pPortraitFocusY.value = String(normalizeFocus(row.portraitFocusY));
@@ -333,6 +386,19 @@ personList.addEventListener("click", async (event) => {
     if (!confirm("Mitglied wirklich löschen?")) return;
     const res = await fetch(`/api/people/${id}`, { method: "DELETE" });
     if (!res.ok) return alert("Löschen fehlgeschlagen");
+    await refreshPeople();
+    return;
+  }
+
+  if (action === "toggle-person-archived") {
+    const row = cache.people.find((p) => String(p.slug || "") === id);
+    if (!row) return;
+    const res = await fetch(`/api/people/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ archived: !row.archived })
+    });
+    if (!res.ok) return alert("Archivstatus konnte nicht geändert werden");
     await refreshPeople();
   }
 });
@@ -374,7 +440,7 @@ commentList.addEventListener("click", async (event) => {
     const body = {
       name: nameInput ? nameInput.value : "",
       comment: textInput ? textInput.value : "",
-      rating: ratingInput && ratingInput.checked ? 1 : 0,
+      rating: ratingInput ? normalizeRating(ratingInput.value) : 0,
       visible: visibleInput ? visibleInput.checked : true
     };
     const res = await fetch(`/api/comments/${encodeURIComponent(commentId)}`, {
@@ -462,19 +528,66 @@ if (loginOutboxList) {
   });
 }
 
+if (deletedItemList) {
+  deletedItemList.addEventListener("click", async (event) => {
+    const btn = event.target.closest("button[data-action]");
+    if (!btn) return;
+    if (btn.dataset.action !== "restore-deleted-item") return;
+    const id = String(btn.dataset.id || "");
+    if (!id) return;
+    if (!confirm("Eintrag aus dem Papierkorb wiederherstellen?")) return;
+    const res = await fetch(`/api/deleted-items/${encodeURIComponent(id)}/restore`, {
+      method: "PUT"
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      return alert(String(err.error || "Wiederherstellung fehlgeschlagen"));
+    }
+    await refreshAll();
+  });
+}
+
+if (publicCommentingEnabled) {
+  publicCommentingEnabled.addEventListener("change", async () => {
+    const res = await fetch("/api/site-settings", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ publicCommentingEnabled: publicCommentingEnabled.checked })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      alert(String(err.error || "Kommentarschalter konnte nicht gespeichert werden"));
+      await refreshSiteSettings();
+      return;
+    }
+    cache.siteSettings = await res.json();
+    publicCommentingEnabled.checked = Boolean(cache.siteSettings.publicCommentingEnabled);
+  });
+}
+
 async function refreshAll() {
-  await Promise.all([refreshQuestions(), refreshEvents(), refreshInitiatives(), refreshPeople(), refreshComments(), refreshOutbox()]);
+  await Promise.all([
+    refreshQuestions(),
+    refreshEvents(),
+    refreshInitiatives(),
+    refreshPeople(),
+    refreshComments(),
+    refreshOutbox(),
+    refreshDeletedItems(),
+    refreshSiteSettings()
+  ]);
   renderComments();
   refreshCounts();
 }
 
 async function refreshQuestions() {
-  cache.questions = await apiGet("/api/questions");
+  cache.questions = await apiGet("/api/questions?includeArchived=true");
   questionList.innerHTML = cache.questions
     .map((q) => {
       const d = q.createdAt ? String(q.createdAt).slice(0, 10) : "";
       const where = q.location ? ` · ${escapeHtml(q.location)}` : "";
-      return `<article class="card"><h3>${escapeHtml(q.text || "")}</h3><p class="muted">${escapeHtml(d)}${where} - ${escapeHtml((q.authors || []).join(", "))}</p><div class="actions"><button class="secondary" data-action="edit-question" data-id="${q.id}">Bearbeiten</button><button class="secondary" data-action="delete-question" data-id="${q.id}">Löschen</button></div></article>`;
+      const stateLabel = q.archived ? "Archiv" : "Live";
+      return `<article class="card"><h3>${escapeHtml(q.text || "")}</h3><p class="muted">${escapeHtml(d)}${where} - ${escapeHtml((q.authors || []).join(", "))}</p><p class="muted">Status: ${stateLabel}</p><div class="actions"><button class="secondary" data-action="edit-question" data-id="${q.id}">Bearbeiten</button><button class="secondary" data-action="toggle-question-archived" data-id="${q.id}">${q.archived ? "Wiederherstellen" : "Archivieren"}</button><button class="secondary" data-action="delete-question" data-id="${q.id}">Löschen</button></div></article>`;
     })
     .join("");
   renderComments();
@@ -482,32 +595,33 @@ async function refreshQuestions() {
 }
 
 async function refreshEvents() {
-  cache.events = await apiGet("/api/events");
+  cache.events = await apiGet("/api/events?includeArchived=true");
   cache.events.sort((a, b) => String(b.date || "").localeCompare(String(a.date || "")));
   eventList.innerHTML = cache.events
     .map((e) => {
       const hosts = (e.hosts || []).length ? `<p class="muted">Hosts: ${escapeHtml((e.hosts || []).join(", "))}</p>` : "";
       const source = e.sourceUrl ? `<p><a class="member-link" target="_blank" rel="noopener noreferrer" href="${escapeHtml(e.sourceUrl)}">Quelle</a></p>` : "";
-      return `<article class="card"><h3>${escapeHtml(e.title || "")}</h3><p class="muted">${escapeHtml(e.date || "")} - ${escapeHtml(e.location || "")}</p>${hosts}<p>${escapeHtml(e.description || "")}</p>${source}<p class="muted">${e.archived ? "Archiv" : "Aktiv"}</p><div class="actions"><button class="secondary" data-action="edit-event" data-id="${e.id}">Bearbeiten</button><button class="secondary" data-action="delete-event" data-id="${e.id}">Löschen</button></div></article>`;
+      return `<article class="card"><h3>${escapeHtml(e.title || "")}</h3><p class="muted">${escapeHtml(e.date || "")} - ${escapeHtml(e.location || "")}</p>${hosts}<p>${escapeHtml(e.description || "")}</p>${source}<p class="muted">${e.archived ? "Archiv" : "Live"}</p><div class="actions"><button class="secondary" data-action="edit-event" data-id="${e.id}">Bearbeiten</button><button class="secondary" data-action="toggle-event-archived" data-id="${e.id}">${e.archived ? "Wiederherstellen" : "Archivieren"}</button><button class="secondary" data-action="delete-event" data-id="${e.id}">Löschen</button></div></article>`;
     })
     .join("");
   refreshCounts();
 }
 
 async function refreshInitiatives() {
-  cache.initiatives = await apiGet("/api/initiatives");
+  cache.initiatives = await apiGet("/api/initiatives?includeArchived=true");
   initiativeList.innerHTML = cache.initiatives
     .map((item) => {
       const hosts = (item.hosts || []).length ? `<p class="muted">Hosts: ${escapeHtml((item.hosts || []).join(", "))}</p>` : "";
       const source = item.sourceUrl ? `<p><a class="member-link" target="_blank" rel="noopener noreferrer" href="${escapeHtml(item.sourceUrl)}">Quelle</a></p>` : "";
-      return `<article class="card"><h3>${escapeHtml(item.title || "")}</h3><p class="muted">Status: ${escapeHtml(item.status || "")}</p>${hosts}<p>${escapeHtml(item.description || "")}</p>${source}<div class="actions"><button class="secondary" data-action="edit-initiative" data-id="${item.id}">Bearbeiten</button><button class="secondary" data-action="delete-initiative" data-id="${item.id}">Löschen</button></div></article>`;
+      const stateLabel = item.archived ? "Archiv" : "Live";
+      return `<article class="card"><h3>${escapeHtml(item.title || "")}</h3><p class="muted">Status: ${escapeHtml(item.status || "")} · ${stateLabel}</p>${hosts}<p>${escapeHtml(item.description || "")}</p>${source}<div class="actions"><button class="secondary" data-action="edit-initiative" data-id="${item.id}">Bearbeiten</button><button class="secondary" data-action="toggle-initiative-archived" data-id="${item.id}">${item.archived ? "Wiederherstellen" : "Archivieren"}</button><button class="secondary" data-action="delete-initiative" data-id="${item.id}">Löschen</button></div></article>`;
     })
     .join("");
   refreshCounts();
 }
 
 async function refreshPeople() {
-  cache.people = await apiGet("/api/people");
+  cache.people = await apiGet("/api/people?includeArchived=true");
   cache.people.sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "de"));
   personList.innerHTML = cache.people
     .map((person) => {
@@ -517,7 +631,8 @@ async function refreshPeople() {
       const portrait = person.portraitUrl
         ? `<p><a class="member-link" target="_blank" rel="noopener noreferrer" href="${escapeHtml(person.portraitUrl)}">Portrait öffnen</a></p>`
         : "";
-      return `<article class="card"><h3>${escapeHtml(person.name || "")}</h3><p class="muted">${escapeHtml(person.role || "")}</p><p class="muted">Slug: ${escapeHtml(person.slug || "")}</p><p class="muted">E-Mail: ${escapeHtml(person.email || "")}</p><p class="muted">Passwort: ${person.hasPassword ? "gesetzt" : "nicht gesetzt"}</p>${links}${portrait}<div class="actions"><button class="secondary" data-action="edit-person" data-id="${escapeHtml(person.slug || "")}">Bearbeiten</button><button class="secondary" data-action="delete-person" data-id="${escapeHtml(person.slug || "")}">Löschen</button></div></article>`;
+      const stateLabel = person.archived ? "Archiv" : "Live";
+      return `<article class="card"><h3>${escapeHtml(person.name || "")}</h3><p class="muted">${escapeHtml(person.role || "")}</p><p class="muted">Slug: ${escapeHtml(person.slug || "")}</p><p class="muted">E-Mail: ${escapeHtml(person.email || "")}</p><p class="muted">Passwort: ${person.hasPassword ? "gesetzt" : "nicht gesetzt"} · ${stateLabel}</p>${links}${portrait}<div class="actions"><button class="secondary" data-action="edit-person" data-id="${escapeHtml(person.slug || "")}">Bearbeiten</button><button class="secondary" data-action="toggle-person-archived" data-id="${escapeHtml(person.slug || "")}">${person.archived ? "Wiederherstellen" : "Archivieren"}</button><button class="secondary" data-action="delete-person" data-id="${escapeHtml(person.slug || "")}">Löschen</button></div></article>`;
     })
     .join("");
   refreshCounts();
@@ -529,6 +644,13 @@ async function refreshComments() {
   cache.comments.sort((a, b) => Date.parse(String(b.updatedAt || "")) - Date.parse(String(a.updatedAt || "")));
   renderComments();
   refreshCounts();
+}
+
+async function refreshSiteSettings() {
+  cache.siteSettings = await apiGet("/api/site-settings");
+  if (publicCommentingEnabled) {
+    publicCommentingEnabled.checked = Boolean(cache.siteSettings && cache.siteSettings.publicCommentingEnabled);
+  }
 }
 
 async function refreshOutbox() {
@@ -549,6 +671,34 @@ async function refreshOutbox() {
     })
     .join("");
   if (!rows.length) loginOutboxList.innerHTML = `<p class="muted">Keine Fallback-Links vorhanden.</p>`;
+}
+
+async function refreshDeletedItems() {
+  if (!deletedItemList) return;
+  cache.deletedItems = await apiGet("/api/deleted-items");
+  const rows = Array.isArray(cache.deletedItems) ? cache.deletedItems : [];
+  deletedItemList.innerHTML = rows
+    .map((row) => {
+      const when = row.deletedAt ? new Date(row.deletedAt).toLocaleString("de-DE") : "";
+      const actor = formatDeletedActor(row.actor);
+      const restoredWhen = row.restoredAt ? new Date(row.restoredAt).toLocaleString("de-DE") : "";
+      const restoredBy = formatDeletedActor(row.restoredBy);
+      const summary = row.label ? escapeHtml(row.label) : "Ohne Vorschau";
+      const type = escapeHtml(String(row.entityType || ""));
+      const entityId = escapeHtml(String(row.entityId || ""));
+      const canRestore = canRestoreDeletedItem(row);
+      const restoreInfo = row.restoredAt
+        ? `<p class="muted">Wiederhergestellt: ${escapeHtml(restoredWhen)}${restoredBy ? ` · ${escapeHtml(restoredBy)}` : ""}</p>`
+        : "";
+      const actions = canRestore
+        ? `<div class="actions"><button class="secondary" type="button" data-action="restore-deleted-item" data-id="${escapeAttr(row.id || "")}">Wiederherstellen</button></div>`
+        : "";
+      const snapshot = `<details><summary>Snapshot</summary><pre>${escapeHtml(JSON.stringify(row.snapshot || {}, null, 2))}</pre></details>`;
+      return `<article class="card"><h3>${type || "Eintrag"}</h3><p class="muted">${escapeHtml(when)}${actor ? ` · ${escapeHtml(actor)}` : ""}</p><p class="muted">ID: ${entityId}</p><p>${summary}</p>${restoreInfo}${actions}${snapshot}</article>`;
+    })
+    .join("");
+  if (!rows.length) deletedItemList.innerHTML = `<p class="muted">Noch keine gelöschten Einträge protokolliert.</p>`;
+  refreshCounts();
 }
 
 function renderComments() {
@@ -591,7 +741,8 @@ function renderComments() {
         <input type="text" data-comment-name="${escapeAttr(comment.id || "")}" value="${escapeAttr(comment.name || "")}" />
         <label>Kommentar</label>
         <textarea rows="3" data-comment-text="${escapeAttr(comment.id || "")}">${escapeHtml(comment.comment || "")}</textarea>
-        <div class="checkbox-inline"><input type="checkbox" data-comment-rating="${escapeAttr(comment.id || "")}" ${Number(comment.rating) > 0 ? "checked" : ""} /><label>Resonanz</label></div>
+        <label>Bewertung (0-5)</label>
+        <input type="number" min="0" max="5" step="1" data-comment-rating="${escapeAttr(comment.id || "")}" value="${escapeAttr(normalizeRating(comment.rating))}" />
         <div class="checkbox-inline"><input type="checkbox" data-comment-visible="${escapeAttr(comment.id || "")}" ${visible ? "checked" : ""} /><label>Sichtbar</label></div>
         <div class="actions">
           <button class="secondary" data-action="save-comment" data-comment-id="${escapeAttr(comment.id || "")}">Speichern</button>
@@ -611,6 +762,7 @@ function refreshCounts() {
   iCount.textContent = String(cache.initiatives.length);
   pCount.textContent = String(cache.people.length);
   if (cCount) cCount.textContent = String(cache.comments.length);
+  if (dCount) dCount.textContent = String(Array.isArray(cache.deletedItems) ? cache.deletedItems.filter((row) => !row.restoredAt).length : 0);
 }
 
 function parseCsv(value) {
@@ -625,7 +777,14 @@ function resetQuestionForm() {
   qText.value = "";
   qDate.value = "";
   qLocation.value = "";
+  qArchived.checked = false;
   qAuthors.value = "";
+}
+
+function normalizeRating(value) {
+  const num = Number(value);
+  if (!Number.isFinite(num) || num <= 0) return 0;
+  return Math.max(1, Math.min(5, Math.round(num)));
 }
 
 function resetEventForm() {
@@ -643,6 +802,7 @@ function resetInitiativeForm() {
   iId.value = "";
   iTitle.value = "";
   iStatus.value = "";
+  iArchived.checked = false;
   iDescription.value = "";
   iHosts.value = "";
   iSourceUrl.value = "";
@@ -654,6 +814,7 @@ function resetPersonForm() {
   pSlug.value = "";
   pEmail.value = "";
   pRole.value = "";
+  pArchived.checked = false;
   pPortraitUrl.value = "";
   if (pPortraitFocusX) pPortraitFocusX.value = "50";
   if (pPortraitFocusY) pPortraitFocusY.value = "50";
@@ -762,6 +923,22 @@ function escapeAttr(value) {
     .replace(/"/g, "&quot;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;");
+}
+
+function formatDeletedActor(actor) {
+  if (!actor || typeof actor !== "object") return "";
+  const role = String(actor.role || "").trim();
+  const identity = String(actor.identity || "").trim();
+  const memberName = String(actor.memberName || "").trim();
+  if (role === "editor") return identity ? `Redaktion: ${identity}` : "Redaktion";
+  if (role === "member") return memberName || identity ? `Mitglied: ${memberName || identity}` : "Mitglied";
+  return identity || memberName || "";
+}
+
+function canRestoreDeletedItem(row) {
+  if (!row || row.restoredAt) return false;
+  const type = String(row.entityType || "").trim();
+  return type === "question" || type === "event" || type === "initiative" || type === "person";
 }
 
 function escapeHtml(str) {

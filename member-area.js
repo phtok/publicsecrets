@@ -15,6 +15,7 @@ const portraitFocusXInput = document.getElementById("portraitFocusX");
 const portraitFocusYInput = document.getElementById("portraitFocusY");
 const portraitFocusPreview = document.getElementById("portraitFocusPreview");
 const profilePasswordInput = document.getElementById("profilePassword");
+const profileArchivedInput = document.getElementById("profileArchived");
 const linksInput = document.getElementById("links");
 const bioInput = document.getElementById("bio");
 const saveProfileBtn = document.getElementById("saveProfileBtn");
@@ -23,6 +24,7 @@ const qId = document.getElementById("qId");
 const qText = document.getElementById("qText");
 const qDate = document.getElementById("qDate");
 const qLocation = document.getElementById("qLocation");
+const qArchived = document.getElementById("qArchived");
 const saveQuestionBtn = document.getElementById("saveQuestionBtn");
 const resetQuestionBtn = document.getElementById("resetQuestionBtn");
 const questionList = document.getElementById("questionList");
@@ -31,6 +33,7 @@ const iId = document.getElementById("iId");
 const iTitle = document.getElementById("iTitle");
 const iStatus = document.getElementById("iStatus");
 const iDescription = document.getElementById("iDescription");
+const iArchived = document.getElementById("iArchived");
 const iImageUrl = document.getElementById("iImageUrl");
 const iImageFile = document.getElementById("iImageFile");
 const uploadInitiativeImageBtn = document.getElementById("uploadInitiativeImageBtn");
@@ -244,6 +247,7 @@ async function saveProfile() {
     portraitUrl: portraitUrlInput.value.trim(),
     portraitFocusX: normalizeFocus(portraitFocusXInput ? portraitFocusXInput.value : 50),
     portraitFocusY: normalizeFocus(portraitFocusYInput ? portraitFocusYInput.value : 50),
+    archived: profileArchivedInput ? profileArchivedInput.checked : false,
     links: parseLines(linksInput.value),
     bio: bioInput.value.trim()
   };
@@ -286,7 +290,8 @@ saveQuestionBtn.addEventListener("click", async () => {
   const body = {
     text: qText.value.trim(),
     createdAt: qDate.value ? `${qDate.value}T12:00:00.000Z` : "",
-    location: qLocation.value.trim()
+    location: qLocation.value.trim(),
+    archived: qArchived.checked
   };
   const id = qId.value.trim();
   const url = id ? `/api/member/questions/${id}` : "/api/member/questions";
@@ -308,6 +313,7 @@ saveInitiativeBtn.addEventListener("click", async () => {
   const body = {
     title: iTitle.value.trim(),
     status: iStatus.value.trim() || "aktiv",
+    archived: iArchived.checked,
     description: iDescription.value.trim(),
     imageUrl: iImageUrl.value.trim(),
     sourceUrl: iSourceUrl.value.trim()
@@ -382,11 +388,23 @@ questionList.addEventListener("click", async (event) => {
     qText.value = row.text || "";
     qDate.value = row.createdAt ? String(row.createdAt).slice(0, 10) : "";
     qLocation.value = row.location || "";
+    qArchived.checked = Boolean(row.archived);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
   if (btn.dataset.action === "del-q") {
     if (!confirm("Frage löschen?")) return;
     await fetch(memberApiPath(`/api/member/questions/${id}`), { method: "DELETE" });
+    await refreshQuestions();
+    return;
+  }
+  if (btn.dataset.action === "toggle-q-archived") {
+    const row = cache.questions.find((q) => q.id === id);
+    if (!row) return;
+    await fetch(memberApiPath(`/api/member/questions/${id}`), {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ archived: !row.archived })
+    });
     await refreshQuestions();
   }
 });
@@ -401,6 +419,7 @@ initiativeList.addEventListener("click", async (event) => {
     iId.value = row.id;
     iTitle.value = row.title || "";
     iStatus.value = row.status || "";
+    iArchived.checked = Boolean(row.archived);
     iDescription.value = row.description || "";
     iImageUrl.value = row.imageUrl || "";
     iSourceUrl.value = row.sourceUrl || "";
@@ -409,6 +428,17 @@ initiativeList.addEventListener("click", async (event) => {
   if (btn.dataset.action === "del-i") {
     if (!confirm("Initiative löschen?")) return;
     await fetch(memberApiPath(`/api/member/initiatives/${id}`), { method: "DELETE" });
+    await refreshInitiatives();
+    return;
+  }
+  if (btn.dataset.action === "toggle-i-archived") {
+    const row = cache.initiatives.find((i) => i.id === id);
+    if (!row) return;
+    await fetch(memberApiPath(`/api/member/initiatives/${id}`), {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ archived: !row.archived })
+    });
     await refreshInitiatives();
   }
 });
@@ -434,6 +464,17 @@ eventList.addEventListener("click", async (event) => {
     if (!confirm("Termin löschen?")) return;
     await fetch(memberApiPath(`/api/member/events/${id}`), { method: "DELETE" });
     await refreshEvents();
+    return;
+  }
+  if (btn.dataset.action === "toggle-e-archived") {
+    const row = cache.events.find((e) => e.id === id);
+    if (!row) return;
+    await fetch(memberApiPath(`/api/member/events/${id}`), {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ archived: !row.archived })
+    });
+    await refreshEvents();
   }
 });
 
@@ -443,6 +484,7 @@ async function loadProfile() {
   const profile = await res.json();
   roleInput.value = profile.role || "";
   portraitUrlInput.value = profile.portraitUrl || "";
+  if (profileArchivedInput) profileArchivedInput.checked = Boolean(profile.archived);
   if (portraitFocusXInput) portraitFocusXInput.value = String(normalizeFocus(profile.portraitFocusX));
   if (portraitFocusYInput) portraitFocusYInput.value = String(normalizeFocus(profile.portraitFocusY));
   updatePortraitFocusPreview();
@@ -458,7 +500,8 @@ async function refreshQuestions() {
     .map((q) => {
       const d = q.createdAt ? String(q.createdAt).slice(0, 10) : "";
       const where = q.location ? ` · ${escapeHtml(q.location)}` : "";
-      return `<article class="card"><h3>${escapeHtml(q.text || "")}</h3><p class="muted">${escapeHtml(d)}${where}</p><div class="actions"><button class="secondary" data-action="edit-q" data-id="${q.id}">Bearbeiten</button><button class="secondary" data-action="del-q" data-id="${q.id}">Löschen</button></div></article>`;
+      const stateLabel = q.archived ? "Archiv" : "Live";
+      return `<article class="card"><h3>${escapeHtml(q.text || "")}</h3><p class="muted">${escapeHtml(d)}${where} · ${stateLabel}</p><div class="actions"><button class="secondary" data-action="edit-q" data-id="${q.id}">Bearbeiten</button><button class="secondary" data-action="toggle-q-archived" data-id="${q.id}">${q.archived ? "Wiederherstellen" : "Archivieren"}</button><button class="secondary" data-action="del-q" data-id="${q.id}">Löschen</button></div></article>`;
     })
     .join("");
 }
@@ -472,7 +515,8 @@ async function refreshInitiatives() {
       const image = i.imageUrl
         ? `<p><a class="member-link" target="_blank" rel="noopener noreferrer" href="${escapeHtml(i.imageUrl)}">Bild</a></p>`
         : "";
-      return `<article class="card"><h3>${escapeHtml(i.title || "")}</h3><p class="muted">${escapeHtml(i.status || "")}</p><p>${escapeHtml(i.description || "")}</p>${image}<div class="actions"><button class="secondary" data-action="edit-i" data-id="${i.id}">Bearbeiten</button><button class="secondary" data-action="del-i" data-id="${i.id}">Löschen</button></div></article>`;
+      const stateLabel = i.archived ? "Archiv" : "Live";
+      return `<article class="card"><h3>${escapeHtml(i.title || "")}</h3><p class="muted">${escapeHtml(i.status || "")} · ${stateLabel}</p><p>${escapeHtml(i.description || "")}</p>${image}<div class="actions"><button class="secondary" data-action="edit-i" data-id="${i.id}">Bearbeiten</button><button class="secondary" data-action="toggle-i-archived" data-id="${i.id}">${i.archived ? "Wiederherstellen" : "Archivieren"}</button><button class="secondary" data-action="del-i" data-id="${i.id}">Löschen</button></div></article>`;
     })
     .join("");
 }
@@ -486,7 +530,8 @@ async function refreshEvents() {
       const image = e.imageUrl
         ? `<p><a class="member-link" target="_blank" rel="noopener noreferrer" href="${escapeHtml(e.imageUrl)}">Bild</a></p>`
         : "";
-      return `<article class="card"><h3>${escapeHtml(e.title || "")}</h3><p class="muted">${escapeHtml(e.date || "")} - ${escapeHtml(e.location || "")}</p><p>${escapeHtml(e.description || "")}</p>${image}<div class="actions"><button class="secondary" data-action="edit-e" data-id="${e.id}">Bearbeiten</button><button class="secondary" data-action="del-e" data-id="${e.id}">Löschen</button></div></article>`;
+      const stateLabel = e.archived ? "Archiv" : "Live";
+      return `<article class="card"><h3>${escapeHtml(e.title || "")}</h3><p class="muted">${escapeHtml(e.date || "")} - ${escapeHtml(e.location || "")} · ${stateLabel}</p><p>${escapeHtml(e.description || "")}</p>${image}<div class="actions"><button class="secondary" data-action="edit-e" data-id="${e.id}">Bearbeiten</button><button class="secondary" data-action="toggle-e-archived" data-id="${e.id}">${e.archived ? "Wiederherstellen" : "Archivieren"}</button><button class="secondary" data-action="del-e" data-id="${e.id}">Löschen</button></div></article>`;
     })
     .join("");
 }
@@ -496,12 +541,14 @@ function resetQuestionForm() {
   qText.value = "";
   qDate.value = "";
   qLocation.value = "";
+  qArchived.checked = false;
 }
 
 function resetInitiativeForm() {
   iId.value = "";
   iTitle.value = "";
   iStatus.value = "aktiv";
+  iArchived.checked = false;
   iDescription.value = "";
   iImageUrl.value = "";
   iSourceUrl.value = "";

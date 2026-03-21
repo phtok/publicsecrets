@@ -10,8 +10,14 @@ Schlankes Webprojekt fuer **"Public Secrets (Die Frage)"** mit Frontend und leic
 - Ensemble mit Portraits und Kurzviten
 - Eigene Seiten je Ensemble-Mitglied unter `members/*.html` (Fragen, Initiativen, Veranstaltungen)
 - Redaktionsbereich mit Login (`/admin.html`)
-- Mitgliederbereich mit Einmalzugang (`/member-login.html`, `/member-area.html`)
-- CRUD fuer Fragen, Veranstaltungen und Initiativen
+- Mitgliederbereich mit Magic Link, Passwort-Login und Fallback-Outbox (`/login.html`, `/member-area.html`)
+- CRUD fuer Fragen, Veranstaltungen, Initiativen und Mitglieder
+- Globaler Not-Aus fuer Kommentare und Antworten durch Nichtmitglieder
+
+## Projektkontext
+- Historischer Kontext und uebernommene Entscheidungen: `docs/project-context.md`
+- Ursprungskonzept: `docs/public-secrets-web-konzept.md`
+- Betrieb, Backup, Migration: `docs/ops-and-roadmap.md`
 
 ## Start
 
@@ -55,6 +61,12 @@ Lokalen Datenstand sichern:
 ./scripts/backup_local_data.sh
 ```
 
+Beides automatisiert in einem Lauf:
+
+```bash
+./scripts/run_backup_cycle.sh
+```
+
 Backup zurueckspielen (Notfall):
 
 ```bash
@@ -63,13 +75,14 @@ Backup zurueckspielen (Notfall):
 
 Mehr Details und Langfrist-Plan:
 - `docs/ops-and-roadmap.md`
+- `docs/backup-automation.md`
 
 Lokale Backups liegen absichtlich ausserhalb von Git:
 - `backups/`
 
 ## Login (MVP)
 Standard-Zugang:
-- Benutzername: `editor`
+- Benutzername: `philipp@saetzerei.com`
 - Passwort: `public-secrets-123`
 
 Eigene Redakteure per Umgebungsvariable setzen:
@@ -80,10 +93,17 @@ export PUBLIC_SECRETE_EDITORS='[{"username":"redaktion","password":"dein-passwor
 ```
 
 ## Node Installation (lokal im Projekt)
-- Node wurde lokal bereitgestellt: `/tmp/node-v24.13.1-darwin-arm64`
 - Wrapper im Projekt:
   - `./bin/node`
   - `./bin/npm`
+- Die Wrapper suchen zuerst `PUBLIC_SECRETS_NODE_BIN` bzw. `PUBLIC_SECRETS_NPM_BIN`, dann gaengige lokale Pfade.
+- Wenn du ein eigenes Node-Binary nutzen willst:
+
+```bash
+export PUBLIC_SECRETS_NODE_BIN=/pfad/zu/node
+export PUBLIC_SECRETS_NPM_BIN=/pfad/zu/npm
+./bin/node server.js
+```
 
 ## API (Kurz)
 - `POST /api/auth/login`
@@ -106,9 +126,12 @@ export PUBLIC_SECRETE_EDITORS='[{"username":"redaktion","password":"dein-passwor
 - `PUT /api/initiatives/:id` (auth)
 - `DELETE /api/initiatives/:id` (auth)
 - `POST /api/member/auth/request`
+- `POST /api/member/auth/password-login`
 - `POST /api/member/auth/verify`
 - `POST /api/member/auth/logout`
 - `GET /api/member/auth/me`
+- `GET /api/member/auth/outbox` (auth)
+- `GET/PUT /api/site-settings` (`PUT` auth)
 - `GET/PUT /api/member/profile`
 - `GET/POST/PUT/DELETE /api/member/questions` (eigene)
 - `GET/POST/PUT/DELETE /api/member/events` (eigene)
@@ -118,6 +141,6 @@ export PUBLIC_SECRETE_EDITORS='[{"username":"redaktion","password":"dein-passwor
 - `server.js` - Node HTTP-Server, API, Session-Auth, statische Dateien
 - `index.html`, `app.js`, `styles.css` - Oeffentliche Webseite
 - `admin.html`, `admin.js` - Redaktionsoberflaeche
-- `member-login.html`, `member-login.js` - Einmalzugang per E-Mail
+- `login.html`, `login.js` - Mitglieder-Login (Magic Link + Passwort)
 - `member-area.html`, `member-area.js` - Eigener Mitgliederbereich
-- `data/questions.json`, `data/events.json`, `data/initiatives.json`, `data/people.json` - Persistenz als JSON-Dateien
+- `data/*.json` - Persistenz fuer Inhalte, Sessions, Papierkorb und Site-Einstellungen
