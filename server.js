@@ -1632,10 +1632,20 @@ function normalizeQuestionRow(input) {
     id: String((input && input.id) || makeId("q")),
     text: String((input && input.text) || "").trim(),
     authors: normalizeAuthors(input && input.authors),
+    authorStatus: normalizeQuestionAuthorStatus(input && input.authorStatus),
+    authorHint: String((input && input.authorHint) || "").trim(),
     createdAt: normalizeCreatedAt(input && input.createdAt),
     location: String((input && input.location) || "").trim(),
+    sourceLabel: String((input && input.sourceLabel) || "").trim(),
     archived: normalizeArchived(input && input.archived)
   };
+}
+
+function normalizeQuestionAuthorStatus(value) {
+  const normalized = String(value || "").trim().toLowerCase();
+  if (normalized === "external") return "external";
+  if (normalized === "unresolved") return "unresolved";
+  return "resolved";
 }
 
 function normalizeEventRow(input) {

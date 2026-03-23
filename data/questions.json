@@ -1,283 +1,1493 @@
 [
   {
-    "id": "q-001",
+    "id": "q-3d12aeaa-64ae-4413-9a93-aab6fb12389c",
     "text": "Wer möchte sprechen?",
     "authors": [
       "Philipp Tok"
     ],
     "createdAt": "2026-03-01T10:00:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-002",
+    "id": "q-d0b234bb-0616-477d-975d-e89a5de28ae9",
     "text": "Was haben wir miteinander zu tun?",
     "authors": [
       "Daniel Häni"
     ],
     "createdAt": "2026-03-01T10:05:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-003",
+    "id": "q-7cb87962-c606-4c45-9462-ebe675875be6",
     "text": "Wann sind Zeichen und Siegel angemessen?",
     "authors": [
       "Lisa van Holsteijn"
     ],
     "createdAt": "2026-03-01T10:10:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-004",
+    "id": "q-5f24a6c0-b4fa-45ae-812f-a9b2c72888f5",
     "text": "Was soll ich bis Juli mitnehmen und geben?",
     "authors": [
       "Florian Mende"
     ],
     "createdAt": "2026-03-01T10:15:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-0fe1797c-e892-46a1-99bf-60cc9dd6b28b",
-    "text": "Was siehst Du, wenn Du einen Mensch siehst?",
-    "authors": [
-      "Philipp Tok",
-      "Bodo von Plato"
-    ],
-    "createdAt": "2026-03-01T23:59:30.108Z",
-    "location": "",
-    "archived": false
-  },
-  {
-    "id": "q-f932c831-7d1f-46d4-8cf2-6792f8adfa6b",
+    "id": "q-babf7683-15b6-4fa7-b60a-6cb4e110c001",
     "text": "Was könnte von Musik ausgehen, wenn es nicht rein “künstlerisch” ist?",
     "authors": [
       "Anna Sophie Brüning"
     ],
     "createdAt": "2026-02-25T10:00:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-7d3c656c-334a-4dc2-9874-cf3b4b977ed7",
+    "id": "q-f5c46118-ec11-4da2-b0f2-2224ead6a5e8",
     "text": "Wie geht Liebe? Und wie geht sie weg?",
     "authors": [
       "Andreas Bertram"
     ],
     "createdAt": "2026-02-25T10:01:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-73ed507d-8184-4387-b112-f90eb3060aa2",
+    "id": "q-6355487c-e602-4204-affc-e1ecbd43a8f5",
     "text": "Wann ist die Möglichkeit wahrer als die Wirklichkeit?",
     "authors": [
       "Andreas Bertram"
     ],
     "createdAt": "2026-02-25T10:02:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-7bcc99c5-b8b6-4c09-9bb7-95285986bf0e",
+    "id": "q-b2664089-09e4-4a74-a5e4-7eeb9a856ef7",
     "text": "Was ist sicher?",
     "authors": [
       "Selma Bausinger"
     ],
     "createdAt": "2026-02-25T10:03:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-84249ce9-9b9f-4f3b-b568-d0517f1bbb9f",
+    "id": "q-a4061c94-f587-4f07-85e7-61e40e110367",
     "text": "In welchem Erlebnis ist dir deine Wirbelsäule bewusst geworden?",
     "authors": [
       "Sibylle Wissmeyer"
     ],
     "createdAt": "2026-02-25T10:04:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-3c2e97c8-98a8-43ee-934a-a5be87e83a9f",
+    "id": "q-36e23c14-0103-48fa-bbde-537a0efc1005",
     "text": "Was macht das Leben lebenswert, wenn ich Fähigkeiten verliere?",
     "authors": [
       "Elke Schmitter"
     ],
     "createdAt": "2026-02-25T10:05:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-86870450-10eb-4f86-bf59-764967b58b96",
+    "id": "q-39f8bd4e-d4d5-42ba-911d-89d2617ccfc2",
     "text": "Was ist segnen?",
     "authors": [
       "Gilda Bartel"
     ],
     "createdAt": "2026-02-25T10:06:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-6c1f8ad3-4759-44b9-9eb1-0fad9235ef8f",
+    "id": "q-d4a2da8e-0d6d-4753-855d-22d33ced86af",
     "text": "Wie wird Zähes flüssig?",
     "authors": [
       "Philipp Tok"
     ],
     "createdAt": "2026-02-25T10:07:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-11494dc2-a882-4d01-b828-a65dd958b91e",
+    "id": "q-1c8d046d-bb47-4346-b0ae-da8a445e8be7",
     "text": "Was / Wer gibt dir Kraft?",
     "authors": [
       "Anke Steinmetz"
     ],
     "createdAt": "2026-02-25T10:08:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-6b98ce9d-c17e-440c-8f78-513a973e9f3f",
+    "id": "q-4ecce66b-6a0c-4611-8767-25d82d64c7ca",
     "text": "Wie geht aktive Neutralität?",
     "authors": [
       "Daniel Häni"
     ],
     "createdAt": "2026-02-25T10:09:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-fe26fe97-7ccc-4f92-8f2b-6ad9142f3604",
+    "id": "q-022d3619-a736-40f3-bb93-f5845def06bf",
     "text": "Worauf freust du dich schon lange?",
     "authors": [
       "Juliane von Crailsheim"
     ],
     "createdAt": "2026-02-25T10:10:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-ba00f827-0d06-4d66-b0e3-98efd74b64e0",
+    "id": "q-9dfd17fa-84c2-4540-862c-0c259120f558",
     "text": "Worauf bereitest du dich vor?",
     "authors": [
       "Juliane von Crailsheim"
     ],
     "createdAt": "2026-02-25T10:11:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-4774190f-fb3d-4fd8-a657-478fe7592bbf",
+    "id": "q-8f4adf81-9fb1-4af7-b59d-bf429d78452c",
     "text": "Was meinst du, wenn du von öffentlichen Geheimnissen sprichst?",
     "authors": [
       "Maike Meyer-Oldenburg"
     ],
     "createdAt": "2026-02-25T10:12:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-4f1c30ee-6d0a-4641-9787-25b55b2c6aa1",
+    "id": "q-8a33bc1f-9c84-4613-8e96-99cb9a835d55",
     "text": "How to make the secrets productive?",
     "authors": [
       "Philipp Tok"
     ],
     "createdAt": "2026-02-18T10:00:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-17d553f9-3b91-4eae-acd0-f2df0a9c2bdc",
+    "id": "q-dd91ff1e-7463-4d79-a07c-848b9a42571e",
     "text": "Entspricht Dir dein Sprechen und wie sprichst du?",
     "authors": [
       "Juliane von Crailsheim"
     ],
     "createdAt": "2026-02-18T10:01:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-8f84bd56-7432-4727-ac46-ed4295cfebbb",
+    "id": "q-f86cd076-e435-41c7-aa8d-47c5c5ba34d4",
     "text": "Warum gibt es Krieg?",
     "authors": [
       "Bodo von Plato"
     ],
     "createdAt": "2026-02-18T10:02:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-5ab3840e-f3ad-4425-b3f6-0bf7a6d20e83",
+    "id": "q-2ea5ba2b-5b7e-468a-910d-17ddb49f1429",
     "text": "Wo wurzelt die Unfähigkeit sich etwas vorzustellen?",
     "authors": [
       "Elke Schmitter"
     ],
     "createdAt": "2026-02-18T10:03:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-f3e6fb46-50d0-496a-b1de-034641e63e0e",
+    "id": "q-f9fda8c5-324c-4b32-ad54-5bd1d2c89603",
     "text": "Wo bin ich eigentlich nachts, wenn ich schlafe?",
     "authors": [
       "Elke Schmitter"
     ],
     "createdAt": "2026-02-18T10:04:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-dac94035-0fc0-4bbd-bcf0-eae47fa48dd9",
+    "id": "q-f3cd8ccb-6fae-42b6-94ed-a31d83379598",
     "text": "Wo liegt das Problem, wenn die Lösung in der Mitte liegt?",
     "authors": [
       "Andreas Laudert"
     ],
     "createdAt": "2026-02-18T10:05:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-ae209cfd-16b4-4b81-88d3-20eeade7a7fc",
+    "id": "q-f3244b3f-54e9-4372-a22f-707ff5eac435",
     "text": "Sind ‹Frau-Sein› und ‹Mann-Sein› noch zukunftsfähige Zuschreibungen?",
     "authors": [
       "Andreas Laudert"
     ],
     "createdAt": "2026-02-18T10:06:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-045759be-2ed1-402f-b3e9-828ce5e6dd32",
+    "id": "q-d628f31a-032f-4f19-ac24-8f16117148cc",
     "text": "Der eigene Körper als terra incognita – wie können wir ihn wahrnehmen?",
     "authors": [
       "Anna Sophie Brüning"
     ],
     "createdAt": "2026-02-18T10:07:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-b845bdcd-5ba8-4e86-92d9-93221a16c3ab",
+    "id": "q-1ecd10ae-d209-4ce8-a19f-e12fb1025eb5",
     "text": "Was tust du, wenn du fühlst?",
     "authors": [
       "Anke Steinmetz"
     ],
     "createdAt": "2026-02-18T10:08:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
   },
   {
-    "id": "q-c9b23bb8-92eb-4e83-b227-b5484c91c745",
+    "id": "q-308c8f91-5fb4-4f1b-86b0-3d7bd9068ef7",
     "text": "Wo beginnt deine Wortlosigkeit und wie gehst du mit ihr um?",
     "authors": [
       "Maike Meyer-Oldenburg"
     ],
     "createdAt": "2026-02-18T10:09:00.000Z",
-    "location": "",
-    "archived": false
+    "location": ""
+  },
+  {
+    "id": "q-82cd4f23-5a69-4790-ab40-1802adf135da",
+    "text": "Am Anfang war das Wort. Was war vor dem Wort?",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "createdAt": "2026-03-06T11:24:35.822Z",
+    "location": ""
+  },
+  {
+    "id": "q-ddd718f6-dd47-4591-9d2f-8afc1ba5a0ea",
+    "text": "Wie werde ich anwesend?",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "createdAt": "2026-03-06T19:35:46.714Z",
+    "location": ""
+  },
+  {
+    "id": "q-0d9dc663-290d-4d30-938e-d65713068ce7",
+    "text": "Wie viele Typen Menschen gibt es?",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "createdAt": "2026-03-12T07:12:22.672Z",
+    "location": "Basel"
+  },
+  {
+    "id": "q-41bc66a3-a065-402b-8ef0-33369901169c",
+    "text": "Welche Farbe hat die Demokratie?",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "createdAt": "2026-03-12T07:14:42.858Z",
+    "location": "Deutschland"
+  },
+  {
+    "id": "q-e258dfcc-aa8f-412f-814d-0932231c95fa",
+    "text": "Was hast du für besonders starke Antipathien?",
+    "authors": [
+      "Barbara Schiller"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-24T12:00:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "24. Oktober 2025, Salon der guten Gespräche"
+  },
+  {
+    "id": "q-a3f8b53b-32f5-4759-b10d-747edfa76c82",
+    "text": "Wer sitzt auf dem leeren Platz?",
+    "authors": [
+      "Janne Bierens"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-24T12:01:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "24. Oktober 2025, Salon der guten Gespräche"
+  },
+  {
+    "id": "q-6506e109-8e25-4442-bf3c-833c85d24c4f",
+    "text": "Was ist Männlichkeit - heute?",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-24T12:02:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "24. Oktober 2025, Salon der guten Gespräche"
+  },
+  {
+    "id": "q-3f1ec4d1-fb48-4d75-a65b-49c1b2ebb87e",
+    "text": "Was ist mein Beruf?",
+    "authors": [
+      "Jasminka Stenz"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-24T12:03:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "24. Oktober 2025, Salon der guten Gespräche"
+  },
+  {
+    "id": "q-598f2004-c926-4b58-9742-56b669debf11",
+    "text": "Was verändert sich im Zeiterleben durch Soziale Medien?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-24T12:04:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "24. Oktober 2025, Salon der guten Gespräche"
+  },
+  {
+    "id": "q-3060f0e6-1dc5-4a72-83fd-64afa2792077",
+    "text": "Wodurch entsteht Dauer im Erleben?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-24T12:05:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "24. Oktober 2025, Salon der guten Gespräche"
+  },
+  {
+    "id": "q-6ae79f5c-fc82-4a0f-a388-ac306209c2f8",
+    "text": "Was sind essenzielle Fähigkeiten zur Organisation und Führung, wenn es um Entwicklung geht?",
+    "authors": [
+      "Martje Brandsma"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-24T12:06:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "24. Oktober 2025, Salon der guten Gespräche"
+  },
+  {
+    "id": "q-5a50393b-1ad3-4985-918c-2aa90c245d55",
+    "text": "Wenn du Liebe denkst, was bedeutet sie dir?",
+    "authors": [
+      "Sandra Löwe"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "createdAt": "2025-10-24T12:07:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "24. Oktober 2025, Salon der guten Gespräche"
+  },
+  {
+    "id": "q-74268287-b671-4311-a580-3c042f79fae3",
+    "text": "Wie kann die Quelle der Weiblichkeit wieder erquicken?",
+    "authors": [
+      "Juliane von Crailsheim"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-24T12:08:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "24. Oktober 2025, Salon der guten Gespräche"
+  },
+  {
+    "id": "q-fb26bcb1-c2cc-4a8b-8817-6284ce4c6aa0",
+    "text": "Wie lange dauert ein Tag, wie lange dauert ein Jahr, in welchem Lebensalter?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-25T12:00:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "25. Oktober 2025 - Slon der guten Gespräche"
+  },
+  {
+    "id": "q-3500ce0c-76b4-49d8-b4db-a97ccfa33b49",
+    "text": "Was sind neue Zugänge zur Sprachentfaltung?",
+    "authors": [
+      "Martje Brandsma"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-25T12:01:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "25. Oktober 2025 - Slon der guten Gespräche"
+  },
+  {
+    "id": "q-e5a7c4d5-cedd-4a21-8a6a-c341dc33e2fc",
+    "text": "Wo und wie hat mich die Perspektive der Reinkartion erstmals angefasst?",
+    "authors": [
+      "Barbara Schiller"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-25T12:02:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "25. Oktober 2025 - Slon der guten Gespräche"
+  },
+  {
+    "id": "q-8a7d204a-b0bb-43d7-9429-d6d58499f316",
+    "text": "Wie lernen wir über die Tiere sprechen, das wir sie dabei befreien?",
+    "authors": [
+      "Juliane von Crailsheim"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-25T12:03:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "25. Oktober 2025 - Slon der guten Gespräche"
+  },
+  {
+    "id": "q-d85df836-4d63-4a8d-9166-eded17767174",
+    "text": "Wie geht eine Empfindungskultur in der Gegenwart?",
+    "authors": [
+      "Bodo von Plato"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-25T12:04:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "25. Oktober 2025 - Slon der guten Gespräche"
+  },
+  {
+    "id": "q-bf376ef3-46bc-4314-818f-ec3ba4f530e3",
+    "text": "Wie geht verzeihen?",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-25T12:05:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "25. Oktober 2025 - Slon der guten Gespräche"
+  },
+  {
+    "id": "q-9580ec77-c5ce-42d6-a8ad-4b7b65b1f6b1",
+    "text": "Was hast du mit mir (Jasminka) zu tun?",
+    "authors": [
+      "Jasminka Stenz"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-25T12:06:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "25. Oktober 2025 - Slon der guten Gespräche"
+  },
+  {
+    "id": "q-5e38371f-5b4a-418c-b4fe-2ecb18cb3b9e",
+    "text": "Wie wirkt Geld heilend?",
+    "authors": [
+      "Florian Mende"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-25T12:07:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "25. Oktober 2025 - Slon der guten Gespräche"
+  },
+  {
+    "id": "q-267197c3-8561-4d57-8edc-05c56c5be7f2",
+    "text": "Womit bemerke ich, was ich bemerke?",
+    "authors": [
+      "Andreas Laudert"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-10-25T12:08:00.000Z",
+    "location": "Salon der guten Gespraeche",
+    "sourceLabel": "25. Oktober 2025 - Slon der guten Gespräche"
+  },
+  {
+    "id": "q-437938c0-d264-4162-8565-d4ac7f8b2dd2",
+    "text": "Wo ist das Du?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "createdAt": "2025-11-17T12:00:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "PS - Wahrnehmungsorgan vom 17. November 2025, Basel"
+  },
+  {
+    "id": "q-d0a3f8f0-aef0-41f6-8e50-44d08e115338",
+    "text": "Was sind die Muskeln der Seele?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-11-17T12:01:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "PS - Wahrnehmungsorgan vom 17. November 2025, Basel"
+  },
+  {
+    "id": "q-f1bd5bd1-23b6-4853-8a6a-855fef2caea5",
+    "text": "Wie die individuelle Würde stärken?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "Aurelie",
+    "createdAt": "2025-11-17T12:02:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "PS - Wahrnehmungsorgan vom 17. November 2025, Basel"
+  },
+  {
+    "id": "q-6974cb94-292b-42fa-87b8-3bee177bdfc7",
+    "text": "Inwiefern gibt es Autorenschaft?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "Hendrik",
+    "createdAt": "2025-11-17T12:03:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "PS - Wahrnehmungsorgan vom 17. November 2025, Basel"
+  },
+  {
+    "id": "q-0ebe952c-f865-4665-a01f-0be15996d35a",
+    "text": "Sind Fragen gefährlich?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "createdAt": "2025-11-17T12:04:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "PS - Wahrnehmungsorgan vom 17. November 2025, Basel"
+  },
+  {
+    "id": "q-448e23bb-2cd3-43df-b6f2-cd89312a71a0",
+    "text": "Wie lassen sich die finanziellen Sorgen der Bürger minimieren?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "createdAt": "2025-11-17T12:05:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "PS - Wahrnehmungsorgan vom 17. November 2025, Basel"
+  },
+  {
+    "text": "Wie kann die politische Perle der Konkordanz als Regierungssystem über die Schweiz hinaus in Spiel gebracht werden? (Nach dem Bild wie Barak Obama mit Donald Trump plaudert bei der Abdankung von Jimmy Carter)",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-c4c8ae60-57bf-4370-baa6-0fdc9873273c",
+    "createdAt": "2025-01-13T12:00:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "PS - Wahrnehmungsorgan vom 13. Januar 2025, Basel"
+  },
+  {
+    "text": "Was kommt Dir empor, wenn alle in eine Richtung gehen? (Anhand von einer Evakuierung eines Zuges nach einem Halt durch Fremdeinwirkung)",
+    "authors": [
+      "Alex Silber"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-401600bb-3376-4e75-8112-389f7f23d999",
+    "createdAt": "2025-01-13T12:01:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "PS - Wahrnehmungsorgan vom 13. Januar 2025, Basel"
+  },
+  {
+    "text": "Muss ich raus aus meiner Blase?",
+    "authors": [
+      "Charlotte Böttger"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-8cb75616-9397-4bbf-9dc5-3dc5451dbd23",
+    "createdAt": "2025-01-13T12:02:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "PS - Wahrnehmungsorgan vom 13. Januar 2025, Basel"
+  },
+  {
+    "text": "Wie können wir die Bullshit Jobs kündigen und das Unnötige vermeiden?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-c0720a6f-86fc-4ae5-b7ef-f2a4f93a306a",
+    "createdAt": "2025-01-13T12:03:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "PS - Wahrnehmungsorgan vom 13. Januar 2025, Basel"
+  },
+  {
+    "text": "Wie kommen wir vom Tausch zum Austausch?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-a3a578f2-4cb0-4d62-b1a2-a6daa336ace4",
+    "createdAt": "2025-01-13T12:04:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "PS - Wahrnehmungsorgan vom 13. Januar 2025, Basel"
+  },
+  {
+    "text": "Wie kann Fortschritt gelingen mit gleichzeitiger Verbundenheit mit dem Bestehenden?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-e3e66957-53d0-4d14-bda8-5fa8cc0d5cdd",
+    "createdAt": "2025-01-13T12:05:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "PS - Wahrnehmungsorgan vom 13. Januar 2025, Basel"
+  },
+  {
+    "text": "Was siehst Du, wenn Du einen Menschen siehst? Und wann fühlst Du dich gesehen?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-839193c2-ea17-44fe-a187-022d6adb672f",
+    "createdAt": "2025-01-13T12:06:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "PS - Wahrnehmungsorgan vom 13. Januar 2025, Basel"
+  },
+  {
+    "text": "Wie wollen wir auseinandergehen?",
+    "authors": [
+      "Veronika Sellier"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-e02f6cfd-a40c-41a2-bdbf-111422162665",
+    "createdAt": "2025-01-13T12:07:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "PS - Wahrnehmungsorgan vom 13. Januar 2025, Basel"
+  },
+  {
+    "text": "Wie wird Zusammenarbeit so, dass sich jeder gesehen fühlt?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-89a73531-5039-4425-b3c5-c93fdd880f00",
+    "createdAt": "2025-02-17T12:00:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 17. Februar 2025, Basel"
+  },
+  {
+    "text": "Ist der Tod auch Geburt? Und wie entscheide ich das?",
+    "authors": [
+      "Aurelie"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-320997a8-52b4-4b35-86ab-979dcd2a9a70",
+    "createdAt": "2025-02-17T12:01:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 17. Februar 2025, Basel"
+  },
+  {
+    "text": "Wir kommen wir an echte Worte? Ich-Worte.",
+    "authors": [
+      "Gilda Bartel"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-00b3af3d-e179-4cc4-8733-1c3f3ae492e0",
+    "createdAt": "2025-02-17T12:02:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 17. Februar 2025, Basel"
+  },
+  {
+    "text": "Welche Räume braucht esoterisches Wissen?",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-06b714ed-f713-4bec-ac5d-f942b5d09cdc",
+    "createdAt": "2025-02-17T12:03:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 17. Februar 2025, Basel"
+  },
+  {
+    "text": "Um was geht es beim gegenwärtigen Kulturkampf?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-540700c4-607f-4fb7-9126-084a41d60469",
+    "createdAt": "2025-02-17T12:04:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 17. Februar 2025, Basel"
+  },
+  {
+    "text": "Warum reicht es nicht, dass es schön ist?",
+    "authors": [
+      "Kim Fabian"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-9caa3b44-4386-45f5-9c3a-d3451d1310e9",
+    "createdAt": "2025-02-17T12:05:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 17. Februar 2025, Basel"
+  },
+  {
+    "text": "Warum blenden wir die Armut aus?",
+    "authors": [
+      "Alex Silber"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-dc4c5a25-2cd7-4975-b61d-61b544868f82",
+    "createdAt": "2025-02-17T12:06:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 17. Februar 2025, Basel"
+  },
+  {
+    "text": "Wo gehen die Verstorbenen hin?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-1a0e94d9-d95c-4478-827b-cc85cdfe7391",
+    "createdAt": "2025-02-17T12:07:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 17. Februar 2025, Basel"
+  },
+  {
+    "text": "Wie schaust du Tanz an?",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-e99889ae-8ca0-4819-8029-e1aa56a70aba",
+    "createdAt": "2025-03-24T12:00:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 24. März 2025, Basel"
+  },
+  {
+    "text": "Was assoziierst du zu dem Tabuthema Fehlgeburt?",
+    "authors": [
+      "Mimi"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-1326b348-4582-45b8-8642-4d30b207d50b",
+    "createdAt": "2025-03-24T12:01:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 24. März 2025, Basel"
+  },
+  {
+    "text": "Woher kommt Musik?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-878c78b1-7d80-4dab-84b5-229a939c7a0a",
+    "createdAt": "2025-03-24T12:02:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 24. März 2025, Basel"
+  },
+  {
+    "text": "Was ernährt die Seele?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-02e556a1-8e90-4dd8-b21a-097b0011f90f",
+    "createdAt": "2025-03-24T12:03:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 24. März 2025, Basel"
+  },
+  {
+    "text": "Wie kann Zusammenarbeit ein gemeinsames Sehen werden?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-2b680b42-d447-41ef-9ec2-bb5695277122",
+    "createdAt": "2025-03-24T12:04:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 24. März 2025, Basel"
+  },
+  {
+    "text": "Was ist der Kern des Pazifismus?",
+    "authors": [
+      "Charlotte Böttger"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-217b5ae9-bd58-4f77-8f47-30b12dc23999",
+    "createdAt": "2025-03-24T12:05:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 24. März 2025, Basel"
+  },
+  {
+    "text": "Goldmuskulatur? Was meint das?",
+    "authors": [
+      "Charlotte Böttger"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-5f4ee3a5-5875-4993-8154-96dfa5c7e696",
+    "createdAt": "2025-03-24T12:06:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 24. März 2025, Basel"
+  },
+  {
+    "text": "Wie können wir die Herzenskräfte bewusster in die gemeinsamen Gespräche einbringen?",
+    "authors": [
+      "Simone"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-02f3002b-8b8a-4cd1-8c0b-cf2cb404a300",
+    "createdAt": "2025-03-24T12:07:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen - 24. März 2025, Basel"
+  },
+  {
+    "text": "Wie finden wir zu uns selbst und zum Menschsein?",
+    "authors": [
+      "Barbara Schiller"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-c9f19fdb-077c-4dc4-920e-a82e2c916e8e",
+    "createdAt": "2025-04-04T12:00:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 4. April 2025 in Basel"
+  },
+  {
+    "text": "Was versteht ihr unter Sozialethik?",
+    "authors": [
+      "Monika"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-f6920413-33c0-40dd-9c9b-ad464da1212f",
+    "createdAt": "2025-04-04T12:01:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 4. April 2025 in Basel"
+  },
+  {
+    "text": "Wo liegt die Schwelle zwischen Konkretem und Abstraktem? Ist das ein gestaltbarer Ort?",
+    "authors": [
+      "Sigrid Schenk"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-2dd825cc-6bc3-4266-bc9c-ce98dd8cbb47",
+    "createdAt": "2025-04-04T12:02:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 4. April 2025 in Basel"
+  },
+  {
+    "text": "Was ist besser: Kompromiss oder Radikalität?",
+    "authors": [
+      "Andreas Laudert"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-2e05ba5f-cb90-42da-9018-da7e4f438ea9",
+    "createdAt": "2025-04-04T12:03:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 4. April 2025 in Basel"
+  },
+  {
+    "text": "Wo ist Rudolf Steiner heute?",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-fc3e1511-d2f7-494e-991b-906287874a5a",
+    "createdAt": "2025-04-04T12:04:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 4. April 2025 in Basel"
+  },
+  {
+    "text": "Wie findet Entwicklung ihren Ursprung?",
+    "authors": [
+      "Julia Ebner"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-aca95749-66a4-4650-90f8-67014db5f861",
+    "createdAt": "2025-04-04T12:05:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 4. April 2025 in Basel"
+  },
+  {
+    "text": "Was passiert, wenn ich meine Wahrnehmung oder Empfindung nicht gleich bewerte?",
+    "authors": [
+      "Katrin Sauerland"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-ef9426dc-aef1-4d94-89c4-c96cd31d2dfb",
+    "createdAt": "2025-04-04T12:06:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 4. April 2025 in Basel"
+  },
+  {
+    "text": "Wie kann ich sein, dass eure Interessen und Lebensimpulse in mir wirksam werden und wir uns potenzieren?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-bf78f287-cc0f-495f-bc48-85efa457f3cc",
+    "createdAt": "2025-04-04T12:07:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 4. April 2025 in Basel"
+  },
+  {
+    "text": "Welchen Rahmen braucht das Wort?",
+    "authors": [
+      "Herbert Dreiseitl"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-c7d80c33-96af-4063-a7b6-fd7cdc631be8",
+    "createdAt": "2025-04-04T12:08:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 4. April 2025 in Basel"
+  },
+  {
+    "text": "«Wierum» lebe ich in einer ungerechten Welt?",
+    "authors": [
+      "Selma Bausinger"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-e4dcac3d-a384-4421-88db-9fab99c348c3",
+    "createdAt": "2025-04-04T12:09:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 4. April 2025 in Basel"
+  },
+  {
+    "text": "Wie finanziert sich das, was so neue ist, dass noch keiner weiss, dass er es braucht?",
+    "authors": [
+      "Isabell Klara"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-c63a3b7e-91f7-40b7-9832-e5fec2d4c8bb",
+    "createdAt": "2025-04-05T12:00:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 5. April 2025 in Basel"
+  },
+  {
+    "text": "Wie gestalte ich den Raum, wenn Unwahrhaftiges da ist oder gesagt wird?",
+    "authors": [
+      "Jeanine"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-bdec2147-8b7f-4e51-bc64-9529fa9be450",
+    "createdAt": "2025-04-05T12:01:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 5. April 2025 in Basel"
+  },
+  {
+    "text": "Wie müsste Schule aussehen, um die scharfen und scheinbaren Grenzen wahrnehmen zu lernen und unterscheiden zu können?",
+    "authors": [
+      "Monika"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-0f2366f9-df84-4a02-9d27-e0b9e72962a9",
+    "createdAt": "2025-04-05T12:02:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 5. April 2025 in Basel"
+  },
+  {
+    "text": "Ist der Paradigmenwechseln von «individuell und stark« zu «wir und jetzt» dran?",
+    "authors": [
+      "Falk Zientz"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-58892030-261a-477c-99d0-08a7fe519883",
+    "createdAt": "2025-04-05T12:03:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 5. April 2025 in Basel"
+  },
+  {
+    "text": "Was wird dadurch, wenn wir es gemeinsam wahrnehmen und erhören?",
+    "authors": [
+      "Joachim Eckl"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-dd1b268d-e3a4-43b8-984a-3c014d1f70d2",
+    "createdAt": "2025-04-05T12:04:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 5. April 2025 in Basel"
+  },
+  {
+    "text": "Was lässt sich nicht besprechen?",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-0f8a713f-48a9-4dec-8485-9f24cf42dcf3",
+    "createdAt": "2025-04-05T12:05:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 5. April 2025 in Basel"
+  },
+  {
+    "text": "Wovon bist du Zeuge?",
+    "authors": [
+      "Andreas Laudert"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-cdb9e47a-cf22-401c-b5af-8888d1064d64",
+    "createdAt": "2025-04-05T12:06:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 5. April 2025 in Basel"
+  },
+  {
+    "text": "Was passiert drinnen?",
+    "authors": [
+      "Selma Bausinger"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-6eea0df4-fdc9-4b73-af2d-4e51d469e3b6",
+    "createdAt": "2025-04-05T12:07:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Mantren Salon - 5. April 2025 in Basel"
+  },
+  {
+    "text": "Wieso ist es uns bisher nicht möglich, uns auf vielfältige Wahrheiten zu einigen?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-d49f6cce-5f07-43bc-a57c-5559207e1c69",
+    "createdAt": "2025-05-19T12:00:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Public Secrets Wahrnehmungsorgan vom 19. Mai 2025 in Basel"
+  },
+  {
+    "text": "Was ist das Wesen von Adidas?",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-044db92d-9f76-4a0d-966a-be37687e1713",
+    "createdAt": "2025-05-19T12:01:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Public Secrets Wahrnehmungsorgan vom 19. Mai 2025 in Basel"
+  },
+  {
+    "text": "Kann man Köln und Basel miteinander vergleichen?",
+    "authors": [
+      "Marc"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-90a21b97-ff80-4dad-a8c3-e6e75216ab2a",
+    "createdAt": "2025-05-19T12:02:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Public Secrets Wahrnehmungsorgan vom 19. Mai 2025 in Basel"
+  },
+  {
+    "text": "Wie bekommen Lebewesen Gemeinschaften eine politische Stimme? Humus, Flüsse, Landschaften, …",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-8d1cdaf5-9362-4745-999a-4fe202a21f08",
+    "createdAt": "2025-05-19T12:03:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Public Secrets Wahrnehmungsorgan vom 19. Mai 2025 in Basel"
+  },
+  {
+    "text": "Ist Leben heilig?",
+    "authors": [
+      "Aurelie"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-f84ab9ca-61e8-4193-b397-f3e44fd08de3",
+    "createdAt": "2025-05-19T12:04:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Public Secrets Wahrnehmungsorgan vom 19. Mai 2025 in Basel"
+  },
+  {
+    "text": "Wie spricht man über Politik?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-0c0686e0-ecdf-4ee7-811a-f3af3c81a110",
+    "createdAt": "2025-05-19T12:05:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Public Secrets Wahrnehmungsorgan vom 19. Mai 2025 in Basel"
+  },
+  {
+    "text": "Wie gelingt ein Gespräch, indem mich keiner für seine Themen verantwortlich macht?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-a6670c29-c8c8-459d-85ce-ef9421457012",
+    "createdAt": "2025-05-19T12:06:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Public Secrets Wahrnehmungsorgan vom 19. Mai 2025 in Basel"
+  },
+  {
+    "text": "Wieso ist der Mensch sein bester Feind?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-7d92c42f-a3d1-490f-ba7d-8c3ff826ba03",
+    "createdAt": "2025-05-19T12:07:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Public Secrets Wahrnehmungsorgan vom 19. Mai 2025 in Basel"
+  },
+  {
+    "text": "Wie sehe ich ins Dunkle, ohne das Licht zu verlieren?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-b295e059-1222-442a-b9ad-69d5b9ed31f6",
+    "createdAt": "2025-05-19T12:08:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Public Secrets Wahrnehmungsorgan vom 19. Mai 2025 in Basel"
+  },
+  {
+    "text": "Wie halte ich die Perspektive?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-38d20ffb-b931-4b39-9b8a-c1618f9743a2",
+    "createdAt": "2025-05-19T12:09:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Public Secrets Wahrnehmungsorgan vom 19. Mai 2025 in Basel"
+  },
+  {
+    "text": "Was wäre, wenn ich dies hier verpasst hätte?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-abcbeb73-b62a-4524-9a95-92d32a5ea56f",
+    "createdAt": "2025-05-19T12:10:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Public Secrets Wahrnehmungsorgan vom 19. Mai 2025 in Basel"
+  },
+  {
+    "text": "Wie lässt sich die Frage beantworten: Wofür bin ich bereit?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-a02b52be-828a-45dd-9997-4d8b42c54c00",
+    "createdAt": "2025-05-19T12:11:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Public Secrets Wahrnehmungsorgan vom 19. Mai 2025 in Basel"
+  },
+  {
+    "id": "q-4d8bce3e-2674-442e-9502-62e5873b5479",
+    "text": "Wie kann ich in Beziehung sein mit Michael?",
+    "authors": [
+      "Anke Steinmetz"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-09-18T12:00:00.000Z",
+    "location": "Chandolin",
+    "sourceLabel": "Wahrnehmungsorgan mit Anke Steinmetz - 18. September 2025 in Chandolin"
+  },
+  {
+    "id": "q-17998da0-7bb4-4f57-8e04-801a75efaca1",
+    "text": "Wie ist die Beziehung zwischen Vorangehenden und Folgenden?",
+    "authors": [
+      "Daniel Häni"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "createdAt": "2025-09-18T12:01:00.000Z",
+    "location": "Chandolin",
+    "sourceLabel": "Wahrnehmungsorgan mit Anke Steinmetz - 18. September 2025 in Chandolin"
+  },
+  {
+    "text": "Wie kann ich Menschen zu Selbstverantwortung begeistern?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-547106cf-eb31-40f0-b0f9-b39d2dd2a2b3",
+    "createdAt": "2025-09-19T12:00:00.000Z",
+    "location": "Chandolin",
+    "sourceLabel": "Wahrnehmungsorgan vom 19. September 2025 in Chandolin"
+  },
+  {
+    "text": "Wie kann ich Menschen für die Perspektive des vorgeburtlichen Lebens begeistern?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-d89c4b0d-9467-44aa-8c3b-51d76dab3ec8",
+    "createdAt": "2025-09-19T12:01:00.000Z",
+    "location": "Chandolin",
+    "sourceLabel": "Wahrnehmungsorgan vom 19. September 2025 in Chandolin"
+  },
+  {
+    "text": "Wie kann ich Interesse erzeugen, in diesem Leben das Nächste zu planen?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-9b081c2c-3bd6-4e11-b4c7-9cef951bc25d",
+    "createdAt": "2025-09-19T12:02:00.000Z",
+    "location": "Chandolin",
+    "sourceLabel": "Wahrnehmungsorgan vom 19. September 2025 in Chandolin"
+  },
+  {
+    "text": "Was hindert mich daran, authentisch zu sein?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-3fdc2374-5856-4d52-a860-f55cdb101bf8",
+    "createdAt": "2025-09-19T12:03:00.000Z",
+    "location": "Chandolin",
+    "sourceLabel": "Wahrnehmungsorgan vom 19. September 2025 in Chandolin"
+  },
+  {
+    "text": "Wie schaffe ich es in einem gemeinsamen Projekt mit meinen Kindern, nicht immer alles besser zu wissen?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-d94a91dc-e1be-45db-be6b-36f0b5c19b4b",
+    "createdAt": "2025-09-19T12:04:00.000Z",
+    "location": "Chandolin",
+    "sourceLabel": "Wahrnehmungsorgan vom 19. September 2025 in Chandolin"
+  },
+  {
+    "text": "Wollen wir unseren Geld-Leib bewusst gestalten?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-c5d1c3cc-b35d-4194-8d6a-bfbea9267906",
+    "createdAt": "2025-09-19T12:05:00.000Z",
+    "location": "Chandolin",
+    "sourceLabel": "Wahrnehmungsorgan vom 19. September 2025 in Chandolin"
+  },
+  {
+    "text": "Wie könnte aus dem Mantram ein Selbsterkenntnispräparat gemacht werden?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-775c47c2-6eaf-4146-a8a8-f1d89337cefe",
+    "createdAt": "2025-09-19T12:06:00.000Z",
+    "location": "Chandolin",
+    "sourceLabel": "Wahrnehmungsorgan vom 19. September 2025 in Chandolin"
+  },
+  {
+    "text": "Wie bringe ich Fühlen und Wollen ins Denken?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-f99a841b-426f-40c1-943e-85a1ee2e05a5",
+    "createdAt": "2025-09-19T12:07:00.000Z",
+    "location": "Chandolin",
+    "sourceLabel": "Wahrnehmungsorgan vom 19. September 2025 in Chandolin"
+  },
+  {
+    "text": "Was kann man nicht üben?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-34e20fa2-32c7-42a1-ba2a-2eddaaae5ff0",
+    "createdAt": "2025-09-22T12:00:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan vom 22. September 2025 in Basel"
+  },
+  {
+    "text": "Was kann eine esoterische Schule heute leisten?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-1788c295-0f81-466d-b4f2-b8383cc621e4",
+    "createdAt": "2025-09-22T12:01:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan vom 22. September 2025 in Basel"
+  },
+  {
+    "text": "Mit welcher Frage kann ich das Schicksal von Menschen in einem anderen Land ansprechen?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-7a596a88-b4ab-4adb-8c83-d7631a5fd3d3",
+    "createdAt": "2025-09-22T12:02:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan vom 22. September 2025 in Basel"
+  },
+  {
+    "text": "Wann bekommt das, was man tut, einen Wert?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-649eb59a-e7d4-42b6-85ed-87bc08531c37",
+    "createdAt": "2025-09-22T12:03:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan vom 22. September 2025 in Basel"
+  },
+  {
+    "text": "Wo ist meine Verantwortung medizinische Daten zur Verfügung zu stellen?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-78f6e553-421c-4a94-ac4a-8a9d26f997af",
+    "createdAt": "2025-09-22T12:04:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan vom 22. September 2025 in Basel"
+  },
+  {
+    "text": "Wie entsteht Zuversicht?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-3e4eb78b-63d7-41a0-9ec0-00aa7f79cae0",
+    "createdAt": "2025-09-22T12:05:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan vom 22. September 2025 in Basel"
+  },
+  {
+    "text": "Welche Bedingungen gilt es zu erkennen, wenn man zusammen schaffen will?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-69f31c25-8b12-4d2a-92b4-48b78e0ea0bb",
+    "createdAt": "2025-09-22T12:06:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan vom 22. September 2025 in Basel"
+  },
+  {
+    "text": "Wie ist die Welt so stille?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-e59e613e-7d2e-4114-91df-657d6ac5b329",
+    "createdAt": "2025-10-06T12:00:00.000Z",
+    "location": "Witten",
+    "sourceLabel": "Wahrnehmungsorgan vom 6. Oktober 2025 in Witten"
+  },
+  {
+    "text": "Wie selbstbestimmt ist unser Leben? Gibt es Schicksal?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-89fd8be5-b692-4a2f-8a67-84682d43f5d2",
+    "createdAt": "2025-10-06T12:01:00.000Z",
+    "location": "Witten",
+    "sourceLabel": "Wahrnehmungsorgan vom 6. Oktober 2025 in Witten"
+  },
+  {
+    "text": "«Der Mensch, der sich im Menschen findet.» Was mag das bedeuten?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-697a4e2c-1708-4b9d-b9fa-2b49d3165179",
+    "createdAt": "2025-10-06T12:02:00.000Z",
+    "location": "Witten",
+    "sourceLabel": "Wahrnehmungsorgan vom 6. Oktober 2025 in Witten"
+  },
+  {
+    "text": "Warum werden Menschen unheilbar krank? Wie können wir sinnvoll damit umgehen?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-78515dfd-ddbd-444b-87f6-8aebc7b2b72c",
+    "createdAt": "2025-10-06T12:03:00.000Z",
+    "location": "Witten",
+    "sourceLabel": "Wahrnehmungsorgan vom 6. Oktober 2025 in Witten"
+  },
+  {
+    "text": "Was braucht es, damit man fruchtbar über Karma sprechen kann?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-249b8676-9273-4e9a-97f2-cc0f147e526b",
+    "createdAt": "2025-10-06T12:04:00.000Z",
+    "location": "Witten",
+    "sourceLabel": "Wahrnehmungsorgan vom 6. Oktober 2025 in Witten"
+  },
+  {
+    "text": "Ist Sisyphus ein glücklicher Mensch? Und warum?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-da620729-7cc3-4f1e-99ea-07ea28855e18",
+    "createdAt": "2025-10-06T12:05:00.000Z",
+    "location": "Witten",
+    "sourceLabel": "Wahrnehmungsorgan vom 6. Oktober 2025 in Witten"
+  },
+  {
+    "text": "Was bedeutet Familie, heutzutage?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-be1308e1-a550-42cd-abd1-aca4f5b7f03c",
+    "createdAt": "2025-10-06T12:06:00.000Z",
+    "location": "Witten",
+    "sourceLabel": "Wahrnehmungsorgan vom 6. Oktober 2025 in Witten"
+  },
+  {
+    "text": "Was ist Männlichkeit, heutzutage?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-201481db-a18f-42e6-9052-2b80cacdc7d5",
+    "createdAt": "2025-10-06T12:07:00.000Z",
+    "location": "Witten",
+    "sourceLabel": "Wahrnehmungsorgan vom 6. Oktober 2025 in Witten"
+  },
+  {
+    "text": "Was bedeutet Heimat?",
+    "authors": [],
+    "authorStatus": "unresolved",
+    "authorHint": "",
+    "id": "q-d827fe32-eb1b-4884-bce4-5584748e0b70",
+    "createdAt": "2025-10-06T12:08:00.000Z",
+    "location": "Witten",
+    "sourceLabel": "Wahrnehmungsorgan vom 6. Oktober 2025 in Witten"
+  },
+  {
+    "text": "Gibt es für dich etwas unvergängliches?",
+    "authors": [
+      "Vera Koppehel"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-80988db3-5041-443b-a3fb-44538c8d8f9a",
+    "createdAt": "2025-10-20T12:00:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen vom 20. Oktober 2025 in Basel"
+  },
+  {
+    "text": "Wie wirst du aufmerksam?",
+    "authors": [
+      "Charlotte Böttger"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-4d2c5c5d-b859-4c78-ba59-c539fd0fb934",
+    "createdAt": "2025-10-20T12:01:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen vom 20. Oktober 2025 in Basel"
+  },
+  {
+    "text": "Wie entsteht bei dir Bewusstsein für Verantwortung?",
+    "authors": [
+      "Aurelie"
+    ],
+    "authorStatus": "external",
+    "authorHint": "",
+    "id": "q-38c324cd-7ccf-480f-866f-8e890cd71fdb",
+    "createdAt": "2025-10-20T12:02:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen vom 20. Oktober 2025 in Basel"
+  },
+  {
+    "text": "Wann erlebst du dich als intuitiv?",
+    "authors": [
+      "Philipp Tok"
+    ],
+    "authorStatus": "resolved",
+    "authorHint": "",
+    "id": "q-a0c0992f-38f5-4ef9-bea4-d38cfb910606",
+    "createdAt": "2025-10-20T12:03:00.000Z",
+    "location": "Basel",
+    "sourceLabel": "Wahrnehmungsorgan für politische Ideen vom 20. Oktober 2025 in Basel"
   }
 ]
