@@ -6,6 +6,7 @@ const BASE_URL = process.env.BASE_URL || "https://public-secrets.onrender.com";
 const USERNAME = process.env.EDITOR_USERNAME || "philipp@saetzerei.com";
 const PASSWORD = process.env.EDITOR_PASSWORD || "public-secrets-123";
 const DATA_DIR = process.env.LOCAL_DATA_DIR || path.join(process.cwd(), "data");
+const QUESTIONS_ONLY = process.argv.includes("--questions-only");
 
 function readJson(name) {
   const full = path.join(DATA_DIR, `${name}.json`);
@@ -78,8 +79,11 @@ async function main() {
     const payload = {
       text: String(q.text || "").trim(),
       authors: Array.isArray(q.authors) ? q.authors : [],
+      authorStatus: String(q.authorStatus || "").trim(),
+      authorHint: String(q.authorHint || "").trim(),
       createdAt: String(q.createdAt || "").trim(),
-      location: String(q.location || "").trim()
+      location: String(q.location || "").trim(),
+      sourceLabel: String(q.sourceLabel || "").trim()
     };
     const found = qByKey.get(qKey(q));
     const saved = found
@@ -87,6 +91,13 @@ async function main() {
       : await authed("POST", "/api/questions", payload);
     localToLiveQuestionId.set(String(q.id || ""), String(saved.id || ""));
     qByKey.set(qKey(saved), saved);
+  }
+
+  if (QUESTIONS_ONLY) {
+    const qCount = await get("/api/questions").then((a) => a.length);
+    console.log("Restore abgeschlossen.");
+    console.log(`questions=${qCount}`);
+    return;
   }
 
   const livePeople = await get("/api/people");

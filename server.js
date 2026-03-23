@@ -627,8 +627,11 @@ async function handleApi(req, res, pathname, url) {
       id: makeId("q"),
       text: String(body.text || "").trim(),
       authors,
+      authorStatus: normalizeQuestionAuthorStatus(body.authorStatus),
+      authorHint: String(body.authorHint || "").trim(),
       createdAt: normalizeCreatedAt(body.createdAt),
       location: String(body.location || "").trim(),
+      sourceLabel: String(body.sourceLabel || "").trim(),
       archived: normalizeArchived(body.archived)
     };
     if (!newItem.text) return sendJson(res, 400, { error: "Fragetext fehlt" });
@@ -655,8 +658,11 @@ async function handleApi(req, res, pathname, url) {
       ...questions[idx],
       text: body.text === undefined ? questions[idx].text : String(body.text).trim(),
       authors,
+      authorStatus: body.authorStatus === undefined ? questions[idx].authorStatus : normalizeQuestionAuthorStatus(body.authorStatus),
+      authorHint: body.authorHint === undefined ? questions[idx].authorHint || "" : String(body.authorHint).trim(),
       createdAt: body.createdAt === undefined ? questions[idx].createdAt : normalizeCreatedAt(body.createdAt, questions[idx].createdAt),
       location: body.location === undefined ? questions[idx].location || "" : String(body.location).trim(),
+      sourceLabel: body.sourceLabel === undefined ? questions[idx].sourceLabel || "" : String(body.sourceLabel).trim(),
       archived: body.archived === undefined ? questions[idx].archived : normalizeArchived(body.archived)
     };
     if (!updated.text) return sendJson(res, 400, { error: "Fragetext fehlt" });
@@ -853,12 +859,15 @@ async function handleApi(req, res, pathname, url) {
       id: makeId("q"),
       text: String(body.text || "").trim(),
       authors: normalizeAuthors(body.authors),
+      authorStatus: normalizeQuestionAuthorStatus(body.authorStatus),
+      authorHint: String(body.authorHint || "").trim(),
       createdAt: normalizeCreatedAt(body.createdAt),
       location: String(body.location || "").trim(),
+      sourceLabel: String(body.sourceLabel || "").trim(),
       archived: normalizeArchived(body.archived)
     };
     if (!newItem.text) return sendJson(res, 400, { error: "Fragetext fehlt" });
-    if (newItem.authors.length === 0) newItem.authors = ["Anonym"];
+    if (newItem.authors.length === 0 && !questionAllowsEmptyAuthors(newItem)) newItem.authors = ["Anonym"];
 
     const questions = await readData(QUESTIONS_FILE);
     questions.push(normalizeQuestionRow(newItem));
@@ -924,12 +933,15 @@ async function handleApi(req, res, pathname, url) {
       ...questions[idx],
       text: String(body.text ?? questions[idx].text).trim(),
       authors: body.authors === undefined ? questions[idx].authors : normalizeAuthors(body.authors),
+      authorStatus: body.authorStatus === undefined ? questions[idx].authorStatus : normalizeQuestionAuthorStatus(body.authorStatus),
+      authorHint: body.authorHint === undefined ? questions[idx].authorHint || "" : String(body.authorHint).trim(),
       createdAt: body.createdAt === undefined ? questions[idx].createdAt : normalizeCreatedAt(body.createdAt, questions[idx].createdAt),
       location: body.location === undefined ? questions[idx].location || "" : String(body.location).trim(),
+      sourceLabel: body.sourceLabel === undefined ? questions[idx].sourceLabel || "" : String(body.sourceLabel).trim(),
       archived: body.archived === undefined ? questions[idx].archived : normalizeArchived(body.archived)
     };
     if (!updated.text) return sendJson(res, 400, { error: "Fragetext fehlt" });
-    if (!updated.authors.length) updated.authors = ["Anonym"];
+    if (!updated.authors.length && !questionAllowsEmptyAuthors(updated)) updated.authors = ["Anonym"];
 
     questions[idx] = normalizeQuestionRow(updated);
     await writeData(QUESTIONS_FILE, questions);
@@ -1646,6 +1658,10 @@ function normalizeQuestionAuthorStatus(value) {
   if (normalized === "external") return "external";
   if (normalized === "unresolved") return "unresolved";
   return "resolved";
+}
+
+function questionAllowsEmptyAuthors(input) {
+  return normalizeQuestionAuthorStatus(input && input.authorStatus) === "unresolved";
 }
 
 function normalizeEventRow(input) {
