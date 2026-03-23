@@ -33,7 +33,8 @@ let state = {
   expandedQuestionComments: {},
   expandedQuestionCompose: {},
   memberName: "",
-  siteSettings: { publicCommentingEnabled: true }
+  siteSettings: { publicCommentingEnabled: true },
+  loadWarning: ""
 };
 
 const app = document.getElementById("app");
@@ -192,6 +193,7 @@ async function init() {
     state.people = people;
     state.comments = comments;
     state.siteSettings = siteSettings;
+    state.loadWarning = deriveLoadWarning({ questions, events, initiatives, people });
   } catch {
     state.questions = DEFAULT_QUESTIONS;
     state.events = [];
@@ -199,6 +201,12 @@ async function init() {
     state.people = [];
     state.comments = [];
     state.siteSettings = { publicCommentingEnabled: true };
+    state.loadWarning = deriveLoadWarning({
+      questions: DEFAULT_QUESTIONS,
+      events: [],
+      initiatives: [],
+      people: []
+    });
   }
   state.memberName = await fetchMemberName();
   mergeLocalInteractionsIntoComments();
@@ -339,27 +347,9 @@ function handleQuestionAction(action, ratingRaw, idRaw) {
     if (question) {
       const interaction = getInteraction(question.id);
       setQuestionDraft(question.id, {
-        rating: normalizeRating(interaction.rating),
         comment: String(interaction.comment || ""),
         name: String(interaction.name || state.memberName || "")
       });
-    }
-    state.questionStep = "rating";
-    renderQuestionView();
-    return;
-  }
-
-  if (action === "set-rating") {
-    const question = currentQuestion();
-    if (!question) return;
-    const rating = normalizeRating(ratingRaw);
-    setQuestionDraft(question.id, { rating });
-    if (!canCurrentViewerComment()) {
-      saveInteraction(question.id, rating, "", state.memberName || "");
-      clearQuestionDraft(question.id);
-      state.questionStep = "thanks";
-      renderQuestionView();
-      return;
     }
     state.questionStep = "answer";
     renderQuestionView();
@@ -411,11 +401,9 @@ function handleQuestionAction(action, ratingRaw, idRaw) {
     const commentInput = app.querySelector("#commentInput");
     const nameInput = app.querySelector("#commentNameInput");
     const draft = getQuestionDraft(question.id);
-    const existing = getInteraction(question.id);
-    const rating = draft.rating !== undefined ? normalizeRating(draft.rating) : normalizeRating(existing.rating);
     const comment = commentInput ? commentInput.value.trim() : String(draft.comment || "");
     const name = nameInput ? nameInput.value.trim() : String(draft.name || "");
-    saveInteraction(question.id, rating, comment, name);
+    saveInteraction(question.id, 0, comment, name);
     clearQuestionDraft(question.id);
     state.questionStep = "thanks";
     if (typeof window !== "undefined") {
@@ -491,20 +479,13 @@ function renderQuestionView() {
 
   const interaction = getInteraction(question.id);
   const draft = getQuestionDraft(question.id);
-  const effectiveRating = draft.rating !== undefined ? normalizeRating(draft.rating) : normalizeRating(interaction.rating);
   const effectiveName = draft.name !== undefined ? String(draft.name || "") : String(interaction.name || "");
   const effectiveComment = draft.comment !== undefined ? String(draft.comment || "") : String(interaction.comment || "");
-  const commentingClosedHint = !canCurrentViewerComment()
-    ? `<p class="muted">Antworten sind derzeit nur für eingeloggte Mitglieder geöffnet.</p>`
-    : "";
-  const ratingBlock = state.questionStep === "rating"
-    ? `<section class="flow-step answer-step"><p class="flow-label">Bewerte die Frage</p><div class="stars">${renderRatingStars(effectiveRating)}</div>${commentingClosedHint}<div class="actions quiet-actions"><button class="quiet-btn" data-action="next" type="button">Überspringen</button></div></section>`
-    : "";
 
   const responseBlock = state.questionStep === "answer"
-    ? `<section class="flow-step answer-step">${commentingClosedHint}<textarea id="commentInput" class="answer-input" rows="4" placeholder="Deine Antwort">${escapeHtml(effectiveComment)}</textarea><button class="flow-arrow" data-action="show-name" type="button" aria-label="Weiter">weiter ›</button></section>`
+    ? `<section class="flow-step answer-step"><textarea id="commentInput" class="answer-input" rows="4" placeholder="Deine Antwort">${escapeHtml(effectiveComment)}</textarea><button class="flow-arrow" data-action="show-name" type="button" aria-label="Weiter">weiter ›</button></section>`
     : state.questionStep === "name"
-      ? `<section class="flow-step answer-step">${commentingClosedHint}<textarea id="commentInput" class="answer-input" rows="4" placeholder="Deine Antwort">${escapeHtml(effectiveComment)}</textarea><input id="commentNameInput" class="answer-name-input" type="text" placeholder="Dein Name" value="${escapeHtml(effectiveName || state.memberName || "")}" /><button class="flow-arrow" data-action="submit" type="button" aria-label="Speichern">speichern ›</button></section>`
+      ? `<section class="flow-step answer-step"><textarea id="commentInput" class="answer-input" rows="4" placeholder="Deine Antwort">${escapeHtml(effectiveComment)}</textarea><input id="commentNameInput" class="answer-name-input" type="text" placeholder="Dein Name" value="${escapeHtml(effectiveName || state.memberName || "")}" /><button class="flow-arrow" data-action="submit" type="button" aria-label="Speichern">speichern ›</button></section>`
       : "";
 
   const ownQuestionBlock = state.questionStep === "own-question"
@@ -512,21 +493,23 @@ function renderQuestionView() {
     : "";
 
   const showQuestionLine = state.questionStep !== "own-question";
+  const loadWarning = renderLoadWarning();
   app.innerHTML = showQuestionLine
     ? `
       <section class="question-flow" aria-live="polite">
+        ${loadWarning}
         <div class="question-nav-line">
           <button class="question-edge-nav" type="button" data-action="prev" aria-label="Vorherige Frage">‹</button>
           <h1 class="question-title" data-action="reveal-rating" title="Frage öffnen">${escapeHtml(question.text)}</h1>
           <button class="question-edge-nav" type="button" data-action="next" aria-label="Nächste Frage">›</button>
         </div>
-        ${ratingBlock}
         ${responseBlock}
         ${ownQuestionBlock}
       </section>
     `
     : `
       <section class="question-flow" aria-live="polite">
+        ${loadWarning}
         ${ownQuestionBlock}
       </section>
     `;
@@ -575,6 +558,7 @@ function renderQuestionsView() {
     : "";
   app.innerHTML = `
     <section>
+      ${renderLoadWarning()}
       <div class="questions-control-heart-wrap"><button class="questions-sort-toggle ${state.questionsControlsOpen ? "active" : ""}" type="button" data-action="toggle-list-controls" aria-label="Sortierung anzeigen"><span></span><span></span><span></span></button></div>
       ${controls}
       ${renderQuestionRows(rows, { showAuthorLinks: true })}
@@ -601,6 +585,7 @@ function renderAuthorView() {
   const rows = buildSortedQuestionRows(state.questionListSort, filtered);
   app.innerHTML = `
     <section>
+      ${renderLoadWarning()}
       <div class="row-between">
         <h2>Beitraege von ${escapeHtml(author)}</h2>
         <button class="sort-btn" type="button" data-action="clear-author-filter">Zur Fragenliste</button>
@@ -707,6 +692,7 @@ function renderPeopleView() {
   }
   app.innerHTML = `
     <section>
+      ${renderLoadWarning()}
       <div class="list people-grid">
         ${state.shuffledPeople
           .map((person) => {
@@ -745,6 +731,7 @@ function renderInitiativesView() {
 
   app.innerHTML = `
     <section>
+      ${renderLoadWarning()}
       <h2>Initiativen</h2>
       ${categories
         .map((category) => {
@@ -787,6 +774,7 @@ function renderCalendarView() {
   }
   app.innerHTML = `
     <section>
+      ${renderLoadWarning()}
       <h2>Momente</h2>
       <div class="list calendar-list">
         ${blocks.join("")}
@@ -974,7 +962,7 @@ function statsByQuestion() {
 }
 
 function renderSimplePage(title, text) {
-  app.innerHTML = `<section class="card"><h2>${escapeHtml(title)}</h2><p class="muted">${escapeHtml(text)}</p></section>`;
+  app.innerHTML = `<section>${renderLoadWarning()}<section class="card"><h2>${escapeHtml(title)}</h2><p class="muted">${escapeHtml(text)}</p></section></section>`;
 }
 
 function updateShellVisibility() {
@@ -1005,6 +993,33 @@ function renderHeaderMenu() {
   }
   if (headerBrandBtn) headerBrandBtn.classList.toggle("hidden", !(state.menuEnabled && !isQuestionView));
   if (headerInlineNav) headerInlineNav.classList.toggle("hidden", !(state.menuEnabled && !isQuestionView));
+}
+
+function deriveLoadWarning({ questions, events, initiatives, people }) {
+  const onlyFallbackQuestion =
+    Array.isArray(questions) &&
+    questions.length === 1 &&
+    String(questions[0] && questions[0].id || "") === "q-001";
+  const noSecondaryData =
+    Array.isArray(events) &&
+    events.length === 0 &&
+    Array.isArray(initiatives) &&
+    initiatives.length === 0 &&
+    Array.isArray(people) &&
+    people.length === 0;
+  if (!onlyFallbackQuestion || !noSecondaryData) return "";
+  try {
+    if (window.location.protocol === "file:") {
+      return "Die App wurde direkt als Datei geoeffnet. Starte sie ueber den lokalen Server, sonst koennen die Daten nicht geladen werden.";
+    }
+  } catch {}
+  return "Die Datenquelle konnte nicht geladen werden. Pruefe den lokalen Server und lade die Seite neu.";
+}
+
+function renderLoadWarning() {
+  const text = String(state.loadWarning || "").trim();
+  if (!text) return "";
+  return `<aside class="card load-warning" role="status"><p>${escapeHtml(text)}</p></aside>`;
 }
 
 function escapeHtml(str) {

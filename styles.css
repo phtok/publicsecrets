@@ -668,6 +668,16 @@ button.secondary,
   padding: 0.9rem;
 }
 
+.load-warning {
+  margin-bottom: 1rem;
+  border-color: color-mix(in oklab, var(--petrol) 35%, var(--line));
+  background: color-mix(in oklab, #fff4cf 55%, white);
+}
+
+.load-warning p {
+  margin: 0;
+}
+
 .card h3 {
   margin: 0 0 0.5rem;
   font-size: 1.1rem;
