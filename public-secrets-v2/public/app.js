@@ -211,6 +211,30 @@ async function pageQuestion(id) {
       ${commentsHtml}
     </div>`;
 
+  // Edit handlers for own profile
+  app.querySelectorAll('.edit-inline').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const type = btn.dataset.type, id = btn.dataset.id, original = btn.dataset.text;
+      const container = document.getElementById((type === 'question' ? 'q-item-' : 'int-item-') + id);
+      const textEl = container.querySelector(type === 'question' ? '.q-item-text' : '.text');
+      textEl.innerHTML = `<textarea class="edit-ta">${esc(original)}</textarea>
+        <div style="display:flex;gap:.5rem;margin-top:.5rem">
+          <button class="primary save-edit" data-type="${type}" data-id="${id}">Speichern</button>
+          <button class="ghost cancel-edit">Abbrechen</button>
+        </div>`;
+      textEl.querySelector('.cancel-edit').addEventListener('click', () => pageProfile(slug));
+      textEl.querySelector('.save-edit').addEventListener('click', async () => {
+        const text = textEl.querySelector('.edit-ta').value.trim();
+        if (!text) return;
+        try {
+          const endpoint = type === 'question' ? `/api/questions/${id}` : `/api/interactions/${id}`;
+          await api('PUT', endpoint, { text });
+          pageProfile(slug);
+        } catch(e) { alert(e.message); }
+      });
+    });
+  });
+
   app.querySelector('.js-fwd')?.addEventListener('click', () => showForwardModal(q));
 
   const submitBtn = $('int-submit');
@@ -255,16 +279,22 @@ async function pageProfile(slug) {
       ${isMe ? '<div class="detail-actions"><a class="btn" href="#/me">Profil bearbeiten</a></div>' : ''}
       <div class="section-head">Fragen (${u.questions?.length || 0})</div>
       ${(u.questions || []).map(q => `
-        <div class="q-item" onclick="location.hash='#/q/${q.id}'">
-          <div class="q-item-text">${esc(q.text)}</div>
-          <div class="q-item-meta">${fmt(q.created_at)}${q.location ? ' · ' + esc(q.location) : ''}</div>
+        <div class="q-item" id="q-item-${q.id}">
+          <div class="q-item-text" onclick="location.hash='#/q/${q.id}'">${esc(q.text)}</div>
+          <div class="q-item-meta">
+            ${fmt(q.created_at)}${q.location ? ' · ' + esc(q.location) : ''}
+            ${isMe ? `<button class="edit-inline" data-type="question" data-id="${q.id}" data-text="${esc(q.text)}">Bearbeiten</button>` : ''}
+          </div>
         </div>`).join('') || '<p style="color:var(--gray);font-family:var(--sans);font-size:.85rem">Noch keine Fragen.</p>'}
       ${me && u.interactions?.length > 0 ? `
         <div class="section-head">Interaktionen</div>
         ${u.interactions.map(i => `
-          <div class="interaction">
+          <div class="interaction" id="int-item-${i.id}">
             <div class="text">${esc(i.text)}</div>
-            <div class="meta">zu: <a href="#/q/${i.qid}">${esc(i.question)}</a> · ${fmt(i.created_at)}</div>
+            <div class="meta">
+              zu: <a href="#/q/${i.qid}">${esc(i.question)}</a> · ${fmt(i.created_at)}
+              ${isMe ? `<button class="edit-inline" data-type="interaction" data-id="${i.id}" data-text="${esc(i.text)}">Bearbeiten</button>` : ''}
+            </div>
           </div>`).join('')}` : ''}
     </div>`;
 }

@@ -301,7 +301,7 @@ app.get('/api/users/:id', auth, (req, res) => {
 
   if (req.user) {
     u.interactions = db.prepare(`
-      SELECT i.text, i.created_at, q.id as qid, q.text as question
+      SELECT i.id, i.text, i.created_at, q.id as qid, q.text as question
       FROM interactions i JOIN questions q ON i.question_id=q.id
       WHERE i.user_id=? ORDER BY i.created_at DESC
     `).all(u.id);
@@ -318,6 +318,26 @@ app.put('/api/users/me', must, (req, res) => {
   } catch {
     res.status(409).json({ error: 'Nutzername bereits vergeben' });
   }
+});
+
+app.put('/api/questions/:id', must, (req, res) => {
+  const { text } = req.body;
+  if (!text?.trim()) return res.status(400).json({ error: 'Text fehlt' });
+  const q = db.prepare('SELECT * FROM questions WHERE id=?').get(req.params.id);
+  if (!q) return res.status(404).json({ error: 'Nicht gefunden' });
+  if (q.author_id !== req.user.id) return res.status(403).json({ error: 'Keine Berechtigung' });
+  db.prepare('UPDATE questions SET text=? WHERE id=?').run(text.trim(), req.params.id);
+  res.json({ ok: true });
+});
+
+app.put('/api/interactions/:id', must, (req, res) => {
+  const { text } = req.body;
+  if (!text?.trim()) return res.status(400).json({ error: 'Text fehlt' });
+  const i = db.prepare('SELECT * FROM interactions WHERE id=?').get(req.params.id);
+  if (!i) return res.status(404).json({ error: 'Nicht gefunden' });
+  if (i.user_id !== req.user.id) return res.status(403).json({ error: 'Keine Berechtigung' });
+  db.prepare('UPDATE interactions SET text=? WHERE id=?').run(text.trim(), req.params.id);
+  res.json({ ok: true });
 });
 
 // ── Fallback ───────────────────────────────────────────────────────────────
