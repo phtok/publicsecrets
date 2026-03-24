@@ -4,6 +4,18 @@ const $ = id => document.getElementById(id);
 const app = $('app');
 const modalRoot = $('modal-root');
 
+// ── Dark mode ──────────────────────────────────────────────────────────────
+(function() {
+  if (localStorage.getItem('ps_dark') === '1') document.documentElement.classList.add('dark');
+})();
+
+function toggleDark() {
+  const on = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('ps_dark', on ? '1' : '0');
+  const btn = $('theme-toggle');
+  if (btn) btn.textContent = on ? '☀' : '☾';
+}
+
 // ── State ──────────────────────────────────────────────────────────────────
 let token = localStorage.getItem('ps_token');
 let me = JSON.parse(localStorage.getItem('ps_me') || 'null');
@@ -42,17 +54,21 @@ function fmt(d) {
 // ── Nav ────────────────────────────────────────────────────────────────────
 function renderNav() {
   const nav = $('nav-links');
+  const dark = document.documentElement.classList.contains('dark');
+  const toggleBtn = `<button id="theme-toggle" title="Dark/Light">${dark ? '☀' : '☾'}</button>`;
   if (me) {
     nav.innerHTML = `
       <a href="#/list">Alle Fragen</a>
       <a href="#/u/${esc(me.slug || me.username || me.id)}">Profil</a>
-      <a href="#/" id="logout-link">Abmelden</a>`;
+      <a href="#/" id="logout-link">Abmelden</a>
+      ${toggleBtn}`;
     nav.querySelector('#logout-link').addEventListener('click', e => {
       e.preventDefault(); clearAuth(); renderNav(); route();
     });
   } else {
-    nav.innerHTML = `<a href="#/list">Alle Fragen</a><a href="#/login">Anmelden</a>`;
+    nav.innerHTML = `<a href="#/list">Alle Fragen</a><a href="#/login">Anmelden</a>${toggleBtn}`;
   }
+  $('theme-toggle').addEventListener('click', toggleDark);
 }
 
 // ── Router ─────────────────────────────────────────────────────────────────

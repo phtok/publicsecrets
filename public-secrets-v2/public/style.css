@@ -6,13 +6,28 @@
   --h: 52px;
   --max: 600px;
   --pad: 2rem;
+  /* Light mode */
+  --bg: #ffffff;
+  --surface: #ffffff;
+  --text: #1e2327;
   --gray: #616a72;
   --border: #d7dce0;
   --accent: #1c6b6f;
+  --input-border: #1e2327;
+}
+
+html.dark {
+  --bg: #101418;
+  --surface: #141a1f;
+  --text: #e9eef2;
+  --gray: #a5b0b8;
+  --border: #2c353c;
+  --accent: #79b8bc;
+  --input-border: #a5b0b8;
 }
 
 html, body { height: 100%; }
-body { font-family: var(--serif); background: #fff; color: #1e2327; -webkit-font-smoothing: antialiased; }
+body { font-family: var(--serif); background: var(--bg); color: var(--text); -webkit-font-smoothing: antialiased; transition: background .2s, color .2s; }
 
 a { color: inherit; text-decoration: none; }
 a:hover { text-decoration: underline; }
@@ -23,9 +38,10 @@ a.accent { color: var(--accent); }
   position: fixed; top: 0; left: 0; right: 0; height: var(--h);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 var(--pad);
-  background: rgba(255,255,255,.97);
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
   z-index: 100;
+  transition: background .2s, border-color .2s;
 }
 #logo {
   font-family: var(--sans); font-size: .78rem;
@@ -36,7 +52,15 @@ a.accent { color: var(--accent); }
   letter-spacing: .05em; display: flex; gap: 1.5rem; align-items: center;
 }
 #nav-links a { color: var(--gray); }
-#nav-links a:hover { color: #111; text-decoration: none; }
+#nav-links a:hover { color: var(--text); text-decoration: none; }
+
+/* Dark mode toggle */
+#theme-toggle {
+  background: none; border: none; cursor: pointer;
+  color: var(--gray); font-size: 1rem; padding: 0;
+  line-height: 1; letter-spacing: 0;
+}
+#theme-toggle:hover { color: var(--text); background: none; }
 
 /* ── Feed ───────────────────────────────────────────────────── */
 body.feed-mode { overflow: hidden; }
@@ -64,9 +88,9 @@ body.feed-mode { overflow: hidden; }
 }
 .slide-ask textarea {
   width: 100%; font-family: var(--serif); font-size: 1.15rem;
-  line-height: 1.6; border: none; border-bottom: 1px solid #111;
+  line-height: 1.6; border: none; border-bottom: 1px solid var(--input-border);
   outline: none; resize: none; padding: .5rem 0;
-  background: transparent; min-height: 80px;
+  background: transparent; min-height: 80px; color: var(--text);
 }
 .slide-ask .ask-row {
   display: flex; gap: 1rem; margin-top: 1rem; align-items: flex-end; flex-wrap: wrap;
@@ -75,13 +99,13 @@ body.feed-mode { overflow: hidden; }
   flex: 1; font-family: var(--sans); font-size: .85rem;
   border: none; border-bottom: 1px solid var(--border);
   outline: none; padding: .4rem 0; background: transparent;
-  min-width: 120px;
+  min-width: 120px; color: var(--text);
 }
 
 /* Question slide */
 .q-text {
-  font-size: clamp(1.6rem, 4.5vw, 2.8rem);
-  line-height: 1.4; margin-bottom: 1.2rem;
+  font-size: clamp(2rem, 6vw, 3.8rem);
+  line-height: 1.3; margin-bottom: 1.4rem;
 }
 .q-meta {
   font-family: var(--sans); font-size: .75rem;
@@ -89,7 +113,7 @@ body.feed-mode { overflow: hidden; }
   letter-spacing: .02em;
 }
 .q-meta a { color: var(--gray); }
-.q-meta a:hover { color: #111; text-decoration: underline; }
+.q-meta a:hover { color: var(--text); text-decoration: underline; }
 .q-actions { display: flex; gap: .7rem; flex-wrap: wrap; }
 .q-count {
   margin-top: 1rem; font-family: var(--sans);
@@ -100,15 +124,15 @@ body.feed-mode { overflow: hidden; }
 button, .btn {
   font-family: var(--sans); font-size: .78rem;
   letter-spacing: .05em; padding: .5em 1.1em;
-  border: 1px solid #1e2327; background: transparent;
-  cursor: pointer; color: #1e2327; display: inline-block;
-  transition: background .15s, color .15s;
+  border: 1px solid var(--text); background: transparent;
+  cursor: pointer; color: var(--text); display: inline-block;
+  transition: background .15s, color .15s, border-color .15s;
 }
-button:hover, .btn:hover { background: #1e2327; color: #fff; text-decoration: none; }
-button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
-button.primary:hover { background: #155457; border-color: #155457; }
+button:hover, .btn:hover { background: var(--text); color: var(--bg); text-decoration: none; }
+button.primary { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+button.primary:hover { opacity: .85; }
 button.ghost { border-color: var(--border); color: var(--gray); }
-button.ghost:hover { background: var(--border); color: #1e2327; }
+button.ghost:hover { background: var(--border); color: var(--text); }
 
 /* ── Pages (non-feed) ───────────────────────────────────────── */
 .page {
@@ -120,42 +144,40 @@ button.ghost:hover { background: var(--border); color: #1e2327; }
 /* List */
 .sort-bar {
   font-family: var(--sans); font-size: .75rem;
-  display: flex; gap: 1.2rem; margin-bottom: 2rem;
-  border-bottom: 1px solid var(--border); padding-bottom: .7rem;
+  display: flex; gap: 1.2rem; margin-bottom: 2.5rem;
   text-transform: uppercase; letter-spacing: .08em;
 }
 .sort-bar a { color: var(--gray); }
-.sort-bar a.on { color: #111; border-bottom: 1px solid #111; padding-bottom: .7rem; margin-bottom: -1px; }
+.sort-bar a.on { color: var(--text); }
 
 .q-item {
-  padding: 1.1rem 0; border-bottom: 1px solid var(--border);
+  padding: 1.1rem 0;
   cursor: pointer;
 }
 .q-item:hover .q-item-text { text-decoration: underline; }
-.q-item-text { font-size: .98rem; line-height: 1.55; margin-bottom: .35rem; }
+.q-item-text { font-size: 1.15rem; line-height: 1.5; margin-bottom: .35rem; }
 .q-item-meta { font-family: var(--sans); font-size: .72rem; color: var(--gray); }
 
 /* Detail */
-.detail-q { font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1.4; margin-bottom: 1rem; }
+.detail-q { font-size: clamp(1.9rem, 5vw, 3.2rem); line-height: 1.3; margin-bottom: 1.2rem; }
 .detail-meta { font-family: var(--sans); font-size: .78rem; color: var(--gray); margin-bottom: 1.5rem; }
 .detail-actions { display: flex; gap: .7rem; margin-bottom: 2.5rem; flex-wrap: wrap; }
 
 .section-head {
   font-family: var(--sans); font-size: .72rem;
   text-transform: uppercase; letter-spacing: .1em;
-  color: var(--gray); margin: 2rem 0 1rem;
-  border-top: 1px solid var(--border); padding-top: 1.5rem;
+  color: var(--gray); margin: 2.5rem 0 1.2rem;
 }
 
 .interaction {
-  padding: 1rem 0; border-bottom: 1px solid var(--border);
+  padding: .9rem 0;
 }
-.interaction .text { line-height: 1.65; }
+.interaction .text { line-height: 1.65; font-size: 1.05rem; }
 .interaction .meta { font-family: var(--sans); font-size: .72rem; color: var(--gray); margin-top: .35rem; }
 
 .login-hint {
   font-family: var(--sans); font-size: .8rem; color: var(--gray);
-  padding: 1rem 0; border-top: 1px solid var(--border);
+  padding: 1rem 0;
 }
 
 /* Forms */
@@ -166,49 +188,48 @@ button.ghost:hover { background: var(--border); color: #1e2327; }
   color: var(--gray); display: block; margin-bottom: .4rem;
 }
 input, textarea, select {
-  font-family: var(--serif); font-size: 1rem;
+  font-family: var(--serif); font-size: 1.1rem;
   width: 100%; padding: .55rem 0;
-  border: none; border-bottom: 1px solid #111;
-  outline: none; background: transparent; color: #111;
+  border: none; border-bottom: 1px solid var(--border);
+  outline: none; background: transparent; color: var(--text);
 }
 textarea { resize: vertical; min-height: 80px; }
-.err { font-family: var(--sans); font-size: .8rem; color: #c00; margin-top: .5rem; display: none; }
-.ok  { font-family: var(--sans); font-size: .8rem; color: #080; margin-top: .5rem; display: none; }
+.err { font-family: var(--sans); font-size: .8rem; color: #e05555; margin-top: .5rem; display: none; }
+.ok  { font-family: var(--sans); font-size: .8rem; color: var(--accent); margin-top: .5rem; display: none; }
 
 /* Auth tabs */
-.tabs { display: flex; gap: 1.5rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border); }
+.tabs { display: flex; gap: 1.5rem; margin-bottom: 2rem; }
 .tab {
   font-family: var(--sans); font-size: .8rem; letter-spacing: .05em;
   padding-bottom: .65rem; cursor: pointer; color: var(--gray);
-  border-bottom: 2px solid transparent; margin-bottom: -1px;
 }
-.tab.on { color: #111; border-bottom-color: #111; }
+.tab.on { color: var(--text); }
 
 /* Profile */
 .profile-head { display: flex; gap: 1.5rem; align-items: flex-start; margin-bottom: 2rem; }
 .profile-img {
   width: 72px; height: 72px; border-radius: 50%;
-  object-fit: cover; background: #f0f0f0; flex-shrink: 0;
+  object-fit: cover; background: var(--border); flex-shrink: 0;
 }
 .profile-name { font-size: 1.15rem; margin-bottom: .3rem; }
 .profile-role { font-family: var(--sans); font-size: .8rem; color: var(--gray); margin-bottom: .5rem; }
-.profile-bio { font-size: .95rem; line-height: 1.65; color: #333; }
+.profile-bio { font-size: .95rem; line-height: 1.65; color: var(--gray); }
 
 /* Modal */
 .overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,.45);
+  position: fixed; inset: 0; background: rgba(0,0,0,.55);
   display: flex; align-items: center; justify-content: center; z-index: 200;
 }
 .modal {
-  background: #fff; padding: 2rem; width: 90%; max-width: 420px;
-  position: relative;
+  background: var(--surface); padding: 2rem; width: 90%; max-width: 420px;
+  position: relative; border: 1px solid var(--border);
 }
 .modal-close {
   position: absolute; top: 1rem; right: 1rem;
   font-size: 1.4rem; background: none; border: none;
   cursor: pointer; color: var(--gray); padding: 0;
 }
-.modal-close:hover { color: #111; background: none; }
+.modal-close:hover { color: var(--text); background: none; }
 .modal h2 { font-size: 1rem; font-family: var(--sans); margin-bottom: 1.5rem; letter-spacing: .03em; }
 
 /* Inline edit */
@@ -217,7 +238,7 @@ textarea { resize: vertical; min-height: 80px; }
   font-size: .7rem; cursor: pointer; padding: 0 0 0 .6rem;
   letter-spacing: .03em; vertical-align: middle;
 }
-.edit-inline:hover { color: #111; background: none; text-decoration: underline; }
+.edit-inline:hover { color: var(--text); background: none; text-decoration: underline; }
 .edit-ta { min-height: 60px; margin-top: .3rem; }
 
 /* Back link */
@@ -225,7 +246,7 @@ textarea { resize: vertical; min-height: 80px; }
   font-family: var(--sans); font-size: .78rem;
   color: var(--gray); display: inline-block; margin-bottom: 2rem;
 }
-.back:hover { color: #111; text-decoration: none; }
+.back:hover { color: var(--text); text-decoration: none; }
 
 /* Responsive */
 @media (max-width: 540px) {
