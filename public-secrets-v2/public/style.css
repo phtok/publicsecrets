@@ -6,15 +6,17 @@
   --h: 52px;
   --max: 600px;
   --pad: 2rem;
-  --gray: #888;
-  --border: #e0e0e0;
+  --gray: #616a72;
+  --border: #d7dce0;
+  --accent: #1c6b6f;
 }
 
 html, body { height: 100%; }
-body { font-family: var(--serif); background: #fff; color: #111; -webkit-font-smoothing: antialiased; }
+body { font-family: var(--serif); background: #fff; color: #1e2327; -webkit-font-smoothing: antialiased; }
 
 a { color: inherit; text-decoration: none; }
 a:hover { text-decoration: underline; }
+a.accent { color: var(--accent); }
 
 /* ── Header ─────────────────────────────────────────────────── */
 #header {
@@ -78,8 +80,8 @@ body.feed-mode { overflow: hidden; }
 
 /* Question slide */
 .q-text {
-  font-size: clamp(1.25rem, 3.5vw, 1.85rem);
-  line-height: 1.5; margin-bottom: 1.2rem;
+  font-size: clamp(1.6rem, 4.5vw, 2.8rem);
+  line-height: 1.4; margin-bottom: 1.2rem;
 }
 .q-meta {
   font-family: var(--sans); font-size: .75rem;
@@ -98,15 +100,15 @@ body.feed-mode { overflow: hidden; }
 button, .btn {
   font-family: var(--sans); font-size: .78rem;
   letter-spacing: .05em; padding: .5em 1.1em;
-  border: 1px solid #111; background: transparent;
-  cursor: pointer; color: #111; display: inline-block;
+  border: 1px solid #1e2327; background: transparent;
+  cursor: pointer; color: #1e2327; display: inline-block;
   transition: background .15s, color .15s;
 }
-button:hover, .btn:hover { background: #111; color: #fff; text-decoration: none; }
-button.primary { background: #111; color: #fff; }
-button.primary:hover { background: #333; }
+button:hover, .btn:hover { background: #1e2327; color: #fff; text-decoration: none; }
+button.primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+button.primary:hover { background: #155457; border-color: #155457; }
 button.ghost { border-color: var(--border); color: var(--gray); }
-button.ghost:hover { background: var(--border); color: #111; }
+button.ghost:hover { background: var(--border); color: #1e2327; }
 
 /* ── Pages (non-feed) ───────────────────────────────────────── */
 .page {
@@ -134,7 +136,7 @@ button.ghost:hover { background: var(--border); color: #111; }
 .q-item-meta { font-family: var(--sans); font-size: .72rem; color: var(--gray); }
 
 /* Detail */
-.detail-q { font-size: clamp(1.3rem, 3.5vw, 1.9rem); line-height: 1.5; margin-bottom: 1rem; }
+.detail-q { font-size: clamp(1.6rem, 4vw, 2.4rem); line-height: 1.4; margin-bottom: 1rem; }
 .detail-meta { font-family: var(--sans); font-size: .78rem; color: var(--gray); margin-bottom: 1.5rem; }
 .detail-actions { display: flex; gap: .7rem; margin-bottom: 2.5rem; flex-wrap: wrap; }
 
