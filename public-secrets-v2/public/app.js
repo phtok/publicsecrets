@@ -385,7 +385,9 @@ function pageReset(resetToken) {
     if (pass !== pass2) { err.textContent = 'Passwörter stimmen nicht überein.'; err.style.display = 'block'; return; }
     if (!resetToken && !must) { err.textContent = 'Kein gültiger Reset-Link.'; err.style.display = 'block'; return; }
     try {
-      const r = await api('POST', '/api/auth/reset', { token: resetToken, password: pass });
+      const endpoint = must ? '/api/auth/change-password' : '/api/auth/reset';
+      const body = must ? { password: pass } : { token: resetToken, password: pass };
+      const r = await api('POST', endpoint, body);
       saveAuth(r.token, r.user);
       renderNav(); location.hash = '#/';
     } catch(e) { err.textContent = e.message; err.style.display = 'block'; }

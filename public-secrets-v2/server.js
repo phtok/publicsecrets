@@ -258,6 +258,16 @@ app.post('/api/auth/forgot', async (req, res) => {
   res.json({ ok: true });
 });
 
+app.post('/api/auth/change-password', must, async (req, res) => {
+  const { password } = req.body;
+  if (!password || password.length < 8)
+    return res.status(400).json({ error: 'Passwort mindestens 8 Zeichen' });
+  const hash = await bcrypt.hash(password, 10);
+  db.prepare('UPDATE users SET password_hash=?, must_change_password=0 WHERE id=?').run(hash, req.user.id);
+  const u = db.prepare('SELECT id, email, username, slug FROM users WHERE id=?').get(req.user.id);
+  res.json({ token: jwt.sign({ id: u.id, email: u.email }, SECRET, { expiresIn: '30d' }), user: u });
+});
+
 app.post('/api/auth/reset', async (req, res) => {
   const { token, password } = req.body;
   if (!token || !password || password.length < 8)
