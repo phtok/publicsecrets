@@ -1,8 +1,8 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --serif: Georgia, 'Times New Roman', serif;
-  --sans: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --serif: 'Inclusive Sans', sans-serif;
+  --sans: 'Inclusive Sans', sans-serif;
   --h: 52px;
   --max: 600px;
   --pad: 2rem;
