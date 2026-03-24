@@ -1,32 +1,32 @@
 /**
- * seed.js — Import existing data into the new Public Secrets v2 database.
+ * seed.js — Importiert Daten aus /data/ in die Public Secrets v2 Datenbank.
  *
- * Usage:
- *   node seed.js /path/to/export.json
+ * Liest:
+ *   ../data/people.json   → users
+ *   ../data/questions.json → questions
  *
- * The script reads questions and people from the export JSON and inserts
- * them into the SQLite database. Password hashes are NOT imported —
- * existing authors must reset their password via "Passwort vergessen".
+ * Für philipp@saetzerei.com wird ein temporäres Passwort gesetzt und ausgegeben.
+ * Alle anderen Personen müssen ihr Passwort über «Passwort vergessen» setzen.
  *
- * Run once. Safe to re-run (uses INSERT OR IGNORE).
+ * Aufruf: node seed.js
  */
 
 require('dotenv').config();
 const Database = require('better-sqlite3');
+const bcrypt = require('bcryptjs');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 
-const exportFile = process.argv[2];
-if (!exportFile) {
-  console.error('Aufruf: node seed.js <pfad-zur-export.json>');
-  process.exit(1);
-}
+const DB_PATH = process.env.DB_PATH || 'publicsecrets.db';
+const DATA_DIR = path.join(__dirname, '..', 'data');
 
-const data = JSON.parse(fs.readFileSync(exportFile, 'utf8'));
-const db = new Database(process.env.DB_PATH || 'publicsecrets.db');
+const people = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'people.json'), 'utf8'));
+const questions = JSON.parse(fs.readFileSync(path.join(DATA_DIR, 'questions.json'), 'utf8'));
+
+const db = new Database(DB_PATH);
 db.pragma('journal_mode = WAL');
 
-// Ensure tables exist (same as server.js)
 db.exec(`
   CREATE TABLE IF NOT EXISTS users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -75,39 +75,46 @@ db.exec(`
   );
 `);
 
-// ── Import people as user accounts ─────────────────────────────────────────
-const people = data?.collections?.people?.items || [];
+// ── Temporäres Passwort für Admin ──────────────────────────────────────────
+const ADMIN_EMAIL = 'philipp@saetzerei.com';
+const tempPassword = crypto.randomBytes(5).toString('hex'); // z.B. "a3f9c2b1e0"
+const tempHash = bcrypt.hashSync(tempPassword, 10);
+
+// ── Personen importieren ────────────────────────────────────────────────────
 const insertUser = db.prepare(`
-  INSERT OR IGNORE INTO users (email, username, slug, bio, role, photo_url, must_change_password)
-  VALUES (?, ?, ?, ?, ?, ?, 1)
+  INSERT OR IGNORE INTO users (email, username, slug, bio, role, photo_url, password_hash, must_change_password)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?)
 `);
 
-const userByName = new Map(); // name → id
+const nameToId = new Map(); // "Philipp Tok" → db-id
 
 db.transaction(() => {
   for (const p of people) {
-    if (!p.email) continue;
+    if (!p.email || p.archived) continue;
+    const email = p.email.toLowerCase();
+    const isAdmin = email === ADMIN_EMAIL;
     try {
-      const result = insertUser.run(
-        p.email.toLowerCase(),
+      insertUser.run(
+        email,
         p.slug,
         p.slug,
         p.bio || '',
         p.role || '',
-        p.portraitUrl || ''
+        p.portraitUrl || '',
+        isAdmin ? tempHash : null,
+        isAdmin ? 1 : 1
       );
-      const id = result.lastInsertRowid || db.prepare('SELECT id FROM users WHERE email=?').get(p.email.toLowerCase())?.id;
-      if (id) userByName.set(p.name, id);
+      const row = db.prepare('SELECT id FROM users WHERE email=?').get(email);
+      if (row) nameToId.set(p.name, row.id);
     } catch (e) {
       console.warn(`  Übersprungen (${p.name}): ${e.message}`);
     }
   }
 })();
 
-console.log(`✓ ${userByName.size} Personen importiert`);
+console.log(`✓ ${nameToId.size} Personen importiert`);
 
-// ── Import questions ────────────────────────────────────────────────────────
-const questions = data?.collections?.questions?.items || [];
+// ── Fragen importieren ──────────────────────────────────────────────────────
 const insertQ = db.prepare(`
   INSERT OR IGNORE INTO questions (text, author_id, author_name, location, source_label, created_at)
   VALUES (?, ?, ?, ?, ?, ?)
@@ -116,12 +123,8 @@ const insertQ = db.prepare(`
 let qCount = 0;
 db.transaction(() => {
   for (const q of questions) {
-    const authorName = (q.authors && q.authors.length > 0)
-      ? q.authors[0]
-      : (q.authorHint || 'Anonym');
-
-    const authorId = userByName.get(authorName) || null;
-
+    const authorName = q.authors?.[0] || q.authorHint || 'Anonym';
+    const authorId = nameToId.get(authorName) || null;
     insertQ.run(
       q.text,
       authorId,
@@ -136,5 +139,10 @@ db.transaction(() => {
 
 console.log(`✓ ${qCount} Fragen importiert`);
 console.log('');
-console.log('Fertig. Autorinnen können ihr Passwort über «Passwort vergessen» setzen.');
+console.log('──────────────────────────────────────────');
+console.log(`Admin-Login:`);
+console.log(`  E-Mail:   ${ADMIN_EMAIL}`);
+console.log(`  Passwort: ${tempPassword}  ← bitte nach Login ändern`);
+console.log('──────────────────────────────────────────');
+
 db.close();
