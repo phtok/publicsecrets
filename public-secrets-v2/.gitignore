@@ -1,2 +1,3 @@
 publicsecrets.db
 package-lock.json
+.env
